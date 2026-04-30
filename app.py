@@ -201,7 +201,9 @@ def login():
 
     <div class="login-wrap">
         <div class="login-visual">
-            {"<img src='data:image/png;base64," + mascota_login + "'>" if mascota_login else ""}
+              {img_html}
+        </div>
+            img_html = f"<img src='data:image/png;base64,{mascota_login}'>" if mascota_login else ""
         </div>
         <div class="login-panel">
             <h1 class="login-title">Control Ventas</h1>
