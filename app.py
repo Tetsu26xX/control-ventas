@@ -33,119 +33,329 @@ if "login_ok" not in st.session_state:
     st.session_state["login_ok"] = False
 
 def login():
+    mascota_b64 = get_base64_image("assets/mascota_dashboard.png")
+    mascota_html = (
+        f'<img class="hero-mascot" src="data:image/png;base64,{mascota_b64}" alt="Mascota Control Ventas">'
+        if mascota_b64 else
+        '<div class="hero-mascot-placeholder">⚡</div>'
+    )
 
     st.markdown("""
     <style>
+    /* ===== LOGIN PRO / ESTABLE STREAMLIT ===== */
+    [data-testid="stHeader"], [data-testid="stToolbar"], footer {visibility: hidden;}
 
     .stApp {
         background:
-            radial-gradient(circle at top left, rgba(0, 90, 190, 0.32), transparent 34%),
-            radial-gradient(circle at bottom right, rgba(255, 30, 95, 0.28), transparent 34%),
-            linear-gradient(135deg, #071320 0%, #101a38 42%, #261849 72%, #471024 100%);
+            radial-gradient(circle at 14% 18%, rgba(88, 84, 255, 0.42), transparent 28%),
+            radial-gradient(circle at 86% 24%, rgba(255, 55, 125, 0.34), transparent 28%),
+            radial-gradient(circle at 74% 88%, rgba(0, 210, 255, 0.22), transparent 34%),
+            linear-gradient(135deg, #071320 0%, #111734 40%, #27194b 70%, #4a1026 100%) !important;
+        color: #ffffff !important;
+        overflow-x: hidden;
     }
 
-    .card-neon {
-        background: rgba(255,255,255,0.08);
-        padding: 14px;
-        border-radius: 14px;
-        margin-bottom: 10px;
-        transition: all 0.3s ease;
-    }
-
-    .card-neon:hover {
-        box-shadow:
-            0 0 10px #ff3d73,
-            0 0 20px #8e2de2,
-            0 0 40px #8e2de2;
-        transform: scale(1.05);
-    }
-
-    .login-box {
-        background: rgba(255,255,255,0.08);
-        padding: 30px;
-        border-radius: 20px;
-        backdrop-filter: blur(15px);
-        border: 1px solid rgba(255,255,255,0.2);
-    }
-
-    .login-box:hover {
-        box-shadow:
-            0 0 15px #ff3d73,
-            0 0 30px #8e2de2;
+    section.main > div {
+        padding-top: 1.3rem !important;
+        padding-bottom: 1rem !important;
+        max-width: 1180px !important;
     }
 
     div[data-testid="stTextInput"] input {
-        background: rgba(255,255,255,0.12);
-        border-radius: 10px;
-        color: white;
+        background: rgba(255,255,255,0.10) !important;
+        border: 1px solid rgba(255,255,255,0.22) !important;
+        color: white !important;
+        border-radius: 16px !important;
+        height: 48px !important;
+        box-shadow: inset 0 0 0 1px rgba(255,255,255,0.04) !important;
+        transition: all 0.25s ease !important;
+    }
+
+    div[data-testid="stTextInput"] input:focus {
+        border-color: rgba(255, 61, 115, 0.95) !important;
+        box-shadow:
+            0 0 0 1px rgba(255, 61, 115, 0.55),
+            0 0 18px rgba(142,45,226,0.38) !important;
+    }
+
+    div[data-testid="stTextInput"] label {
+        color: rgba(255,255,255,0.92) !important;
+        font-weight: 850 !important;
     }
 
     .stButton > button {
-        background: linear-gradient(90deg, #ff3d73, #8e2de2);
-        border-radius: 10px;
-        color: white;
-        font-weight: bold;
+        height: 48px !important;
+        border-radius: 16px !important;
+        border: 1px solid rgba(255,255,255,0.18) !important;
+        background: linear-gradient(90deg, #ff3d73 0%, #8e2de2 52%, #00d4ff 100%) !important;
+        color: white !important;
+        font-weight: 950 !important;
+        letter-spacing: .2px !important;
+        box-shadow: 0 12px 30px rgba(142,45,226,.26) !important;
+        transition: all 0.25s ease !important;
     }
 
+    .stButton > button:hover {
+        transform: translateY(-3px) scale(1.01) !important;
+        box-shadow:
+            0 0 14px rgba(255,61,115,.85),
+            0 0 28px rgba(142,45,226,.62),
+            0 0 46px rgba(0,212,255,.32) !important;
+        filter: saturate(1.15);
+    }
+
+    .login-right-card {
+        position: relative;
+        padding: 28px 28px 22px 28px;
+        border-radius: 30px;
+        background: linear-gradient(135deg, rgba(255,255,255,0.14), rgba(255,255,255,0.055));
+        border: 1px solid rgba(255,255,255,0.22);
+        box-shadow: 0 24px 70px rgba(0,0,0,.34), inset 0 1px 0 rgba(255,255,255,.20);
+        backdrop-filter: blur(22px);
+        -webkit-backdrop-filter: blur(22px);
+        margin-top: 72px;
+        transition: all .28s ease;
+        overflow: hidden;
+    }
+
+    .login-right-card:before {
+        content: "";
+        position: absolute;
+        inset: -2px;
+        border-radius: 30px;
+        background: linear-gradient(120deg, rgba(255,61,115,.75), rgba(142,45,226,.55), rgba(0,212,255,.45));
+        opacity: .18;
+        z-index: -1;
+        filter: blur(18px);
+        transition: opacity .25s ease, filter .25s ease;
+    }
+
+    .login-right-card:hover {
+        transform: translateY(-4px);
+        border-color: rgba(255,255,255,.34);
+        box-shadow:
+            0 0 18px rgba(255,61,115,.36),
+            0 0 36px rgba(142,45,226,.32),
+            0 28px 75px rgba(0,0,0,.38);
+    }
+
+    .login-right-card:hover:before { opacity: .38; filter: blur(24px); }
+
+    .login-title {
+        font-size: 24px;
+        font-weight: 950;
+        margin-bottom: 4px;
+        color: #fff;
+    }
+
+    .login-subtitle {
+        color: rgba(255,255,255,.72);
+        font-size: 14px;
+        margin-bottom: 18px;
+    }
+
+    .hero-wrap {
+        min-height: 610px;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+    }
+
+    .hero-main {
+        display: grid;
+        grid-template-columns: minmax(280px, 1fr) 250px;
+        align-items: center;
+        gap: 14px;
+    }
+
+    .hero-kicker {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        width: fit-content;
+        padding: 8px 12px;
+        border-radius: 999px;
+        background: rgba(255,255,255,.09);
+        border: 1px solid rgba(255,255,255,.16);
+        color: rgba(255,255,255,.86);
+        font-weight: 800;
+        margin-bottom: 16px;
+    }
+
+    .hero-title {
+        font-size: clamp(48px, 7vw, 84px);
+        line-height: .88;
+        margin: 0;
+        font-weight: 1000;
+        letter-spacing: -2.6px;
+        color: #fff;
+        text-shadow: 0 0 26px rgba(142,45,226,.42);
+    }
+
+    .hero-title span {
+        display: block;
+        background: linear-gradient(90deg, #ffffff 0%, #b68cff 42%, #ff5b95 76%, #00d4ff 100%);
+        -webkit-background-clip: text;
+        background-clip: text;
+        color: transparent;
+    }
+
+    .hero-copy {
+        max-width: 500px;
+        margin: 20px 0 22px 0;
+        color: rgba(255,255,255,.78);
+        font-size: 17px;
+        line-height: 1.55;
+    }
+
+    .hero-mascot {
+        width: min(240px, 100%);
+        filter: drop-shadow(0 18px 34px rgba(0,0,0,.48)) drop-shadow(0 0 22px rgba(255,61,115,.26));
+        transform: translateY(12px);
+        transition: all .28s ease;
+    }
+
+    .hero-mascot:hover {
+        transform: translateY(4px) scale(1.035) rotate(-1.5deg);
+        filter:
+            drop-shadow(0 20px 38px rgba(0,0,0,.52))
+            drop-shadow(0 0 24px rgba(255,61,115,.55))
+            drop-shadow(0 0 42px rgba(0,212,255,.24));
+    }
+
+    .hero-mascot-placeholder {
+        width: 210px;
+        height: 210px;
+        display: grid;
+        place-items: center;
+        border-radius: 50%;
+        font-size: 72px;
+        background: rgba(255,255,255,.08);
+        border: 1px solid rgba(255,255,255,.18);
+    }
+
+    .feature-grid {
+        display: grid;
+        grid-template-columns: repeat(3, minmax(120px, 1fr));
+        gap: 14px;
+        max-width: 650px;
+        margin-top: 10px;
+    }
+
+    .feature-card {
+        min-height: 105px;
+        padding: 16px;
+        border-radius: 24px;
+        background: linear-gradient(135deg, rgba(255,255,255,.13), rgba(255,255,255,.055));
+        border: 1px solid rgba(255,255,255,.18);
+        backdrop-filter: blur(18px);
+        -webkit-backdrop-filter: blur(18px);
+        transition: all .26s ease;
+        box-shadow: 0 15px 36px rgba(0,0,0,.18);
+    }
+
+    .feature-card:hover {
+        transform: translateY(-7px) scale(1.025);
+        border-color: rgba(255,255,255,.34);
+        box-shadow:
+            0 0 14px rgba(255,61,115,.45),
+            0 0 30px rgba(142,45,226,.36),
+            0 20px 48px rgba(0,0,0,.28);
+    }
+
+    .feature-icon { font-size: 28px; margin-bottom: 10px; }
+    .feature-title { color: #fff; font-weight: 950; font-size: 16px; }
+    .feature-text { color: rgba(255,255,255,.68); font-size: 12px; margin-top: 4px; }
+
+    .secure-note {
+        margin-top: 12px;
+        text-align: center;
+        color: rgba(255,255,255,.64);
+        font-size: 12px;
+    }
+
+    @media (max-width: 900px) {
+        section.main > div { padding-top: .6rem !important; }
+        .hero-wrap { min-height: auto; }
+        .hero-main { grid-template-columns: 1fr; text-align: center; }
+        .hero-kicker { margin-left: auto; margin-right: auto; }
+        .hero-copy { margin-left: auto; margin-right: auto; }
+        .hero-mascot { margin: 0 auto; width: 190px; transform: translateY(0); }
+        .feature-grid { grid-template-columns: 1fr; }
+        .login-right-card { margin-top: 18px; }
+    }
     </style>
     """, unsafe_allow_html=True)
 
-    col_left, col_right = st.columns([1.3, 0.7])
+    left, right = st.columns([1.35, 0.85], gap="large")
 
-    # ================= LEFT =================
-    with col_left:
-
-        st.markdown("""
-        <h1 style='font-size:48px; font-weight:900; color:#9b5cff;'>
-            Control<br>Ventas
-        </h1>
+    with left:
+        st.markdown(f"""
+        <div class="hero-wrap">
+            <div class="hero-kicker">⚡ Sistema comercial en tiempo real</div>
+            <div class="hero-main">
+                <div>
+                    <h1 class="hero-title">Control<span>Ventas</span></h1>
+                    <p class="hero-copy">
+                        Registra ventas, controla stock, revisa rankings y consulta IMEI por marca y fecha desde un solo panel.
+                    </p>
+                </div>
+                <div>{mascota_html}</div>
+            </div>
+            <div class="feature-grid">
+                <div class="feature-card">
+                    <div class="feature-icon">📊</div>
+                    <div class="feature-title">Ventas</div>
+                    <div class="feature-text">Órdenes, chips, equipos y accesorios.</div>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">📦</div>
+                    <div class="feature-title">Stock</div>
+                    <div class="feature-text">Ingresos, salidas y traslados.</div>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">📱</div>
+                    <div class="feature-title">IMEI</div>
+                    <div class="feature-text">Reportes rápidos para promotores.</div>
+                </div>
+            </div>
+        </div>
         """, unsafe_allow_html=True)
 
+    with right:
         st.markdown("""
-        <p style='opacity:0.8;'>
-        Sistema para registrar ventas, controlar stock y consultar IMEI por marca y fecha.
-        </p>
+        <div class="login-right-card">
+            <div class="login-title">🔐 Iniciar sesión</div>
+            <div class="login-subtitle">Ingresa con tu usuario autorizado.</div>
         """, unsafe_allow_html=True)
 
-        col_cards, col_img = st.columns([1.5, 1])
+        usuario = st.text_input("Usuario", placeholder="Usuario", key="login_usuario").strip().upper()
+        password = st.text_input("Contraseña", type="password", placeholder="Contraseña", key="login_password").strip()
 
-        with col_cards:
-            st.markdown('<div class="card-neon">📊 Ventas</div>', unsafe_allow_html=True)
-            st.markdown('<div class="card-neon">📦 Stock</div>', unsafe_allow_html=True)
-            st.markdown('<div class="card-neon">📈 Reportes</div>', unsafe_allow_html=True)
-
-        with col_img:
-            if os.path.exists("assets/mascota_dashboard.png"):
-                st.image("assets/mascota_dashboard.png", use_container_width=True)
-
-    # ================= RIGHT =================
-    with col_right:
-
-        st.markdown('<div class="login-box">', unsafe_allow_html=True)
-
-        st.subheader("🔐 Iniciar sesión")
-
-        usuario = st.text_input("Usuario").strip().upper()
-        password = st.text_input("Contraseña", type="password")
-
-        if st.button("Ingresar", use_container_width=True):
-
-            data = supabase.table("usuarios").select("*").eq("usuario", usuario).execute().data
-
-            if data:
-                user = data[0]
-                if str(user.get("password", "")) == password and str(user.get("estado", "")).upper() == "ACTIVO":
-                    st.session_state["login_ok"] = True
-                    st.session_state["usuario"] = user.get("usuario", "")
-                    st.session_state["rol"] = user.get("rol", "")
-                    st.session_state["vendedor"] = user.get("vendedor", "")
-                    st.rerun()
-                else:
-                    st.error("Contraseña incorrecta o usuario inactivo.")
+        if st.button("Ingresar", use_container_width=True, key="login_btn"):
+            if not usuario or not password:
+                st.error("Completa usuario y contraseña.")
             else:
-                st.error("Usuario no existe.")
+                with st.spinner("Validando acceso..."):
+                    data = supabase.table("usuarios").select("*").eq("usuario", usuario).execute().data
 
-        st.markdown('</div>', unsafe_allow_html=True)
+                if data:
+                    user = data[0]
+                    if str(user.get("password", "")) == password and str(user.get("estado", "")).upper() == "ACTIVO":
+                        st.session_state["login_ok"] = True
+                        st.session_state["usuario"] = user.get("usuario", "")
+                        st.session_state["rol"] = user.get("rol", "")
+                        st.session_state["vendedor"] = user.get("vendedor", "")
+                        st.rerun()
+                    else:
+                        st.error("Contraseña incorrecta o usuario inactivo.")
+                else:
+                    st.error("Usuario no existe.")
+
+        st.markdown("""
+            <div class="secure-note">🛡️ Acceso seguro · Control Ventas</div>
+        </div>
+        """, unsafe_allow_html=True)
 
 if not st.session_state["login_ok"]:
     login()
