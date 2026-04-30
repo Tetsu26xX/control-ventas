@@ -9,6 +9,17 @@ from supabase import create_client
 st.set_page_config(page_title="Sistema Ventas", layout="wide")
 
 # =========================
+# HELPERS VISUALES
+# =========================
+def img_to_base64(path):
+    try:
+        with open(path, "rb") as img_file:
+            return base64.b64encode(img_file.read()).decode()
+    except Exception:
+        return ""
+
+
+# =========================
 # IMÁGENES
 # =========================
 def get_base64_image(path):
@@ -33,116 +44,194 @@ if "login_ok" not in st.session_state:
     st.session_state["login_ok"] = False
 
 def login():
+    mascota_b64 = img_to_base64("assets/mascota_dashboard.png")
+    mascota_html = f"<img class='login-mascot' src='data:image/png;base64,{mascota_b64}'>" if mascota_b64 else ""
+
     st.markdown("""
     <style>
     .stApp {
         background:
-            radial-gradient(circle at top left, rgba(0, 112, 255, 0.32), transparent 34%),
-            radial-gradient(circle at bottom right, rgba(255, 45, 80, 0.28), transparent 34%),
-            linear-gradient(135deg, #0b1625 0%, #10243d 42%, #251d3d 72%, #3a121b 100%) !important;
+            radial-gradient(circle at top left, rgba(0, 90, 190, 0.35), transparent 34%),
+            radial-gradient(circle at bottom right, rgba(255, 30, 95, 0.30), transparent 34%),
+            linear-gradient(135deg, #071320 0%, #101a38 42%, #261849 72%, #471024 100%) !important;
     }
 
-    .login-top-bar {
-        height: 18px;
-        border-radius: 999px;
-        background: linear-gradient(90deg, #0066aa, #6438b8, #d12b4a);
-        box-shadow: 0 12px 35px rgba(0,0,0,0.35);
-        margin-bottom: 18px;
-    }
-
-    .login-panel {
-        border-radius: 26px;
-        padding: 28px;
-        background: rgba(255,255,255,0.10);
-        border: 1px solid rgba(255,255,255,0.22);
-        box-shadow: 0 20px 55px rgba(0,0,0,0.34);
-        backdrop-filter: blur(16px);
-        -webkit-backdrop-filter: blur(16px);
-        min-height: 565px;
-    }
-
-    .login-visual-panel {
-        border-radius: 26px;
-        padding: 32px;
+    .login-hero {
+        position: relative;
+        min-height: 580px;
+        border-radius: 28px;
+        overflow: hidden;
+        padding: 42px 52px;
         background:
-            linear-gradient(135deg, rgba(0, 91, 170, 0.52), rgba(227, 6, 19, 0.35));
-        border: 1px solid rgba(255,255,255,0.22);
-        box-shadow: inset 0 0 55px rgba(0,0,0,0.18), 0 20px 55px rgba(0,0,0,0.25);
-        min-height: 565px;
-    }
-
-    .login-title {
-        font-size: 46px;
-        line-height: 1.02;
-        font-weight: 1000;
-        color: white;
-        margin-bottom: 12px;
-        text-shadow: 0 14px 28px rgba(0,0,0,0.28);
-    }
-
-    .login-subtitle {
-        color: rgba(255,255,255,0.92);
-        font-size: 16px;
-        margin-bottom: 18px;
-    }
-
-    .feature-card {
-        background: rgba(255,255,255,0.12);
-        border: 1px solid rgba(255,255,255,0.22);
-        border-radius: 18px;
-        padding: 13px 14px;
-        min-height: 88px;
-        color: white;
-        box-shadow: 0 10px 24px rgba(0,0,0,0.15);
-        transition: all 0.24s ease;
-    }
-
-    .feature-card:hover {
-        transform: translateY(-4px);
-        background: rgba(255,255,255,0.18);
-        box-shadow: 0 14px 30px rgba(0,170,255,0.16), 0 8px 22px rgba(255,45,80,0.12);
-    }
-
-    .feature-card b {
-        display: block;
-        font-size: 15px;
-        margin-bottom: 4px;
-    }
-
-    .feature-card span {
-        font-size: 12px;
-        color: rgba(255,255,255,0.84);
-    }
-
-    .login-form-title {
-        text-align: center;
-        color: white;
-        font-size: 24px;
-        font-weight: 1000;
-        text-transform: uppercase;
-        letter-spacing: 1.3px;
+            radial-gradient(circle at 18% 15%, rgba(0, 102, 255, 0.38), transparent 25%),
+            radial-gradient(circle at 92% 10%, rgba(255, 0, 110, 0.45), transparent 30%),
+            linear-gradient(135deg, #071e46 0%, #1d1258 48%, #bf0d5c 100%);
+        border: 1px solid rgba(255,255,255,0.18);
+        box-shadow: 0 28px 80px rgba(0,0,0,0.42);
         margin-top: 18px;
+    }
+
+    .login-hero::before {
+        content: "";
+        position: absolute;
+        inset: 0;
+        background:
+            linear-gradient(130deg, transparent 0 18%, rgba(255,255,255,0.07) 18.3% 18.8%, transparent 19.2% 100%),
+            linear-gradient(140deg, transparent 0 52%, rgba(255,255,255,0.08) 52.2% 52.6%, transparent 53% 100%);
+        opacity: 0.75;
+        pointer-events: none;
+    }
+
+    .login-left-content {
+        position: relative;
+        z-index: 2;
+        max-width: 620px;
+    }
+
+    .login-small {
+        color: #ff4d8d;
+        font-size: 18px;
+        font-weight: 900;
         margin-bottom: 6px;
     }
 
-    .login-form-subtitle {
-        text-align: center;
+    .login-main-title {
+        color: white;
+        font-size: 58px;
+        line-height: 0.95;
+        font-weight: 1000;
+        letter-spacing: -1.8px;
+        margin-bottom: 16px;
+        text-shadow: 0 18px 34px rgba(0,0,0,0.32);
+    }
+
+    .login-main-title span {
+        background: linear-gradient(90deg, #8e65ff, #ff4d8d);
+        -webkit-background-clip: text;
+        color: transparent;
+    }
+
+    .login-desc {
+        color: rgba(255,255,255,0.90);
+        font-size: 15px;
+        line-height: 1.6;
+        max-width: 570px;
+        margin-bottom: 22px;
+    }
+
+    .login-feature-row {
+        display: flex;
+        gap: 12px;
+        flex-wrap: wrap;
+        margin-bottom: 22px;
+    }
+
+    .login-feature-card {
+        width: 148px;
+        min-height: 72px;
+        border-radius: 14px;
+        padding: 12px;
+        background: rgba(255,255,255,0.10);
+        border: 1px solid rgba(255,255,255,0.18);
+        color: white;
+        backdrop-filter: blur(12px);
+        box-shadow: 0 10px 24px rgba(0,0,0,0.20);
+        transition: all 0.25s ease;
+    }
+
+    .login-feature-card:hover {
+        transform: translateY(-4px);
+        background: rgba(255,255,255,0.16);
+        box-shadow: 0 14px 30px rgba(125,70,255,0.22);
+    }
+
+    .login-feature-card b {
+        display: block;
+        font-size: 13px;
+        margin-bottom: 4px;
+    }
+
+    .login-feature-card span {
+        font-size: 10.5px;
         color: rgba(255,255,255,0.78);
+    }
+
+    .login-mascot {
+        position: absolute;
+        left: 120px;
+        bottom: 0px;
+        width: 360px;
+        max-width: 38vw;
+        filter: drop-shadow(0 20px 32px rgba(0,0,0,0.36));
+        animation: floatMascot 3s ease-in-out infinite;
+        z-index: 3;
+    }
+
+    @keyframes floatMascot {
+        0% { transform: translateY(0px); }
+        50% { transform: translateY(-8px); }
+        100% { transform: translateY(0px); }
+    }
+
+    .login-form-card {
+        min-height: 455px;
+        border-radius: 26px;
+        padding: 34px;
+        background: rgba(22, 16, 35, 0.76);
+        border: 1px solid rgba(255,255,255,0.18);
+        box-shadow:
+            0 24px 70px rgba(0,0,0,0.36),
+            inset 0 0 40px rgba(255,255,255,0.04);
+        backdrop-filter: blur(18px);
+        -webkit-backdrop-filter: blur(18px);
+        margin-top: 74px;
+    }
+
+    .login-form-title {
+        color: white;
+        text-align: center;
+        font-size: 28px;
+        font-weight: 1000;
+        margin-bottom: 8px;
+    }
+
+    .login-form-subtitle {
+        color: rgba(255,255,255,0.72);
+        text-align: center;
         font-size: 13px;
         margin-bottom: 24px;
     }
 
-    .mascota-wrap img {
-        max-height: 265px;
-        object-fit: contain;
-        filter: drop-shadow(0 18px 28px rgba(0,0,0,0.35));
-        animation: floatLogin 2.8s ease-in-out infinite;
+    .login-safe {
+        margin-top: 18px;
+        text-align: center;
+        color: rgba(255,255,255,0.75);
+        font-size: 12px;
     }
 
-    @keyframes floatLogin {
-        0% { transform: translateY(0px) rotate(-2deg); }
-        50% { transform: translateY(-8px) rotate(2deg); }
-        100% { transform: translateY(0px) rotate(-2deg); }
+    div[data-testid="stTextInput"] input {
+        background: rgba(255,255,255,0.10) !important;
+        border: 1px solid rgba(255,255,255,0.16) !important;
+        color: white !important;
+        border-radius: 12px !important;
+    }
+
+    div[data-testid="stTextInput"] label {
+        color: rgba(255,255,255,0.88) !important;
+    }
+
+    .stButton > button {
+        border-radius: 12px !important;
+        background: linear-gradient(90deg, #ff3d73, #8e2de2) !important;
+        color: white !important;
+        border: none !important;
+        font-weight: 900 !important;
+        transition: all 0.25s ease !important;
+    }
+
+    .stButton > button:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 12px 28px rgba(255, 45, 110, 0.28);
     }
 
     [data-testid="stSidebar"] details {
@@ -177,54 +266,48 @@ def login():
     }
 
     @media (max-width: 900px) {
-        .login-title { font-size: 34px; }
-        .login-panel, .login-visual-panel { min-height: auto; }
+        .login-hero { padding: 28px; min-height: auto; }
+        .login-main-title { font-size: 42px; }
+        .login-mascot { position: relative; left: auto; bottom: auto; width: 240px; max-width: 80%; margin-top: 10px; }
+        .login-form-card { margin-top: 18px; min-height: auto; }
     }
     </style>
     """, unsafe_allow_html=True)
 
-    st.markdown('<div class="login-top-bar"></div>', unsafe_allow_html=True)
-
-    col_left, col_right = st.columns([1.15, 0.85], gap="large")
+    col_left, col_right = st.columns([1.22, 0.78], gap="large")
 
     with col_left:
-        st.markdown('<div class="login-visual-panel">', unsafe_allow_html=True)
-
-        st.markdown("""
-        <div class="login-title">Control<br>Ventas</div>
-        <div class="login-subtitle">
-            Sistema para registrar ventas, controlar stock, revisar rankings y consultar IMEI por marca y fecha.
+        left_html = """
+        <div class="login-hero">
+            <div class="login-left-content">
+                <div class="login-small">Bienvenido a</div>
+                <div class="login-main-title">Control<br><span>Ventas</span></div>
+                <div class="login-desc">
+                    Sistema para registrar ventas, controlar stock, revisar rankings
+                    y consultar IMEI por marca y fecha.
+                </div>
+                <div class="login-feature-row">
+                    <div class="login-feature-card"><b>🧾 Ventas</b><span>Registra y consulta todas tus ventas</span></div>
+                    <div class="login-feature-card"><b>📦 Stock</b><span>Controla tu inventario</span></div>
+                    <div class="login-feature-card"><b>📊 Reportes</b><span>Ranking y estadísticas</span></div>
+                </div>
+            </div>
+            __MASCOTA__
         </div>
-        """, unsafe_allow_html=True)
-
-        img_cols = st.columns([1.1, 1, 1.1])
-        with img_cols[1]:
-            if os.path.exists("assets/mascota_dashboard.png"):
-                st.markdown('<div class="mascota-wrap">', unsafe_allow_html=True)
-                st.image("assets/mascota_dashboard.png", use_container_width=True)
-                st.markdown('</div>', unsafe_allow_html=True)
-
-        fc1, fc2 = st.columns(2)
-        with fc1:
-            st.markdown('<div class="feature-card"><b>📊 Ranking</b><span>Seguimiento por marca y vendedor</span></div>', unsafe_allow_html=True)
-            st.markdown('<div style="height:10px"></div>', unsafe_allow_html=True)
-            st.markdown('<div class="feature-card"><b>📦 Stock</b><span>Ingresos, salidas y disponibilidad</span></div>', unsafe_allow_html=True)
-        with fc2:
-            st.markdown('<div class="feature-card"><b>🧾 Ventas</b><span>Órdenes, chips, equipos y accesorios</span></div>', unsafe_allow_html=True)
-            st.markdown('<div style="height:10px"></div>', unsafe_allow_html=True)
-            st.markdown('<div class="feature-card"><b>📱 IMEI</b><span>Reporte rápido para promotores</span></div>', unsafe_allow_html=True)
-
-        st.markdown('</div>', unsafe_allow_html=True)
+        """
+        st.markdown(left_html.replace("__MASCOTA__", mascota_html), unsafe_allow_html=True)
 
     with col_right:
-        st.markdown('<div class="login-panel">', unsafe_allow_html=True)
-        st.markdown('<div class="login-form-title">User Login</div>', unsafe_allow_html=True)
-        st.markdown('<div class="login-form-subtitle">Ingresa con tu usuario asignado</div>', unsafe_allow_html=True)
+        st.markdown("""
+        <div class="login-form-card">
+            <div class="login-form-title">🔐 Iniciar Sesión</div>
+            <div class="login-form-subtitle">Ingresa tus credenciales para continuar</div>
+        """, unsafe_allow_html=True)
 
         usuario = st.text_input("Usuario", placeholder="Usuario").strip().upper()
         password = st.text_input("Contraseña", type="password", placeholder="Contraseña").strip()
 
-        if st.button("Ingresar", use_container_width=True):
+        if st.button("Ingresar →", use_container_width=True):
             with st.spinner("Validando acceso..."):
                 data = supabase.table("usuarios").select("*").eq("usuario", usuario).execute().data
 
@@ -241,7 +324,7 @@ def login():
             else:
                 st.error("Usuario no existe.")
 
-        st.markdown('</div>', unsafe_allow_html=True)
+        st.markdown('<div class="login-safe">🛡️ Acceso seguro y protegido</div></div>', unsafe_allow_html=True)
 
 if not st.session_state["login_ok"]:
     login()
