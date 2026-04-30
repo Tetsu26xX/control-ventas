@@ -411,6 +411,23 @@ def calcular_stock(productos, movimientos_stock, ventas):
     stock = stock.sort_values(["marca", "modelo", "color", "tipo"])
     return stock
 
+def preparar_fecha_hora(df):
+    df = df.copy()
+    if "fecha" in df.columns:
+        df["fecha"] = pd.to_datetime(df["fecha"], errors="coerce").dt.strftime("%Y-%m-%d").fillna("")
+    if "creado_en" in df.columns:
+        dt = pd.to_datetime(df["creado_en"], errors="coerce")
+        # Mostrar fecha/hora local aproximada restando 5 horas de UTC (Perú/Colombia)
+        dt = dt - pd.Timedelta(hours=5)
+        df["hora"] = dt.dt.strftime("%H:%M:%S").fillna("")
+        df = df.drop(columns=["creado_en"], errors="ignore")
+    return df
+
+def ordenar_columnas_existentes(df, columnas):
+    existentes = [c for c in columnas if c in df.columns]
+    restantes = [c for c in df.columns if c not in existentes]
+    return df[existentes + restantes]
+
 def registrar_movimiento_stock(tipo_movimiento, requiere_jefe=False):
     st.subheader(tipo_movimiento.title())
 
@@ -527,17 +544,17 @@ accesorios = cargar_tabla("accesorios", ["id", "marca", "sku", "descripcion"])
 vendedores = cargar_tabla("vendedores", ["id", "nombre", "estado"])
 jefes = cargar_tabla("jefes", ["id", "nombre", "estado"])
 ventas = cargar_tabla("ventas", [
-    "id", "fecha", "vendedor", "orden", "chip", "tipo_chip", "imei",
+    "id", "fecha", "creado_en", "vendedor", "orden", "chip", "tipo_chip", "imei",
     "sku", "marca", "modelo", "color", "tipo", "cantidad",
     "accesorio_sku", "accesorio", "cantidad_accesorio"
 ])
 movimientos_stock = cargar_tabla("movimientos_stock", [
-    "id", "fecha", "tipo_movimiento", "sku", "cantidad",
+    "id", "fecha", "creado_en", "tipo_movimiento", "sku", "cantidad",
     "jefe_solicita", "vendedor_responsable", "detalle"
 ])
 
 columnas_ventas = [
-    "id", "fecha", "vendedor", "orden", "chip", "tipo_chip", "imei",
+    "id", "fecha", "creado_en", "vendedor", "orden", "chip", "tipo_chip", "imei",
     "sku", "marca", "modelo", "color", "tipo", "cantidad",
     "accesorio_sku", "accesorio", "cantidad_accesorio"
 ]
@@ -547,7 +564,7 @@ for col in columnas_ventas:
 ventas = ventas[columnas_ventas]
 
 columnas_stock = [
-    "fecha", "tipo_movimiento", "sku", "cantidad",
+    "id", "fecha", "creado_en", "tipo_movimiento", "sku", "cantidad",
     "jefe_solicita", "vendedor_responsable", "detalle"
 ]
 for col in columnas_stock:
@@ -864,6 +881,11 @@ if menu == "📊 Dashboard":
         st.divider()
         st.subheader("Últimas órdenes del filtro")
         ultimas_ordenes = ventas_filtradas.drop(columns=["semana_mes"], errors="ignore").tail(30).copy()
+        ultimas_ordenes = preparar_fecha_hora(ultimas_ordenes)
+        ultimas_ordenes = ordenar_columnas_existentes(
+            ultimas_ordenes,
+            ["fecha", "hora", "vendedor", "orden", "imei", "chip", "marca", "modelo", "color", "tipo"]
+        )
         ultimas_ordenes = ultimas_ordenes.replace({"None": "", "nan": "", "NaN": ""})
         st.dataframe(ultimas_ordenes.astype(str), use_container_width=True)
 
@@ -936,7 +958,13 @@ elif menu == "📦 Inventario":
 
     elif opcion_inv == "📋 Historial Movimientos":
         st.subheader("📋 Historial de movimientos de stock")
-        st.dataframe(movimientos_stock.astype(str), use_container_width=True)
+        mov_vista = movimientos_stock.copy()
+        mov_vista = preparar_fecha_hora(mov_vista)
+        mov_vista = ordenar_columnas_existentes(
+            mov_vista,
+            ["fecha", "hora", "tipo_movimiento", "sku", "cantidad", "jefe_solicita", "vendedor_responsable", "detalle"]
+        )
+        st.dataframe(mov_vista.astype(str), use_container_width=True)
 
 # =========================
 # CATÁLOGOS
@@ -1167,8 +1195,99 @@ elif menu == "📋 Ventas Registradas":
     if ventas.empty:
         st.info("No hay ventas registradas.")
     else:
-        ventas_limpias = ventas.copy().replace({"None": "", "nan": "", "NaN": ""})
-        st.dataframe(ventas_limpias.astype(str), use_container_width=True)
+        ventas_filtro = ventas.copy()
+        ventas_filtro["fecha_dt"] = pd.to_datetime(ventas_filtro["fecha"], errors="coerce")
+        ventas_filtro["cantidad"] = pd.to_numeric(ventas_filtro["cantidad"], errors="coerce").fillna(0).astype(int)
+        ventas_filtro["cantidad_accesorio"] = pd.to_numeric(
+            ventas_filtro["cantidad_accesorio"], errors="coerce"
+        ).fillna(0).astype(int)
+
+        st.subheader("🔎 Filtros de ventas / IMEI")
+
+        fechas_validas = ventas_filtro["fecha_dt"].dropna()
+        if not fechas_validas.empty:
+            fecha_min = fechas_validas.min().date()
+            fecha_max = fechas_validas.max().date()
+        else:
+            fecha_min = pd.Timestamp.today().date()
+            fecha_max = pd.Timestamp.today().date()
+
+        c1, c2, c3, c4 = st.columns(4)
+        fecha_desde = c1.date_input("Desde", value=fecha_min)
+        fecha_hasta = c2.date_input("Hasta", value=fecha_max)
+
+        marcas = sorted([m for m in ventas_filtro["marca"].astype(str).unique() if m.strip() != ""])
+        marca_sel = c3.selectbox("Marca", ["TODAS"] + marcas)
+
+        vendedores_lista = sorted([v for v in ventas_filtro["vendedor"].astype(str).unique() if v.strip() != ""])
+        vendedor_sel = c4.selectbox("Vendedor", ["TODOS"] + vendedores_lista)
+
+        c5, c6, c7 = st.columns(3)
+
+        ventas_temp_modelo = ventas_filtro.copy()
+        if marca_sel != "TODAS":
+            ventas_temp_modelo = ventas_temp_modelo[ventas_temp_modelo["marca"] == marca_sel]
+
+        modelos = sorted([m for m in ventas_temp_modelo["modelo"].astype(str).unique() if m.strip() != ""])
+        modelo_sel = c5.selectbox("Modelo", ["TODOS"] + modelos)
+
+        texto_buscar = c6.text_input("Buscar orden / IMEI / chip").strip()
+        solo_equipos = c7.checkbox("Solo ventas con equipo", value=True)
+
+        ventas_filtradas = ventas_filtro[
+            (ventas_filtro["fecha_dt"].dt.date >= fecha_desde) &
+            (ventas_filtro["fecha_dt"].dt.date <= fecha_hasta)
+        ]
+
+        if marca_sel != "TODAS":
+            ventas_filtradas = ventas_filtradas[ventas_filtradas["marca"] == marca_sel]
+
+        if modelo_sel != "TODOS":
+            ventas_filtradas = ventas_filtradas[ventas_filtradas["modelo"] == modelo_sel]
+
+        if vendedor_sel != "TODOS":
+            ventas_filtradas = ventas_filtradas[ventas_filtradas["vendedor"] == vendedor_sel]
+
+        if solo_equipos:
+            ventas_filtradas = ventas_filtradas[ventas_filtradas["cantidad"] > 0]
+
+        if texto_buscar:
+            t = texto_buscar.lower()
+            ventas_filtradas = ventas_filtradas[
+                ventas_filtradas["orden"].astype(str).str.lower().str.contains(t, na=False) |
+                ventas_filtradas["imei"].astype(str).str.lower().str.contains(t, na=False) |
+                ventas_filtradas["chip"].astype(str).str.lower().str.contains(t, na=False)
+            ]
+
+        st.divider()
+
+        m1, m2, m3 = st.columns(3)
+        m1.metric("Órdenes encontradas", ventas_filtradas["orden"].nunique())
+        m2.metric("Equipos", int(ventas_filtradas["cantidad"].sum()))
+        m3.metric("Accesorios", int(ventas_filtradas["cantidad_accesorio"].sum()))
+
+        columnas_vista = [
+            "fecha", "hora", "vendedor", "orden", "imei", "chip", "tipo_chip",
+            "marca", "modelo", "color", "tipo", "sku",
+            "accesorio", "accesorio_sku", "cantidad", "cantidad_accesorio"
+        ]
+
+        ventas_mostrar = ventas_filtradas.drop(columns=["fecha_dt"], errors="ignore").copy()
+        ventas_mostrar = preparar_fecha_hora(ventas_mostrar)
+        ventas_mostrar = ventas_mostrar.replace({"None": "", "nan": "", "NaN": ""})
+        ventas_mostrar = ordenar_columnas_existentes(ventas_mostrar, columnas_vista)
+
+        st.dataframe(ventas_mostrar.astype(str), use_container_width=True)
+
+        csv = ventas_mostrar.to_csv(index=False).encode("utf-8-sig")
+        st.download_button(
+            "📥 Descargar resultado en Excel/CSV",
+            data=csv,
+            file_name="ventas_filtradas_imei.csv",
+            mime="text/csv"
+        )
+
+        st.divider()
 
         st.subheader("🗑 Eliminar venta")
 
@@ -1192,7 +1311,8 @@ elif menu == "📋 Ventas Registradas":
             ]
 
             st.warning("Revisa bien antes de eliminar. Esta acción borra la venta seleccionada de Supabase.")
-            st.dataframe(venta_seleccionada.astype(str), use_container_width=True)
+            venta_preview = preparar_fecha_hora(venta_seleccionada.copy())
+            st.dataframe(venta_preview.astype(str), use_container_width=True)
 
             confirmar = st.checkbox("Confirmo que quiero eliminar esta orden")
 
