@@ -3,14 +3,6 @@ import pandas as pd
 import matplotlib.pyplot as plt
 import streamlit.components.v1 as components
 import base64
-import base64
-
-def get_base64_image(path):
-    try:
-        with open(path, "rb") as img_file:
-            return base64.b64encode(img_file.read()).decode()
-    except:
-        return None
 from supabase import create_client
 
 st.set_page_config(page_title="Sistema Ventas", layout="wide")
@@ -35,9 +27,9 @@ def login():
     st.markdown(f"""
     <style>
     .login-bg {{
-        min-height: 78vh;
+        min-height: 64vh;
         border-radius: 32px;
-        padding: 34px;
+        padding: 24px;
         background:
             linear-gradient(135deg, rgba(0, 35, 85, 0.78), rgba(227, 6, 19, 0.55)),
             url("data:image/png;base64,{fondo_login}");
@@ -55,12 +47,12 @@ def login():
         backdrop-filter: blur(20px);
         -webkit-backdrop-filter: blur(20px);
         border-radius: 28px;
-        padding: 30px;
+        padding: 22px;
         box-shadow: 0 18px 55px rgba(0,0,0,0.35);
         text-align: center;
     }}
     .login-title {{
-        font-size: 34px;
+        font-size: 30px;
         font-weight: 1000;
         color: white;
         margin: 0;
@@ -86,7 +78,7 @@ def login():
     </style>
     <div class="login-bg">
       <div class="login-card">
-        {"<img class='login-mascot' src='data:image/png;base64," + mascota_login + "' width='150'>" if mascota_login else ""}
+        {"<img class='login-mascot' src='data:image/png;base64," + mascota_login + "' width='95'>" if mascota_login else ""}
         <h1 class="login-title">🔐 Control Ventas</h1>
         <p class="login-subtitle">Ingresa para registrar ventas, stock y consultar reportes.</p>
       </div>
@@ -682,6 +674,7 @@ with st.sidebar.expander("🛒 Gestión de Venta", expanded=False):
     boton_menu("🔍 Buscar")
     boton_menu("✏️ Editar Venta")
     boton_menu("📋 Ventas Registradas")
+    boton_menu("📱 Buscar IMEI")
 
 with st.sidebar.expander("📦 Inventario", expanded=False):
     boton_menu("📦 Inventario")
@@ -1261,137 +1254,132 @@ elif menu == "📋 Ventas Registradas":
     if ventas.empty:
         st.info("No hay ventas registradas.")
     else:
-        ventas_base = ventas.copy()
-        ventas_base["fecha_dt"] = pd.to_datetime(ventas_base["fecha"], errors="coerce")
-        ventas_base["cantidad"] = pd.to_numeric(ventas_base["cantidad"], errors="coerce").fillna(0).astype(int)
-        ventas_base["cantidad_accesorio"] = pd.to_numeric(
-            ventas_base["cantidad_accesorio"], errors="coerce"
-        ).fillna(0).astype(int)
+        ventas_limpias = ventas.copy().replace({"None": "", "nan": "", "NaN": ""})
+        ventas_limpias = preparar_fecha_hora(ventas_limpias)
+        ventas_limpias = ordenar_columnas_existentes(
+            ventas_limpias,
+            [
+                "fecha", "hora", "vendedor", "orden", "imei",
+                "marca", "modelo", "color", "tipo",
+                "chip", "tipo_chip", "accesorio", "cantidad", "cantidad_accesorio"
+            ]
+        )
+        st.dataframe(ventas_limpias.astype(str), use_container_width=True)
 
-        tab_general, tab_imei = st.tabs(["📋 Vista general", "📱 Buscar marca / IMEI"])
+        st.subheader("🗑 Eliminar venta")
 
-        with tab_general:
-            st.subheader("📋 Vista general de ventas")
+        ventas_para_borrar = ventas.copy()
+        ventas_para_borrar["orden"] = ventas_para_borrar["orden"].astype(str)
 
-            ventas_mostrar_general = ventas_base.drop(columns=["fecha_dt"], errors="ignore").copy()
-            ventas_mostrar_general = preparar_fecha_hora(ventas_mostrar_general)
-            ventas_mostrar_general = ventas_mostrar_general.replace({"None": "", "nan": "", "NaN": ""})
-            ventas_mostrar_general = ordenar_columnas_existentes(
-                ventas_mostrar_general,
-                [
-                    "fecha", "hora", "vendedor", "orden", "imei", "chip", "tipo_chip",
-                    "marca", "modelo", "color", "tipo", "sku",
-                    "accesorio", "accesorio_sku", "cantidad", "cantidad_accesorio"
-                ]
+        ordenes_disponibles = sorted(
+            [o for o in ventas_para_borrar["orden"].dropna().unique() if o.strip() != ""]
+        )
+
+        if not ordenes_disponibles:
+            st.info("No hay órdenes disponibles para eliminar.")
+        else:
+            orden_eliminar = st.selectbox(
+                "Selecciona la orden que quieres eliminar",
+                ordenes_disponibles
             )
 
-            st.dataframe(ventas_mostrar_general.astype(str), use_container_width=True)
+            venta_seleccionada = ventas_para_borrar[
+                ventas_para_borrar["orden"].astype(str) == str(orden_eliminar)
+            ]
 
-            st.divider()
-            st.subheader("🗑 Eliminar venta")
+            st.warning("Revisa bien antes de eliminar. Esta acción borra la venta seleccionada de Supabase.")
+            venta_preview = preparar_fecha_hora(venta_seleccionada.copy())
+            st.dataframe(venta_preview.astype(str), use_container_width=True)
 
-            ventas_para_borrar = ventas.copy()
-            ventas_para_borrar["orden"] = ventas_para_borrar["orden"].astype(str)
+            confirmar = st.checkbox("Confirmo que quiero eliminar esta orden")
 
-            ordenes_disponibles = sorted(
-                [o for o in ventas_para_borrar["orden"].dropna().unique() if o.strip() != ""]
-            )
-
-            if not ordenes_disponibles:
-                st.info("No hay órdenes disponibles para eliminar.")
-            else:
-                orden_eliminar = st.selectbox(
-                    "Selecciona la orden que quieres eliminar",
-                    ordenes_disponibles
-                )
-
-                venta_seleccionada = ventas_para_borrar[
-                    ventas_para_borrar["orden"].astype(str) == str(orden_eliminar)
-                ]
-
-                st.warning("Revisa bien antes de eliminar. Esta acción borra la venta seleccionada de Supabase.")
-                venta_preview = preparar_fecha_hora(venta_seleccionada.copy())
-                st.dataframe(venta_preview.astype(str), use_container_width=True)
-
-                confirmar = st.checkbox("Confirmo que quiero eliminar esta orden")
-
-                if st.button("Eliminar venta"):
-                    if not confirmar:
-                        st.error("Primero marca la confirmación para evitar borrar por error.")
+            if st.button("Eliminar venta"):
+                if not confirmar:
+                    st.error("Primero marca la confirmación para evitar borrar por error.")
+                else:
+                    if "id" in venta_seleccionada.columns and str(venta_seleccionada.iloc[0].get("id", "")).strip() != "":
+                        venta_id = venta_seleccionada.iloc[0]["id"]
+                        eliminar_registro("ventas", venta_id)
                     else:
-                        if "id" in venta_seleccionada.columns and str(venta_seleccionada.iloc[0].get("id", "")).strip() != "":
-                            venta_id = venta_seleccionada.iloc[0]["id"]
-                            eliminar_registro("ventas", venta_id)
-                        else:
-                            supabase.table("ventas").delete().eq("orden", orden_eliminar).execute()
+                        supabase.table("ventas").delete().eq("orden", orden_eliminar).execute()
 
-                        st.success("Venta eliminada correctamente ✅")
-                        st.rerun()
+                    st.success("Venta eliminada correctamente ✅")
+                    st.rerun()
 
-        with tab_imei:
-            st.subheader("📱 Buscar marca / IMEI")
+elif menu == "📱 Buscar IMEI":
+    st.title("📱 Buscar IMEI por Marca y Fecha")
 
-            st.info(
-                "Usa esta vista para pedir IMEI vendidos por rango de fechas y marca. "
-                "Ejemplo: del 03 al 16, marca SAMSUNG."
-            )
+    if ventas.empty:
+        st.info("No hay ventas registradas.")
+    else:
+        ventas_imei_base = ventas.copy()
+        ventas_imei_base["fecha_dt"] = pd.to_datetime(ventas_imei_base["fecha"], errors="coerce")
+        ventas_imei_base["cantidad"] = pd.to_numeric(ventas_imei_base["cantidad"], errors="coerce").fillna(0).astype(int)
 
-            fechas_validas = ventas_base["fecha_dt"].dropna()
-            if not fechas_validas.empty:
-                fecha_min = fechas_validas.min().date()
-                fecha_max = fechas_validas.max().date()
-            else:
-                fecha_min = pd.Timestamp.today().date()
-                fecha_max = pd.Timestamp.today().date()
+        st.markdown("""
+        <div class="glass-primary">
+            <h3>📲 Reporte para promotores</h3>
+            <p>Filtra por rango de fechas y marca para obtener orden e IMEI de equipos vendidos.</p>
+        </div>
+        """, unsafe_allow_html=True)
 
-            c1, c2, c3 = st.columns(3)
-            fecha_desde = c1.date_input("Fecha inicio", value=fecha_min, key="imei_fecha_inicio")
-            fecha_hasta = c2.date_input("Fecha fin", value=fecha_max, key="imei_fecha_fin")
+        fechas_validas = ventas_imei_base["fecha_dt"].dropna()
+        if not fechas_validas.empty:
+            fecha_min = fechas_validas.min().date()
+            fecha_max = fechas_validas.max().date()
+        else:
+            fecha_min = pd.Timestamp.today().date()
+            fecha_max = pd.Timestamp.today().date()
 
-            marcas = sorted([m for m in ventas_base["marca"].astype(str).unique() if m.strip() != ""])
-            marca_sel = c3.selectbox("Marca", ["TODAS"] + marcas, key="imei_marca")
+        c1, c2, c3 = st.columns(3)
+        fecha_desde = c1.date_input("Fecha inicio", value=fecha_min)
+        fecha_hasta = c2.date_input("Fecha fin", value=fecha_max)
 
-            ventas_imei = ventas_base[
-                (ventas_base["fecha_dt"].dt.date >= fecha_desde) &
-                (ventas_base["fecha_dt"].dt.date <= fecha_hasta)
-            ]
+        marcas = sorted([m for m in ventas_imei_base["marca"].astype(str).unique() if m.strip() != ""])
+        marca_sel = c3.selectbox("Marca", ["TODAS"] + marcas)
 
-            # Solo equipos vendidos
-            ventas_imei = ventas_imei[ventas_imei["cantidad"] > 0]
+        resultado_imei = ventas_imei_base[
+            (ventas_imei_base["fecha_dt"].dt.date >= fecha_desde) &
+            (ventas_imei_base["fecha_dt"].dt.date <= fecha_hasta) &
+            (ventas_imei_base["cantidad"] > 0)
+        ]
 
-            if marca_sel != "TODAS":
-                ventas_imei = ventas_imei[ventas_imei["marca"] == marca_sel]
+        if marca_sel != "TODAS":
+            resultado_imei = resultado_imei[resultado_imei["marca"] == marca_sel]
 
-            ventas_imei = ventas_imei.sort_values(["fecha_dt", "marca", "modelo", "vendedor", "orden"])
+        resultado_imei = resultado_imei.sort_values(["fecha_dt", "marca", "modelo", "vendedor", "orden"])
 
-            st.divider()
+        st.divider()
 
-            m1, m2 = st.columns(2)
-            m1.metric("Órdenes encontradas", ventas_imei["orden"].nunique())
-            m2.metric("Equipos vendidos", int(ventas_imei["cantidad"].sum()))
+        m1, m2 = st.columns(2)
+        m1.metric("Órdenes encontradas", resultado_imei["orden"].nunique())
+        m2.metric("Equipos vendidos", int(resultado_imei["cantidad"].sum()))
 
-            columnas_imei = [
-                "fecha", "hora", "marca", "modelo", "vendedor", "orden", "imei"
-            ]
+        vista_imei = resultado_imei.drop(columns=["fecha_dt"], errors="ignore").copy()
+        vista_imei = preparar_fecha_hora(vista_imei)
+        vista_imei = ordenar_columnas_existentes(
+            vista_imei,
+            ["fecha", "hora", "marca", "modelo", "color", "tipo", "vendedor", "orden", "imei"]
+        )
+        vista_imei = vista_imei[
+            [c for c in ["fecha", "hora", "marca", "modelo", "color", "tipo", "vendedor", "orden", "imei"] if c in vista_imei.columns]
+        ]
+        vista_imei = vista_imei.replace({"None": "", "nan": "", "NaN": ""})
 
-            vista_imei = ventas_imei.drop(columns=["fecha_dt"], errors="ignore").copy()
-            vista_imei = preparar_fecha_hora(vista_imei)
-            vista_imei = vista_imei.replace({"None": "", "nan": "", "NaN": ""})
-            vista_imei = ordenar_columnas_existentes(vista_imei, columnas_imei)
+        st.dataframe(vista_imei.astype(str), use_container_width=True)
 
-            st.dataframe(vista_imei.astype(str), use_container_width=True)
-
-            csv_imei = vista_imei.to_csv(index=False).encode("utf-8-sig")
-            st.download_button(
-                "📥 Descargar IMEI filtrados",
-                data=csv_imei,
-                file_name="imei_filtrados_por_marca.csv",
-                mime="text/csv"
-            )
+        csv_imei = vista_imei.to_csv(index=False).encode("utf-8-sig")
+        st.download_button(
+            "📥 Descargar reporte IMEI",
+            data=csv_imei,
+            file_name="reporte_imei_por_marca_fecha.csv",
+            mime="text/csv"
+        )
 
 # =========================
 # EDITAR VENTA
 # =========================
+
 
 elif menu == "✏️ Editar Venta":
     st.title("✏️ Editar Venta")
