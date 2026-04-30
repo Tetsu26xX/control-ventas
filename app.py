@@ -1,4 +1,5 @@
 import streamlit as st
+import os
 import pandas as pd
 import matplotlib.pyplot as plt
 import streamlit.components.v1 as components
@@ -29,95 +30,59 @@ supabase = create_client(url, key)
 # LOGIN
 # =========================
 if "login_ok" not in st.session_state:
-    st.session_state["login_ok"] = False
-
-def login():
-    fondo_login = get_base64_image("assets/fondo_menu.png")
-    mascota_login = get_base64_image("assets/mascota_dashboard.png")
-    mascot_html = "<img class='login-mascot' src='data:image/png;base64," + mascota_login + "'>" if mascota_login else ""
-
-    login_html = """
+    st.session_state["login_ok"]def login():
+    st.markdown("""
     <style>
-    .login-page {
-        min-height: 82vh;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        padding: 26px;
+    .login-wrapper {
+        padding: 28px;
+        border-radius: 32px;
         background:
             radial-gradient(circle at 18% 15%, rgba(0, 170, 255, 0.34), transparent 30%),
             radial-gradient(circle at 82% 80%, rgba(255, 45, 80, 0.32), transparent 32%),
             linear-gradient(135deg, #10243d 0%, #123a66 42%, #35275e 72%, #751f35 100%);
-        border-radius: 32px;
         box-shadow: 0 24px 80px rgba(0,0,0,0.38);
+        margin-top: 10px;
+        margin-bottom: 18px;
     }
-    .login-box {
-        width: min(1120px, 98%);
-        min-height: 560px;
-        display: grid;
-        grid-template-columns: 1.12fr 0.88fr;
-        overflow: hidden;
-        border-radius: 22px;
-        box-shadow: 0 30px 90px rgba(0,0,0,0.35);
-        border: 1px solid rgba(255,255,255,0.20);
-        backdrop-filter: blur(18px);
-    }
-    .login-left {
-        position: relative;
-        padding: 52px 48px;
+    .login-card-left {
+        min-height: 520px;
+        border-radius: 24px;
+        padding: 34px;
+        background:
+            linear-gradient(135deg, rgba(0, 73, 150, 0.52), rgba(227, 6, 19, 0.38));
+        border: 1px solid rgba(255,255,255,0.22);
+        box-shadow: inset 0 0 55px rgba(0,0,0,0.20);
         color: white;
-        background:
-            linear-gradient(135deg, rgba(0, 73, 150, 0.70), rgba(227, 6, 19, 0.50)),
-            url("data:image/png;base64,__FONDO_LOGIN__");
-        background-size: cover;
-        background-position: center;
-        display: flex;
-        flex-direction: column;
-        justify-content: space-between;
     }
-    .login-left::after {
-        content: "";
-        position: absolute;
-        inset: 0;
-        background:
-            radial-gradient(circle at 70% 28%, rgba(255,255,255,0.18), transparent 16%),
-            linear-gradient(135deg, transparent 0%, rgba(255,255,255,0.08) 100%);
-        pointer-events: none;
+    .login-card-right {
+        min-height: 520px;
+        border-radius: 24px;
+        padding: 34px;
+        background: rgba(255,255,255,0.12);
+        border: 1px solid rgba(255,255,255,0.24);
+        backdrop-filter: blur(18px);
+        -webkit-backdrop-filter: blur(18px);
+        box-shadow: 0 18px 50px rgba(0,0,0,0.26);
+        color: white;
     }
-    .login-brand, .login-features {
-        position: relative;
-        z-index: 1;
-    }
-    .login-brand h1 {
+    .login-title {
         font-size: 44px;
         line-height: 1.04;
-        margin: 0 0 12px 0;
-        color: white;
         font-weight: 1000;
+        color: white;
+        margin-bottom: 12px;
         text-shadow: 0 14px 30px rgba(0,0,0,0.28);
     }
-    .login-brand p {
+    .login-subtitle {
         font-size: 16px;
-        max-width: 570px;
         color: rgba(255,255,255,0.92);
-        margin: 0;
+        margin-bottom: 24px;
     }
-    .login-mascot {
-        position: absolute;
-        right: 24px;
-        bottom: 105px;
-        width: 132px;
-        opacity: 0.92;
-        filter: drop-shadow(0 18px 28px rgba(0,0,0,0.35));
-        animation: floatLogin 2.6s ease-in-out infinite;
-        z-index: 2;
-    }
-    .login-features {
+    .feature-grid {
         display: grid;
         grid-template-columns: repeat(2, minmax(0, 1fr));
         gap: 12px;
-        max-width: 560px;
-        margin-top: 26px;
+        margin-top: 22px;
     }
     .feature-card {
         background: rgba(255,255,255,0.13);
@@ -125,7 +90,6 @@ def login():
         border-radius: 18px;
         padding: 14px;
         backdrop-filter: blur(10px);
-        box-shadow: 0 10px 24px rgba(0,0,0,0.16);
         transition: all 0.25s ease;
     }
     .feature-card:hover {
@@ -143,141 +107,86 @@ def login():
         font-size: 12px;
         color: rgba(255,255,255,0.86);
     }
-    .login-right {
-        background:
-            radial-gradient(circle at top right, rgba(0, 170, 255, 0.18), transparent 28%),
-            linear-gradient(145deg, rgba(255,255,255,0.20), rgba(255,255,255,0.08));
-        padding: 58px 48px;
-        display: flex;
-        flex-direction: column;
-        justify-content: center;
-        border-left: 1px solid rgba(255,255,255,0.18);
-        backdrop-filter: blur(22px);
-    }
-    .login-right h2 {
+    .login-form-title {
+        text-align: center;
         color: white;
-        text-align: center;
-        font-size: 20px;
-        letter-spacing: 1.8px;
-        text-transform: uppercase;
-        margin: 0 0 12px 0;
+        font-size: 22px;
         font-weight: 1000;
-        text-shadow: 0 8px 22px rgba(0,0,0,0.25);
+        letter-spacing: 1px;
+        text-transform: uppercase;
+        margin-bottom: 6px;
     }
-    .login-hint {
-        color: rgba(255,255,255,0.82);
+    .login-form-subtitle {
         text-align: center;
+        color: rgba(255,255,255,0.82);
         font-size: 13px;
-        margin-bottom: 20px;
+        margin-bottom: 22px;
     }
-    @keyframes floatLogin {
-        0% { transform: translateY(0px) rotate(-2deg); }
-        50% { transform: translateY(-9px) rotate(2deg); }
-        100% { transform: translateY(0px) rotate(-2deg); }
+    [data-testid="stSidebar"] details {
+        animation: menuFadeIn 0.55s ease both;
     }
-    @media (max-width: 900px) {
-        .login-box { grid-template-columns: 1fr; }
-        .login-left { min-height: 360px; padding: 34px 28px; }
-        .login-right { padding: 34px 28px; }
-        .login-brand h1 { font-size: 34px; }
-        .login-mascot { width: 96px; bottom: 118px; }
+    @keyframes menuFadeIn {
+        from { opacity: 0; transform: translateX(-14px) translateY(6px); }
+        to { opacity: 1; transform: translateX(0) translateY(0); }
     }
-    
-/* =========================
-   FONDO Y MENÚ PREMIUM ANIMADO
-   ========================= */
-.stApp {
-    background:
-        radial-gradient(circle at top left, rgba(0, 87, 168, 0.42), transparent 32%),
-        radial-gradient(circle at top right, rgba(227, 6, 19, 0.30), transparent 28%),
-        linear-gradient(135deg, #10243d 0%, #13365b 42%, #1d2538 72%, #2b1118 100%) !important;
-}
-
-[data-testid="stSidebar"] details {
-    animation: menuFadeIn 0.55s ease both;
-}
-
-[data-testid="stSidebar"] details:nth-of-type(1) { animation-delay: 0.04s; }
-[data-testid="stSidebar"] details:nth-of-type(2) { animation-delay: 0.08s; }
-[data-testid="stSidebar"] details:nth-of-type(3) { animation-delay: 0.12s; }
-[data-testid="stSidebar"] details:nth-of-type(4) { animation-delay: 0.16s; }
-[data-testid="stSidebar"] details:nth-of-type(5) { animation-delay: 0.20s; }
-
-@keyframes menuFadeIn {
-    from {
-        opacity: 0;
-        transform: translateX(-14px) translateY(6px);
+    [data-testid="stSidebar"] .stButton > button {
+        background: rgba(255,255,255,0.10) !important;
+        color: white !important;
+        border: 1px solid rgba(255,255,255,0.18) !important;
+        box-shadow: 0 6px 18px rgba(0,0,0,0.10) !important;
+        text-align: left !important;
+        justify-content: flex-start !important;
+        margin: 4px 0 !important;
+        border-radius: 14px !important;
+        font-weight: 850 !important;
+        opacity: 0.88;
+        transition: all 0.24s ease !important;
     }
-    to {
+    [data-testid="stSidebar"] .stButton > button:hover {
         opacity: 1;
-        transform: translateX(0) translateY(0);
+        transform: translateX(5px) translateY(-2px) scale(1.015) !important;
+        background: linear-gradient(135deg, rgba(0, 170, 255, 0.24), rgba(255, 45, 45, 0.18)) !important;
+        box-shadow: 0 12px 25px rgba(0, 170, 255, 0.22), 0 7px 18px rgba(255, 45, 45, 0.16) !important;
+        border: 1px solid rgba(255,255,255,0.32) !important;
     }
-}
+    </style>
+    """, unsafe_allow_html=True)
 
-[data-testid="stSidebar"] .stButton > button {
-    background: rgba(255,255,255,0.10) !important;
-    color: white !important;
-    border: 1px solid rgba(255,255,255,0.18) !important;
-    box-shadow: 0 6px 18px rgba(0,0,0,0.10) !important;
-    text-align: left !important;
-    justify-content: flex-start !important;
-    margin: 4px 0 !important;
-    border-radius: 14px !important;
-    font-weight: 850 !important;
-    opacity: 0.88;
-    transition: all 0.24s ease !important;
-}
+    st.markdown('<div class="login-wrapper">', unsafe_allow_html=True)
 
-[data-testid="stSidebar"] .stButton > button:hover {
-    opacity: 1;
-    transform: translateX(5px) translateY(-2px) scale(1.015) !important;
-    background: linear-gradient(135deg, rgba(0, 170, 255, 0.24), rgba(255, 45, 45, 0.18)) !important;
-    box-shadow: 0 12px 25px rgba(0, 170, 255, 0.22), 0 7px 18px rgba(255, 45, 45, 0.16) !important;
-    border: 1px solid rgba(255,255,255,0.32) !important;
-}
+    col_left, col_right = st.columns([1.15, 0.85], gap="large")
 
-[data-testid="stSidebar"] .stButton > button:active {
-    transform: translateX(2px) scale(0.98) !important;
-}
+    with col_left:
+        st.markdown("""
+        <div class="login-card-left">
+            <div class="login-title">Control<br>Ventas</div>
+            <div class="login-subtitle">
+                Sistema para registrar ventas, controlar stock, revisar rankings y consultar IMEI por marca y fecha.
+            </div>
+        """, unsafe_allow_html=True)
 
-.glass-primary, .glass-card, div[data-testid="stMetric"] {
-    transition: all 0.24s ease;
-}
-.glass-primary:hover, .glass-card:hover, div[data-testid="stMetric"]:hover {
-    transform: translateY(-3px);
-    box-shadow: 0 14px 30px rgba(0,170,255,0.12), 0 8px 22px rgba(255,45,80,0.10);
-}
+        img_col1, img_col2, img_col3 = st.columns([1, 1.1, 1])
+        with img_col2:
+            if os.path.exists("assets/mascota_dashboard.png"):
+                st.image("assets/mascota_dashboard.png", use_container_width=True)
 
-</style>
-
-    <div class="login-page">
-      <div class="login-box">
-        <div class="login-left">
-          <div class="login-brand">
-            <h1>Control<br>Ventas</h1>
-            <p>Sistema para registrar ventas, controlar stock, revisar rankings y consultar IMEI por marca y fecha.</p>
-          </div>
-          __MASCOTA__
-          <div class="login-features">
-            <div class="feature-card"><b>📊 Ranking</b><span>Seguimiento por marca y vendedor</span></div>
-            <div class="feature-card"><b>🧾 Ventas</b><span>Órdenes, chips, equipos y accesorios</span></div>
-            <div class="feature-card"><b>📦 Stock</b><span>Ingresos, salidas y disponibilidad</span></div>
-            <div class="feature-card"><b>📱 IMEI</b><span>Reporte rápido para promotores</span></div>
-          </div>
+        st.markdown("""
+            <div class="feature-grid">
+                <div class="feature-card"><b>📊 Ranking</b><span>Seguimiento por marca y vendedor</span></div>
+                <div class="feature-card"><b>🧾 Ventas</b><span>Órdenes, chips, equipos y accesorios</span></div>
+                <div class="feature-card"><b>📦 Stock</b><span>Ingresos, salidas y disponibilidad</span></div>
+                <div class="feature-card"><b>📱 IMEI</b><span>Reporte rápido para promotores</span></div>
+            </div>
         </div>
-        <div class="login-right">
-          <h2>User Login</h2>
-          <div class="login-hint">Ingresa con tu usuario asignado</div>
-        </div>
-      </div>
-    </div>
-    """
+        """, unsafe_allow_html=True)
 
-    login_html = login_html.replace("__FONDO_LOGIN__", fondo_login).replace("__MASCOTA__", mascot_html)
-    st.markdown(login_html, unsafe_allow_html=True)
+    with col_right:
+        st.markdown("""
+        <div class="login-card-right">
+            <div class="login-form-title">User Login</div>
+            <div class="login-form-subtitle">Ingresa con tu usuario asignado</div>
+        """, unsafe_allow_html=True)
 
-    c1, c2, c3 = st.columns([1.2, 1, 1.2])
-    with c2:
         usuario = st.text_input("Usuario", placeholder="Usuario").strip().upper()
         password = st.text_input("Contraseña", type="password", placeholder="Contraseña").strip()
 
@@ -297,6 +206,11 @@ def login():
                     st.error("Contraseña incorrecta o usuario inactivo.")
             else:
                 st.error("Usuario no existe.")
+
+        st.markdown("</div>", unsafe_allow_html=True)
+
+    st.markdown("</div>", unsafe_allow_html=True)
+existe.")
 
 if not st.session_state["login_ok"]:
     login()
@@ -859,7 +773,6 @@ def boton_menu(texto):
 with st.sidebar.expander("✨ Principal", expanded=True):
     boton_menu("📊 Dashboard")
     boton_menu("🧾 Registrar Orden")
-    boton_menu("📌 Instrucciones")
     boton_menu("📌 Instrucciones")
 
 with st.sidebar.expander("🛒 Gestión de Venta", expanded=False):
