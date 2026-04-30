@@ -34,91 +34,141 @@ if "login_ok" not in st.session_state:
 def login():
     fondo_login = get_base64_image("assets/fondo_menu.png")
     mascota_login = get_base64_image("assets/mascota_dashboard.png")
-    img_html = "<img src='data:image/png;base64," + mascota_login + "'>" if mascota_login else ""
+    mascot_html = "<img class='login-mascot' src='data:image/png;base64," + mascota_login + "'>" if mascota_login else ""
 
     login_html = """
     <style>
-    .login-wrap {
-        min-height: 68vh;
-        border-radius: 34px;
+    .login-page {
+        min-height: 82vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
         padding: 26px;
         background:
-            radial-gradient(circle at top left, rgba(0, 212, 255, 0.22), transparent 28%),
-            radial-gradient(circle at bottom right, rgba(255, 49, 49, 0.22), transparent 30%),
-            linear-gradient(135deg, #102b4d 0%, #133d66 42%, #201d35 72%, #39151f 100%);
-        box-shadow: 0 25px 70px rgba(0,0,0,0.42);
-        display: grid;
-        grid-template-columns: 0.95fr 1.05fr;
-        gap: 22px;
-        align-items: center;
-        overflow: hidden;
+            radial-gradient(circle at 18% 15%, rgba(0, 170, 255, 0.34), transparent 30%),
+            radial-gradient(circle at 82% 80%, rgba(255, 45, 80, 0.32), transparent 32%),
+            linear-gradient(135deg, #10243d 0%, #123a66 42%, #35275e 72%, #751f35 100%);
+        border-radius: 32px;
+        box-shadow: 0 24px 80px rgba(0,0,0,0.38);
     }
-    .login-visual {
-        min-height: 390px;
-        border-radius: 28px;
+    .login-box {
+        width: min(1120px, 98%);
+        min-height: 560px;
+        display: grid;
+        grid-template-columns: 1.12fr 0.88fr;
+        overflow: hidden;
+        border-radius: 22px;
+        box-shadow: 0 30px 90px rgba(0,0,0,0.35);
+        border: 1px solid rgba(255,255,255,0.20);
+        backdrop-filter: blur(18px);
+    }
+    .login-left {
+        position: relative;
+        padding: 52px 48px;
+        color: white;
         background:
-            linear-gradient(135deg, rgba(0,30,65,0.20), rgba(227,6,19,0.14)),
+            linear-gradient(135deg, rgba(0, 73, 150, 0.70), rgba(227, 6, 19, 0.50)),
             url("data:image/png;base64,__FONDO_LOGIN__");
         background-size: cover;
         background-position: center;
-        border: 1px solid rgba(255,255,255,0.24);
-        box-shadow: inset 0 0 50px rgba(0,0,0,0.20);
         display: flex;
-        align-items: flex-end;
-        justify-content: center;
-        padding: 20px;
+        flex-direction: column;
+        justify-content: space-between;
     }
-    .login-visual img {
-        width: 115px;
-        opacity: 0.90;
-        animation: floatLogin 2.5s ease-in-out infinite;
-        filter: drop-shadow(0 14px 24px rgba(0,0,0,0.38));
+    .login-left::after {
+        content: "";
+        position: absolute;
+        inset: 0;
+        background:
+            radial-gradient(circle at 70% 28%, rgba(255,255,255,0.18), transparent 16%),
+            linear-gradient(135deg, transparent 0%, rgba(255,255,255,0.08) 100%);
+        pointer-events: none;
     }
-    .login-panel {
-        background: rgba(255,255,255,0.11);
-        border: 1px solid rgba(255,255,255,0.25);
-        backdrop-filter: blur(20px);
-        -webkit-backdrop-filter: blur(20px);
-        border-radius: 28px;
-        padding: 28px;
-        box-shadow: 0 18px 55px rgba(0,0,0,0.32);
+    .login-brand, .login-features {
+        position: relative;
+        z-index: 1;
     }
-    .login-title {
-        font-size: 34px;
-        font-weight: 1000;
+    .login-brand h1 {
+        font-size: 44px;
+        line-height: 1.04;
+        margin: 0 0 12px 0;
         color: white;
-        margin: 0 0 8px 0;
-        text-shadow: 0 0 20px rgba(255,255,255,0.28);
+        font-weight: 1000;
+        text-shadow: 0 14px 30px rgba(0,0,0,0.28);
     }
-    .login-subtitle {
+    .login-brand p {
+        font-size: 16px;
+        max-width: 570px;
         color: rgba(255,255,255,0.92);
-        font-size: 15px;
-        margin-bottom: 22px;
+        margin: 0;
     }
-    .feature-grid {
+    .login-mascot {
+        position: absolute;
+        right: 24px;
+        bottom: 105px;
+        width: 132px;
+        opacity: 0.92;
+        filter: drop-shadow(0 18px 28px rgba(0,0,0,0.35));
+        animation: floatLogin 2.6s ease-in-out infinite;
+        z-index: 2;
+    }
+    .login-features {
         display: grid;
-        grid-template-columns: repeat(4, 1fr);
-        gap: 10px;
-        margin-top: 18px;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 12px;
+        max-width: 560px;
+        margin-top: 26px;
     }
     .feature-card {
-        background: rgba(255,255,255,0.10);
-        border: 1px solid rgba(255,255,255,0.18);
+        background: rgba(255,255,255,0.13);
+        border: 1px solid rgba(255,255,255,0.22);
         border-radius: 18px;
-        padding: 12px;
-        color: white;
-        text-align: center;
-        min-height: 78px;
+        padding: 14px;
+        backdrop-filter: blur(10px);
+        box-shadow: 0 10px 24px rgba(0,0,0,0.16);
+        transition: all 0.25s ease;
+    }
+    .feature-card:hover {
+        transform: translateY(-4px);
+        background: rgba(255,255,255,0.18);
+        box-shadow: 0 14px 30px rgba(0,170,255,0.18), 0 8px 22px rgba(255,45,80,0.14);
     }
     .feature-card b {
         display: block;
+        font-size: 15px;
         color: white;
-        font-size: 14px;
         margin-bottom: 4px;
     }
     .feature-card span {
-        font-size: 11px;
-        opacity: 0.86;
+        font-size: 12px;
+        color: rgba(255,255,255,0.86);
+    }
+    .login-right {
+        background:
+            radial-gradient(circle at top right, rgba(0, 170, 255, 0.18), transparent 28%),
+            linear-gradient(145deg, rgba(255,255,255,0.20), rgba(255,255,255,0.08));
+        padding: 58px 48px;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        border-left: 1px solid rgba(255,255,255,0.18);
+        backdrop-filter: blur(22px);
+    }
+    .login-right h2 {
+        color: white;
+        text-align: center;
+        font-size: 20px;
+        letter-spacing: 1.8px;
+        text-transform: uppercase;
+        margin: 0 0 12px 0;
+        font-weight: 1000;
+        text-shadow: 0 8px 22px rgba(0,0,0,0.25);
+    }
+    .login-hint {
+        color: rgba(255,255,255,0.82);
+        text-align: center;
+        font-size: 13px;
+        margin-bottom: 20px;
     }
     @keyframes floatLogin {
         0% { transform: translateY(0px) rotate(-2deg); }
@@ -126,52 +176,127 @@ def login():
         100% { transform: translateY(0px) rotate(-2deg); }
     }
     @media (max-width: 900px) {
-        .login-wrap { grid-template-columns: 1fr; }
-        .login-visual { min-height: 220px; }
-        .feature-grid { grid-template-columns: repeat(2, 1fr); }
+        .login-box { grid-template-columns: 1fr; }
+        .login-left { min-height: 360px; padding: 34px 28px; }
+        .login-right { padding: 34px 28px; }
+        .login-brand h1 { font-size: 34px; }
+        .login-mascot { width: 96px; bottom: 118px; }
     }
-    </style>
+    
+/* =========================
+   FONDO Y MENÚ PREMIUM ANIMADO
+   ========================= */
+.stApp {
+    background:
+        radial-gradient(circle at top left, rgba(0, 87, 168, 0.42), transparent 32%),
+        radial-gradient(circle at top right, rgba(227, 6, 19, 0.30), transparent 28%),
+        linear-gradient(135deg, #10243d 0%, #13365b 42%, #1d2538 72%, #2b1118 100%) !important;
+}
 
-    <div class="login-wrap">
-        <div class="login-visual">
-            __IMG_LOGIN__
+[data-testid="stSidebar"] details {
+    animation: menuFadeIn 0.55s ease both;
+}
+
+[data-testid="stSidebar"] details:nth-of-type(1) { animation-delay: 0.04s; }
+[data-testid="stSidebar"] details:nth-of-type(2) { animation-delay: 0.08s; }
+[data-testid="stSidebar"] details:nth-of-type(3) { animation-delay: 0.12s; }
+[data-testid="stSidebar"] details:nth-of-type(4) { animation-delay: 0.16s; }
+[data-testid="stSidebar"] details:nth-of-type(5) { animation-delay: 0.20s; }
+
+@keyframes menuFadeIn {
+    from {
+        opacity: 0;
+        transform: translateX(-14px) translateY(6px);
+    }
+    to {
+        opacity: 1;
+        transform: translateX(0) translateY(0);
+    }
+}
+
+[data-testid="stSidebar"] .stButton > button {
+    background: rgba(255,255,255,0.10) !important;
+    color: white !important;
+    border: 1px solid rgba(255,255,255,0.18) !important;
+    box-shadow: 0 6px 18px rgba(0,0,0,0.10) !important;
+    text-align: left !important;
+    justify-content: flex-start !important;
+    margin: 4px 0 !important;
+    border-radius: 14px !important;
+    font-weight: 850 !important;
+    opacity: 0.88;
+    transition: all 0.24s ease !important;
+}
+
+[data-testid="stSidebar"] .stButton > button:hover {
+    opacity: 1;
+    transform: translateX(5px) translateY(-2px) scale(1.015) !important;
+    background: linear-gradient(135deg, rgba(0, 170, 255, 0.24), rgba(255, 45, 45, 0.18)) !important;
+    box-shadow: 0 12px 25px rgba(0, 170, 255, 0.22), 0 7px 18px rgba(255, 45, 45, 0.16) !important;
+    border: 1px solid rgba(255,255,255,0.32) !important;
+}
+
+[data-testid="stSidebar"] .stButton > button:active {
+    transform: translateX(2px) scale(0.98) !important;
+}
+
+.glass-primary, .glass-card, div[data-testid="stMetric"] {
+    transition: all 0.24s ease;
+}
+.glass-primary:hover, .glass-card:hover, div[data-testid="stMetric"]:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 14px 30px rgba(0,170,255,0.12), 0 8px 22px rgba(255,45,80,0.10);
+}
+
+</style>
+
+    <div class="login-page">
+      <div class="login-box">
+        <div class="login-left">
+          <div class="login-brand">
+            <h1>Control<br>Ventas</h1>
+            <p>Sistema para registrar ventas, controlar stock, revisar rankings y consultar IMEI por marca y fecha.</p>
+          </div>
+          __MASCOTA__
+          <div class="login-features">
+            <div class="feature-card"><b>📊 Ranking</b><span>Seguimiento por marca y vendedor</span></div>
+            <div class="feature-card"><b>🧾 Ventas</b><span>Órdenes, chips, equipos y accesorios</span></div>
+            <div class="feature-card"><b>📦 Stock</b><span>Ingresos, salidas y disponibilidad</span></div>
+            <div class="feature-card"><b>📱 IMEI</b><span>Reporte rápido para promotores</span></div>
+          </div>
         </div>
-        <div class="login-panel">
-            <h1 class="login-title">Control Ventas</h1>
-            <div class="login-subtitle">Ventas, ranking, stock, traslados y reportes IMEI en un solo lugar.</div>
-            <div class="feature-grid">
-                <div class="feature-card"><b>📊 Ranking</b><span>Seguimiento por marca y vendedor</span></div>
-                <div class="feature-card"><b>🧾 Ventas</b><span>Órdenes, equipos, chips y accesorios</span></div>
-                <div class="feature-card"><b>📦 Stock</b><span>Disponibilidad e ingresos</span></div>
-                <div class="feature-card"><b>🚚 Traslados</b><span>Salidas e ingresos controlados</span></div>
-            </div>
+        <div class="login-right">
+          <h2>User Login</h2>
+          <div class="login-hint">Ingresa con tu usuario asignado</div>
         </div>
+      </div>
     </div>
     """
 
-    login_html = login_html.replace("__FONDO_LOGIN__", fondo_login).replace("__IMG_LOGIN__", img_html)
+    login_html = login_html.replace("__FONDO_LOGIN__", fondo_login).replace("__MASCOTA__", mascot_html)
     st.markdown(login_html, unsafe_allow_html=True)
 
-    st.markdown("### 🔐 Iniciar sesión")
-    usuario = st.text_input("Usuario").strip().upper()
-    password = st.text_input("Contraseña", type="password").strip()
+    c1, c2, c3 = st.columns([1.2, 1, 1.2])
+    with c2:
+        usuario = st.text_input("Usuario", placeholder="Usuario").strip().upper()
+        password = st.text_input("Contraseña", type="password", placeholder="Contraseña").strip()
 
-    if st.button("Ingresar", use_container_width=True):
-        with st.spinner("Validando acceso..."):
-            data = supabase.table("usuarios").select("*").eq("usuario", usuario).execute().data
+        if st.button("Ingresar", use_container_width=True):
+            with st.spinner("Validando acceso..."):
+                data = supabase.table("usuarios").select("*").eq("usuario", usuario).execute().data
 
-        if data:
-            user = data[0]
-            if str(user.get("password", "")) == password and str(user.get("estado", "")).upper() == "ACTIVO":
-                st.session_state["login_ok"] = True
-                st.session_state["usuario"] = user.get("usuario", "")
-                st.session_state["rol"] = user.get("rol", "")
-                st.session_state["vendedor"] = user.get("vendedor", "")
-                st.rerun()
+            if data:
+                user = data[0]
+                if str(user.get("password", "")) == password and str(user.get("estado", "")).upper() == "ACTIVO":
+                    st.session_state["login_ok"] = True
+                    st.session_state["usuario"] = user.get("usuario", "")
+                    st.session_state["rol"] = user.get("rol", "")
+                    st.session_state["vendedor"] = user.get("vendedor", "")
+                    st.rerun()
+                else:
+                    st.error("Contraseña incorrecta o usuario inactivo.")
             else:
-                st.error("Contraseña incorrecta o usuario inactivo.")
-        else:
-            st.error("Usuario no existe.")
+                st.error("Usuario no existe.")
 
 if not st.session_state["login_ok"]:
     login()
@@ -734,6 +859,7 @@ def boton_menu(texto):
 with st.sidebar.expander("✨ Principal", expanded=True):
     boton_menu("📊 Dashboard")
     boton_menu("🧾 Registrar Orden")
+    boton_menu("📌 Instrucciones")
     boton_menu("📌 Instrucciones")
 
 with st.sidebar.expander("🛒 Gestión de Venta", expanded=False):
