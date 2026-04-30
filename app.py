@@ -1,4 +1,33 @@
 import streamlit as st
+# LOGIN
+if "login_ok" not in st.session_state:
+    st.session_state["login_ok"] = False
+
+def login():
+    st.title("🔐 Iniciar sesión")
+
+    usuario = st.text_input("Usuario")
+    password = st.text_input("Contraseña", type="password")
+
+    if st.button("Ingresar"):
+        data = supabase.table("usuarios").select("*").eq("usuario", usuario).execute().data
+
+        if data:
+            user = data[0]
+            if user["password"] == password and user["estado"] == "ACTIVO":
+                st.session_state["login_ok"] = True
+                st.session_state["usuario"] = user["usuario"]
+                st.session_state["rol"] = user["rol"]
+                st.session_state["vendedor"] = user["vendedor"]
+                st.rerun()
+            else:
+                st.error("Contraseña incorrecta")
+        else:
+            st.error("Usuario no existe")
+
+if not st.session_state["login_ok"]:
+    login()
+    st.stop()
 import pandas as pd
 import matplotlib.pyplot as plt
 import streamlit.components.v1 as components
