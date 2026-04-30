@@ -58,7 +58,7 @@ def login():
 
     .login-hero {
         position: relative;
-        min-height: 545px;
+        min-height: 520px;
         border-radius: 28px;
         overflow: hidden;
         padding: 42px 52px;
@@ -69,12 +69,6 @@ def login():
         border: 1px solid rgba(255,255,255,0.18);
         box-shadow: 0 28px 80px rgba(0,0,0,0.42);
         margin-top: 18px;
-    }
-
-    .login-left-content {
-        position: relative;
-        z-index: 2;
-        max-width: 620px;
     }
 
     .login-small {
@@ -114,7 +108,7 @@ def login():
         flex-wrap: wrap;
         margin-bottom: 20px;
         position: relative;
-        z-index: 4;
+        z-index: 5;
     }
 
     .login-feature-card {
@@ -149,10 +143,10 @@ def login():
 
     .login-mascot {
         position: absolute;
-        left: 120px;
-        bottom: 0px;
-        width: 350px;
-        max-width: 40vw;
+        left: 160px;
+        bottom: 8px;
+        width: 300px;
+        max-width: 34vw;
         filter: drop-shadow(0 20px 32px rgba(0,0,0,0.36));
         animation: floatMascot 3s ease-in-out infinite;
         z-index: 3;
@@ -164,50 +158,34 @@ def login():
         100% { transform: translateY(0px); }
     }
 
-    .login-form-box {
-        border-radius: 26px;
-        padding: 30px;
-        background: rgba(22, 16, 35, 0.76);
-        border: 1px solid rgba(255,255,255,0.18);
-        box-shadow:
-            0 24px 70px rgba(0,0,0,0.36),
-            inset 0 0 40px rgba(255,255,255,0.04);
-        backdrop-filter: blur(18px);
-        -webkit-backdrop-filter: blur(18px);
-        margin-top: 42px;
-    }
-
-    .login-form-title {
+    .login-title-right {
         color: white;
         text-align: center;
-        font-size: 28px;
+        font-size: 32px;
         font-weight: 1000;
+        margin-top: 96px;
         margin-bottom: 8px;
+        text-shadow: 0 18px 36px rgba(0,0,0,0.36);
     }
 
-    .login-form-subtitle {
-        color: rgba(255,255,255,0.72);
-        text-align: center;
-        font-size: 13px;
-        margin-bottom: 18px;
-    }
-
-    .login-safe {
-        margin-top: 14px;
-        text-align: center;
+    .login-sub-right {
         color: rgba(255,255,255,0.75);
-        font-size: 12px;
+        text-align: center;
+        font-size: 14px;
+        margin-bottom: 30px;
     }
 
     div[data-testid="stTextInput"] input {
-        background: rgba(255,255,255,0.12) !important;
-        border: 1px solid rgba(255,255,255,0.20) !important;
+        background: rgba(255,255,255,0.14) !important;
+        border: 1px solid rgba(255,255,255,0.22) !important;
         color: white !important;
         border-radius: 12px !important;
+        height: 46px !important;
     }
 
     div[data-testid="stTextInput"] label {
         color: rgba(255,255,255,0.90) !important;
+        font-weight: 800 !important;
     }
 
     .stButton > button {
@@ -216,12 +194,20 @@ def login():
         color: white !important;
         border: none !important;
         font-weight: 900 !important;
+        height: 48px !important;
         transition: all 0.25s ease !important;
     }
 
     .stButton > button:hover {
         transform: translateY(-2px);
         box-shadow: 0 12px 28px rgba(255, 45, 110, 0.28);
+    }
+
+    .login-safe {
+        margin-top: 18px;
+        text-align: center;
+        color: rgba(255,255,255,0.75);
+        font-size: 12px;
     }
 
     [data-testid="stSidebar"] details {
@@ -259,28 +245,26 @@ def login():
         .login-hero { padding: 28px; min-height: auto; }
         .login-main-title { font-size: 42px; }
         .login-mascot { position: relative; left: auto; bottom: auto; width: 230px; max-width: 80%; margin-top: 10px; }
-        .login-form-box { margin-top: 18px; }
+        .login-title-right { margin-top: 22px; }
     }
     </style>
     """, unsafe_allow_html=True)
 
-    col_left, col_right = st.columns([1.22, 0.78], gap="large")
+    col_left, col_right = st.columns([1.18, 0.82], gap="large")
 
     with col_left:
         left_html = """
         <div class="login-hero">
-            <div class="login-left-content">
-                <div class="login-small">Bienvenido a</div>
-                <div class="login-main-title">Control<br><span>Ventas</span></div>
-                <div class="login-desc">
-                    Sistema para registrar ventas, controlar stock, revisar rankings
-                    y consultar IMEI por marca y fecha.
-                </div>
-                <div class="login-feature-row">
-                    <div class="login-feature-card"><b>🧾 Ventas</b><span>Registra y consulta todas tus ventas</span></div>
-                    <div class="login-feature-card"><b>📦 Stock</b><span>Controla tu inventario</span></div>
-                    <div class="login-feature-card"><b>📊 Reportes</b><span>Ranking y estadísticas</span></div>
-                </div>
+            <div class="login-small">Bienvenido a</div>
+            <div class="login-main-title">Control<br><span>Ventas</span></div>
+            <div class="login-desc">
+                Sistema para registrar ventas, controlar stock, revisar rankings
+                y consultar IMEI por marca y fecha.
+            </div>
+            <div class="login-feature-row">
+                <div class="login-feature-card"><b>🧾 Ventas</b><span>Registra y consulta ventas</span></div>
+                <div class="login-feature-card"><b>📦 Stock</b><span>Controla tu inventario</span></div>
+                <div class="login-feature-card"><b>📊 Reportes</b><span>Ranking y estadísticas</span></div>
             </div>
             __MASCOTA__
         </div>
@@ -288,7 +272,7 @@ def login():
         st.markdown(left_html.replace("__MASCOTA__", mascota_html), unsafe_allow_html=True)
 
     with col_right:
-        st.markdown('<div class="login-form-box"><div class="login-form-title">🔐 Iniciar Sesión</div><div class="login-form-subtitle">Ingresa tus credenciales para continuar</div></div>', unsafe_allow_html=True)
+        st.markdown('<div class="login-title-right">🔐 Iniciar Sesión</div><div class="login-sub-right">Ingresa tus credenciales para continuar</div>', unsafe_allow_html=True)
 
         usuario = st.text_input("Usuario", placeholder="Usuario").strip().upper()
         password = st.text_input("Contraseña", type="password", placeholder="Contraseña").strip()
