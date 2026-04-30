@@ -1,33 +1,4 @@
 import streamlit as st
-# LOGIN
-if "login_ok" not in st.session_state:
-    st.session_state["login_ok"] = False
-
-def login():
-    st.title("🔐 Iniciar sesión")
-
-    usuario = st.text_input("Usuario")
-    password = st.text_input("Contraseña", type="password")
-
-    if st.button("Ingresar"):
-        data = supabase.table("usuarios").select("*").eq("usuario", usuario).execute().data
-
-        if data:
-            user = data[0]
-            if user["password"] == password and user["estado"] == "ACTIVO":
-                st.session_state["login_ok"] = True
-                st.session_state["usuario"] = user["usuario"]
-                st.session_state["rol"] = user["rol"]
-                st.session_state["vendedor"] = user["vendedor"]
-                st.rerun()
-            else:
-                st.error("Contraseña incorrecta")
-        else:
-            st.error("Usuario no existe")
-
-if not st.session_state["login_ok"]:
-    login()
-    st.stop()
 import pandas as pd
 import matplotlib.pyplot as plt
 import streamlit.components.v1 as components
@@ -42,6 +13,44 @@ st.set_page_config(page_title="Sistema Ventas", layout="wide")
 url = st.secrets["SUPABASE_URL"]
 key = st.secrets["SUPABASE_KEY"]
 supabase = create_client(url, key)
+
+# =========================
+# LOGIN
+# =========================
+if "login_ok" not in st.session_state:
+    st.session_state["login_ok"] = False
+
+def login():
+    st.markdown("""
+    <div class="glass-primary">
+        <h3>🔐 Iniciar sesión</h3>
+        <p>Ingresa con tu usuario para acceder al sistema.</p>
+    </div>
+    """, unsafe_allow_html=True)
+
+    usuario = st.text_input("Usuario").strip().upper()
+    password = st.text_input("Contraseña", type="password").strip()
+
+    if st.button("Ingresar"):
+        data = supabase.table("usuarios").select("*").eq("usuario", usuario).execute().data
+
+        if data:
+            user = data[0]
+            if str(user.get("password", "")) == password and str(user.get("estado", "")).upper() == "ACTIVO":
+                st.session_state["login_ok"] = True
+                st.session_state["usuario"] = user.get("usuario", "")
+                st.session_state["rol"] = user.get("rol", "")
+                st.session_state["vendedor"] = user.get("vendedor", "")
+                st.rerun()
+            else:
+                st.error("Contraseña incorrecta o usuario inactivo.")
+        else:
+            st.error("Usuario no existe.")
+
+if not st.session_state["login_ok"]:
+    login()
+    st.stop()
+
 
 def cargar_tabla(nombre, columnas=None):
     try:
@@ -448,11 +457,21 @@ def registrar_movimiento_stock(tipo_movimiento, requiere_jefe=False):
         jefe_solicita = st.selectbox("Jefe que solicita", jefes_activos, key=f"{prefijo}_jefe")
 
     vendedores_activos = vendedores[vendedores["estado"] == "ACTIVO"]["nombre"]
-    vendedor_responsable = st.selectbox(
-        "Vendedor responsable",
-        vendedores_activos,
-        key=f"{prefijo}_vendedor"
-    )
+
+    if st.session_state.get("rol") == "admin":
+        vendedor_responsable = st.selectbox(
+            "Vendedor responsable",
+            vendedores_activos,
+            key=f"{prefijo}_vendedor"
+        )
+    else:
+        vendedor_responsable = st.session_state.get("vendedor", "")
+        st.text_input(
+            "Vendedor responsable",
+            vendedor_responsable,
+            disabled=True,
+            key=f"{prefijo}_vendedor"
+        )
 
     detalle = st.text_input("Detalle / observación", key=f"{prefijo}_detalle")
 
@@ -551,6 +570,15 @@ stock_actual_df = calcular_stock(productos, movimientos_stock, ventas)
 # MENÚ
 # =========================
 st.sidebar.title("⚡ Control Ventas")
+if st.session_state.get("login_ok", False):
+    st.sidebar.success(f"Usuario: {st.session_state.get('usuario', '')}")
+    if st.sidebar.button("Cerrar sesión"):
+        st.session_state["login_ok"] = False
+        st.session_state["usuario"] = ""
+        st.session_state["rol"] = ""
+        st.session_state["vendedor"] = ""
+        st.rerun()
+
 st.sidebar.markdown("### 📲 Menú")
 
 if "menu_actual" not in st.session_state:
@@ -1012,7 +1040,12 @@ elif menu == "🧾 Registrar Orden":
     vendedores_activos = vendedores[vendedores["estado"] == "ACTIVO"]["nombre"]
 
     fecha = st.date_input("Fecha", key=f"fecha_{version}")
-    vendedor = st.selectbox("Vendedor", vendedores_activos, key=f"vendedor_{version}")
+
+    if st.session_state.get("rol") == "admin":
+        vendedor = st.selectbox("Vendedor", vendedores_activos, key=f"vendedor_{version}")
+    else:
+        vendedor = st.session_state.get("vendedor", "")
+        st.text_input("Vendedor", vendedor, disabled=True, key=f"vendedor_{version}")
     orden = st.text_input("Número de Orden", key=f"orden_{version}")
 
     st.subheader("¿Qué incluye la orden?")
