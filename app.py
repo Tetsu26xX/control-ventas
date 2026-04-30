@@ -33,102 +33,336 @@ if "login_ok" not in st.session_state:
     st.session_state["login_ok"] = False
 
 def login():
-    st.markdown("""
+    mascota_login = get_base64_image("assets/mascota_dashboard.png")
+
+    st.markdown(f"""
     <style>
-    .stApp {
+    /* Login a pantalla completa */
+    [data-testid="stSidebar"], [data-testid="stToolbar"], [data-testid="stHeader"] {{
+        display: none !important;
+    }}
+
+    .stApp {{
+        min-height: 100vh;
+        overflow: hidden;
         background:
-            radial-gradient(circle at top left, rgba(0, 90, 190, 0.32), transparent 34%),
-            radial-gradient(circle at bottom right, rgba(255, 30, 95, 0.28), transparent 34%),
-            linear-gradient(135deg, #071320 0%, #101a38 42%, #261849 72%, #471024 100%) !important;
-    }
+            radial-gradient(circle at 78% 10%, rgba(224, 20, 121, 0.55), transparent 24%),
+            radial-gradient(circle at 20% 18%, rgba(20, 80, 220, 0.42), transparent 28%),
+            radial-gradient(circle at 88% 78%, rgba(255, 45, 90, 0.42), transparent 26%),
+            linear-gradient(130deg, #041228 0%, #0a1540 39%, #25115a 67%, #5c0735 100%) !important;
+    }}
 
-    div[data-testid="stTextInput"] input {
-        background: rgba(255,255,255,0.12) !important;
-        border: 1px solid rgba(255,255,255,0.22) !important;
+    .stApp::before {{
+        content: "";
+        position: fixed;
+        inset: 0;
+        pointer-events: none;
+        opacity: 0.9;
+        background-image:
+            linear-gradient(132deg, transparent 9%, rgba(49, 113, 255, .75) 9.4%, rgba(49, 113, 255, .75) 10.1%, transparent 10.6%),
+            linear-gradient(132deg, transparent 38%, rgba(129, 42, 255, .28) 38%, rgba(129, 42, 255, .28) 43%, transparent 43.4%),
+            linear-gradient(132deg, transparent 56%, rgba(226, 35, 169, .75) 56.4%, rgba(226, 35, 169, .75) 57.2%, transparent 57.8%),
+            linear-gradient(132deg, transparent 81%, rgba(255, 58, 100, .9) 81%, rgba(255, 58, 100, .9) 83%, transparent 83.5%);
+        background-size: 540px 320px, 620px 420px, 520px 320px, 480px 300px;
+        background-position: -50px 20px, 220px 8px, 120px 110px, 720px 130px;
+    }}
+
+    .stApp::after {{
+        content: "";
+        position: fixed;
+        inset: 0;
+        pointer-events: none;
+        background: rgba(0, 0, 0, 0.06);
+    }}
+
+    .block-container {{
+        max-width: 1250px !important;
+        padding-top: 28px !important;
+        padding-bottom: 0 !important;
+        position: relative;
+        z-index: 2;
+    }}
+
+    .login-shell {{
+        min-height: calc(100vh - 60px);
+        display: flex;
+        align-items: center;
+    }}
+
+    .login-eyebrow {{
+        color: #ff4f9f;
+        font-size: 13px;
+        font-weight: 900;
+        letter-spacing: .3px;
+        margin-bottom: 6px;
+    }}
+
+    .login-title {{
+        color: #ffffff;
+        font-size: clamp(44px, 5.1vw, 76px);
+        line-height: .82;
+        font-weight: 950;
+        letter-spacing: -1.6px;
+        margin: 0 0 16px 0;
+        text-shadow: 0 18px 36px rgba(0,0,0,.35);
+    }}
+
+    .login-title span {{
+        display: block;
+        color: #8f4dff;
+    }}
+
+    .login-copy {{
+        color: rgba(255,255,255,.84);
+        font-size: 12px;
+        font-weight: 650;
+        max-width: 470px;
+        margin-bottom: 26px;
+    }}
+
+    .feature-row {{
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 14px;
+        max-width: 500px;
+        margin-bottom: 18px;
+    }}
+
+    .feature-card {{
+        min-height: 76px;
+        padding: 14px 14px 12px;
+        border-radius: 12px;
+        background: rgba(255,255,255,.075);
+        border: 1px solid rgba(255,255,255,.13);
+        box-shadow: 0 14px 35px rgba(0,0,0,.19);
+        backdrop-filter: blur(14px);
+    }}
+
+    .feature-icon {{
+        font-size: 19px;
+        color: #9d58ff;
+        margin-bottom: 4px;
+    }}
+
+    .feature-title {{
+        color: white;
+        font-size: 11px;
+        font-weight: 900;
+        margin-bottom: 2px;
+    }}
+
+    .feature-text {{
+        color: rgba(255,255,255,.62);
+        font-size: 9px;
+        line-height: 1.25;
+    }}
+
+    .mascot-wrap {{
+        height: 210px;
+        position: relative;
+        margin-top: -4px;
+    }}
+
+    .mascot-wrap img {{
+        position: absolute;
+        left: 80px;
+        bottom: -6px;
+        width: 310px;
+        max-width: 74%;
+        filter: drop-shadow(0 24px 24px rgba(0,0,0,.42));
+    }}
+
+    div[data-testid="stHorizontalBlock"] > div:nth-child(2) > div[data-testid="stVerticalBlock"] {{
+        background: linear-gradient(180deg, rgba(25,18,42,.86), rgba(17,16,31,.92));
+        border: 1px solid rgba(255,255,255,.14);
+        border-radius: 16px;
+        padding: 28px 34px 22px !important;
+        min-height: 430px;
+        box-shadow: 0 28px 80px rgba(0,0,0,.45);
+        backdrop-filter: blur(18px);
+        -webkit-backdrop-filter: blur(18px);
+        margin-top: 28px;
+    }}
+
+    .login-lock {{
+        width: 74px;
+        height: 74px;
+        margin: 0 auto 14px;
+        border-radius: 50%;
+        display: grid;
+        place-items: center;
+        background: radial-gradient(circle, #dd3bca 0%, #8d24b8 42%, rgba(142,36,184,.18) 43%, rgba(142,36,184,.18) 100%);
+        box-shadow: 0 0 35px rgba(225,57,206,.25);
+        font-size: 26px;
+    }}
+
+    .login-card-title {{
+        color: white;
+        text-align: center;
+        font-size: 22px;
+        font-weight: 950;
+        margin: 0;
+    }}
+
+    .login-card-subtitle {{
+        color: rgba(255,255,255,.55);
+        text-align: center;
+        font-size: 11px;
+        font-weight: 650;
+        margin: 4px 0 20px;
+    }}
+
+    div[data-testid="stTextInput"] label {{
+        display: none !important;
+    }}
+
+    div[data-testid="stTextInput"] input {{
+        height: 44px !important;
+        color: #ffffff !important;
+        background: rgba(255,255,255,.075) !important;
+        border: 1px solid rgba(255,255,255,.09) !important;
+        border-radius: 8px !important;
+        box-shadow: inset 0 1px 0 rgba(255,255,255,.04) !important;
+        font-size: 13px !important;
+    }}
+
+    div[data-testid="stTextInput"] input::placeholder {{
+        color: rgba(255,255,255,.48) !important;
+    }}
+
+    div[data-testid="stCheckbox"] label, div[data-testid="stCheckbox"] span {{
+        color: rgba(255,255,255,.72) !important;
+        font-size: 11px !important;
+    }}
+
+    .forgot-link {{
+        text-align: right;
+        color: #c86fff;
+        font-size: 11px;
+        margin-top: -35px;
+        margin-bottom: 12px;
+        font-weight: 700;
+    }}
+
+    .stButton > button {{
+        height: 48px !important;
+        border: 0 !important;
+        border-radius: 8px !important;
         color: white !important;
-        border-radius: 12px !important;
-    }
+        font-size: 13px !important;
+        font-weight: 950 !important;
+        background: linear-gradient(90deg, #ff3d73 0%, #8e2de2 76%, #7b2cff 100%) !important;
+        box-shadow: 0 16px 30px rgba(141,45,226,.24) !important;
+        transition: all .2s ease !important;
+    }}
 
-    div[data-testid="stTextInput"] label {
-        color: rgba(255,255,255,0.90) !important;
-        font-weight: 800 !important;
-    }
-
-    .stButton > button {
-        border-radius: 12px !important;
-        background: linear-gradient(90deg, #ff3d73, #8e2de2) !important;
-        color: white !important;
-        border: none !important;
-        font-weight: 900 !important;
-        transition: all 0.25s ease !important;
-    }
-
-    .stButton > button:hover {
+    .stButton > button:hover {{
         transform: translateY(-2px);
-        box-shadow: 0 12px 28px rgba(255, 45, 110, 0.28);
-    }
+        filter: brightness(1.08);
+        box-shadow: 0 20px 38px rgba(255,61,115,.28) !important;
+    }}
 
-    [data-testid="stSidebar"] .stButton > button {
-        background: rgba(255,255,255,0.10) !important;
+    .safe-access {{
+        margin-top: 18px;
+        text-align: center;
+        color: rgba(142, 255, 224, .75);
+        font-size: 11px;
+        font-weight: 700;
+    }}
+
+    div[data-testid="stAlert"] {{
+        border-radius: 10px !important;
+        background: rgba(255, 255, 255, .08) !important;
         color: white !important;
-        border: 1px solid rgba(255,255,255,0.18) !important;
-        text-align: left !important;
-        justify-content: flex-start !important;
-        margin: 4px 0 !important;
-        border-radius: 14px !important;
-        font-weight: 850 !important;
-        transition: all 0.24s ease !important;
-    }
+    }}
 
-    [data-testid="stSidebar"] .stButton > button:hover {
-        transform: translateX(5px) translateY(-2px) scale(1.015) !important;
-        background: linear-gradient(135deg, rgba(0, 170, 255, 0.24), rgba(255, 45, 45, 0.18)) !important;
-        box-shadow: 0 12px 25px rgba(0, 170, 255, 0.22), 0 7px 18px rgba(255, 45, 45, 0.16) !important;
-    }
+    @media (max-width: 900px) {{
+        .feature-row {{ grid-template-columns: 1fr; max-width: 100%; }}
+        .mascot-wrap {{ display: none; }}
+        div[data-testid="stHorizontalBlock"] {{ flex-direction: column !important; }}
+        div[data-testid="stHorizontalBlock"] > div {{ width: 100% !important; }}
+        div[data-testid="stHorizontalBlock"] > div:nth-child(2) > div[data-testid="stVerticalBlock"] {{
+            margin-top: 10px;
+            padding: 24px 22px !important;
+        }}
+    }}
     </style>
+
+    <div class="login-shell">
+        <div style="width:100%">
     """, unsafe_allow_html=True)
 
-    st.title("⚡ Control Ventas")
-    st.caption("Sistema para registrar ventas, controlar stock, revisar rankings y consultar IMEI.")
+    left, right = st.columns([1.28, 0.82], gap="large")
 
-    col_img, col_login = st.columns([1.15, 0.85], gap="large")
+    with left:
+        st.markdown("""
+        <div class="login-eyebrow">Bienvenido a</div>
+        <h1 class="login-title">Control <span>Ventas</span></h1>
+        <div class="login-copy">Sistema para registrar ventas, controlar stock, revisar rankings y consultar IMEI por marca y fecha.</div>
+        <div class="feature-row">
+            <div class="feature-card">
+                <div class="feature-icon">🛒</div>
+                <div class="feature-title">Ventas</div>
+                <div class="feature-text">Registra y consulta todas tus ventas</div>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">📦</div>
+                <div class="feature-title">Stock</div>
+                <div class="feature-text">Controla tu inventario</div>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">📊</div>
+                <div class="feature-title">Reportes</div>
+                <div class="feature-text">Rankings y estadísticas de vendedores</div>
+            </div>
+        </div>
+        """, unsafe_allow_html=True)
 
-    with col_img:
-        st.subheader("Bienvenido")
-        st.write("Ventas · Stock · Traslados · Reportes IMEI")
+        if mascota_login:
+            st.markdown(f"""
+            <div class="mascot-wrap">
+                <img src="data:image/png;base64,{mascota_login}" alt="Mascota Control Ventas">
+            </div>
+            """, unsafe_allow_html=True)
 
-        if os.path.exists("assets/mascota_dashboard.png"):
-            st.image("assets/mascota_dashboard.png", width=360)
+    with right:
+        st.markdown("""
+        <div class="login-lock">🔒</div>
+        <h2 class="login-card-title">Iniciar Sesión</h2>
+        <div class="login-card-subtitle">Ingresa tus credenciales para continuar</div>
+        """, unsafe_allow_html=True)
 
-        a, b, c = st.columns(3)
-        a.info("📊 Ranking")
-        b.info("📦 Stock")
-        c.info("📱 IMEI")
+        usuario = st.text_input("Usuario", placeholder="👤   Usuario", key="login_usuario").strip().upper()
+        password = st.text_input("Contraseña", type="password", placeholder="🔒   Contraseña", key="login_password").strip()
+        st.checkbox("Recordarme", value=True, key="login_recordarme")
+        st.markdown('<div class="forgot-link">¿Olvidaste tu contraseña?</div>', unsafe_allow_html=True)
 
-    with col_login:
-        st.subheader("🔐 Iniciar sesión")
-
-        usuario = st.text_input("Usuario", placeholder="Usuario").strip().upper()
-        password = st.text_input("Contraseña", type="password", placeholder="Contraseña").strip()
-
-        if st.button("Ingresar", use_container_width=True):
-            with st.spinner("Validando acceso..."):
-                data = supabase.table("usuarios").select("*").eq("usuario", usuario).execute().data
-
-            if data:
-                user = data[0]
-                if str(user.get("password", "")) == password and str(user.get("estado", "")).upper() == "ACTIVO":
-                    st.session_state["login_ok"] = True
-                    st.session_state["usuario"] = user.get("usuario", "")
-                    st.session_state["rol"] = user.get("rol", "")
-                    st.session_state["vendedor"] = user.get("vendedor", "")
-                    st.rerun()
-                else:
-                    st.error("Contraseña incorrecta o usuario inactivo.")
+        if st.button("Ingresar  ➜", use_container_width=True, key="login_submit"):
+            if not usuario or not password:
+                st.error("Ingresa usuario y contraseña.")
             else:
-                st.error("Usuario no existe.")
+                with st.spinner("Validando acceso..."):
+                    data = supabase.table("usuarios").select("*").eq("usuario", usuario).execute().data
 
-        st.caption("🛡️ Acceso seguro")
+                if data:
+                    user = data[0]
+                    if str(user.get("password", "")) == password and str(user.get("estado", "")).upper() == "ACTIVO":
+                        st.session_state["login_ok"] = True
+                        st.session_state["usuario"] = user.get("usuario", "")
+                        st.session_state["rol"] = user.get("rol", "")
+                        st.session_state["vendedor"] = user.get("vendedor", "")
+                        st.rerun()
+                    else:
+                        st.error("Contraseña incorrecta o usuario inactivo.")
+                else:
+                    st.error("Usuario no existe.")
+
+        st.markdown('<div class="safe-access">◎ Acceso seguro y protegido</div>', unsafe_allow_html=True)
+
+    st.markdown("""
+        </div>
+    </div>
+    """, unsafe_allow_html=True)
 
 if not st.session_state["login_ok"]:
     login()
