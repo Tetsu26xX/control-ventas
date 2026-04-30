@@ -34,328 +34,327 @@ if "login_ok" not in st.session_state:
 
 def login():
     mascota_b64 = get_base64_image("assets/mascota_dashboard.png")
-    mascota_html = (
-        f'<img class="hero-mascot" src="data:image/png;base64,{mascota_b64}" alt="Mascota Control Ventas">'
-        if mascota_b64 else
-        '<div class="hero-mascot-placeholder">⚡</div>'
-    )
 
-    st.markdown("""
+    st.markdown(f"""
     <style>
-    /* ===== LOGIN PRO / ESTABLE STREAMLIT ===== */
-    [data-testid="stHeader"], [data-testid="stToolbar"], footer {visibility: hidden;}
-
-    .stApp {
+    .stApp {{
         background:
-            radial-gradient(circle at 14% 18%, rgba(88, 84, 255, 0.42), transparent 28%),
-            radial-gradient(circle at 86% 24%, rgba(255, 55, 125, 0.34), transparent 28%),
-            radial-gradient(circle at 74% 88%, rgba(0, 210, 255, 0.22), transparent 34%),
-            linear-gradient(135deg, #071320 0%, #111734 40%, #27194b 70%, #4a1026 100%) !important;
-        color: #ffffff !important;
-        overflow-x: hidden;
-    }
+            radial-gradient(circle at 10% 12%, rgba(28, 102, 230, .38), transparent 28%),
+            radial-gradient(circle at 87% 36%, rgba(255, 36, 122, .42), transparent 34%),
+            linear-gradient(135deg, #06152e 0%, #0b1640 44%, #211351 70%, #760d4e 100%) !important;
+        background-attachment: fixed !important;
+    }}
 
-    section.main > div {
-        padding-top: 1.3rem !important;
-        padding-bottom: 1rem !important;
-        max-width: 1180px !important;
-    }
+    .block-container {{
+        padding-top: 1.1rem !important;
+        padding-bottom: 0rem !important;
+        max-width: 1360px !important;
+    }}
 
-    div[data-testid="stTextInput"] input {
-        background: rgba(255,255,255,0.10) !important;
-        border: 1px solid rgba(255,255,255,0.22) !important;
-        color: white !important;
-        border-radius: 16px !important;
-        height: 48px !important;
-        box-shadow: inset 0 0 0 1px rgba(255,255,255,0.04) !important;
-        transition: all 0.25s ease !important;
-    }
+    header[data-testid="stHeader"] {{ background: transparent !important; }}
+    #MainMenu, footer {{ visibility: hidden !important; }}
 
-    div[data-testid="stTextInput"] input:focus {
-        border-color: rgba(255, 61, 115, 0.95) !important;
-        box-shadow:
-            0 0 0 1px rgba(255, 61, 115, 0.55),
-            0 0 18px rgba(142,45,226,0.38) !important;
-    }
-
-    div[data-testid="stTextInput"] label {
-        color: rgba(255,255,255,0.92) !important;
-        font-weight: 850 !important;
-    }
-
-    .stButton > button {
-        height: 48px !important;
-        border-radius: 16px !important;
-        border: 1px solid rgba(255,255,255,0.18) !important;
-        background: linear-gradient(90deg, #ff3d73 0%, #8e2de2 52%, #00d4ff 100%) !important;
-        color: white !important;
-        font-weight: 950 !important;
-        letter-spacing: .2px !important;
-        box-shadow: 0 12px 30px rgba(142,45,226,.26) !important;
-        transition: all 0.25s ease !important;
-    }
-
-    .stButton > button:hover {
-        transform: translateY(-3px) scale(1.01) !important;
-        box-shadow:
-            0 0 14px rgba(255,61,115,.85),
-            0 0 28px rgba(142,45,226,.62),
-            0 0 46px rgba(0,212,255,.32) !important;
-        filter: saturate(1.15);
-    }
-
-    .login-right-card {
-        position: relative;
-        padding: 28px 28px 22px 28px;
-        border-radius: 30px;
-        background: linear-gradient(135deg, rgba(255,255,255,0.14), rgba(255,255,255,0.055));
-        border: 1px solid rgba(255,255,255,0.22);
-        box-shadow: 0 24px 70px rgba(0,0,0,.34), inset 0 1px 0 rgba(255,255,255,.20);
-        backdrop-filter: blur(22px);
-        -webkit-backdrop-filter: blur(22px);
-        margin-top: 72px;
-        transition: all .28s ease;
+    .neon-lines {{
+        position: fixed;
+        inset: 0;
+        pointer-events: none;
+        z-index: 0;
         overflow: hidden;
-    }
+        opacity: .94;
+    }}
 
-    .login-right-card:before {
-        content: "";
+    .neon-lines span {{
         position: absolute;
-        inset: -2px;
-        border-radius: 30px;
-        background: linear-gradient(120deg, rgba(255,61,115,.75), rgba(142,45,226,.55), rgba(0,212,255,.45));
-        opacity: .18;
-        z-index: -1;
-        filter: blur(18px);
-        transition: opacity .25s ease, filter .25s ease;
-    }
-
-    .login-right-card:hover {
-        transform: translateY(-4px);
-        border-color: rgba(255,255,255,.34);
-        box-shadow:
-            0 0 18px rgba(255,61,115,.36),
-            0 0 36px rgba(142,45,226,.32),
-            0 28px 75px rgba(0,0,0,.38);
-    }
-
-    .login-right-card:hover:before { opacity: .38; filter: blur(24px); }
-
-    .login-title {
-        font-size: 24px;
-        font-weight: 950;
-        margin-bottom: 4px;
-        color: #fff;
-    }
-
-    .login-subtitle {
-        color: rgba(255,255,255,.72);
-        font-size: 14px;
-        margin-bottom: 18px;
-    }
-
-    .hero-wrap {
-        min-height: 610px;
-        display: flex;
-        flex-direction: column;
-        justify-content: center;
-    }
-
-    .hero-main {
-        display: grid;
-        grid-template-columns: minmax(280px, 1fr) 250px;
-        align-items: center;
-        gap: 14px;
-    }
-
-    .hero-kicker {
-        display: inline-flex;
-        align-items: center;
-        gap: 8px;
-        width: fit-content;
-        padding: 8px 12px;
-        border-radius: 999px;
-        background: rgba(255,255,255,.09);
-        border: 1px solid rgba(255,255,255,.16);
-        color: rgba(255,255,255,.86);
-        font-weight: 800;
-        margin-bottom: 16px;
-    }
-
-    .hero-title {
-        font-size: clamp(48px, 7vw, 84px);
-        line-height: .88;
-        margin: 0;
-        font-weight: 1000;
-        letter-spacing: -2.6px;
-        color: #fff;
-        text-shadow: 0 0 26px rgba(142,45,226,.42);
-    }
-
-    .hero-title span {
         display: block;
-        background: linear-gradient(90deg, #ffffff 0%, #b68cff 42%, #ff5b95 76%, #00d4ff 100%);
-        -webkit-background-clip: text;
-        background-clip: text;
-        color: transparent;
-    }
+        width: 8px;
+        height: 150px;
+        border-radius: 999px;
+        transform: rotate(38deg);
+        background: linear-gradient(180deg, rgba(255,57,115,.95), rgba(119,44,255,.15));
+        box-shadow: 0 0 22px rgba(255,57,115,.30);
+    }}
 
-    .hero-copy {
-        max-width: 500px;
-        margin: 20px 0 22px 0;
-        color: rgba(255,255,255,.78);
-        font-size: 17px;
-        line-height: 1.55;
-    }
+    .neon-lines span:nth-child(1) {{ left: 8%; top: -5%; height: 210px; }}
+    .neon-lines span:nth-child(2) {{ left: 19%; top: 62%; height: 195px; width: 55px; background: rgba(104,58,255,.34); }}
+    .neon-lines span:nth-child(3) {{ left: 36%; top: 8%; height: 160px; }}
+    .neon-lines span:nth-child(4) {{ left: 55%; top: 3%; height: 235px; width: 55px; background: rgba(104,58,255,.32); }}
+    .neon-lines span:nth-child(5) {{ right: 14%; top: 9%; height: 185px; }}
+    .neon-lines span:nth-child(6) {{ right: 6%; bottom: 4%; height: 215px; width: 58px; background: rgba(104,58,255,.32); }}
+    .neon-lines span:nth-child(7) {{ left: 72%; bottom: 9%; height: 165px; }}
+    .neon-lines span:nth-child(8) {{ left: 3%; bottom: 26%; height: 140px; background: rgba(42,133,255,.9); }}
 
-    .hero-mascot {
-        width: min(240px, 100%);
-        filter: drop-shadow(0 18px 34px rgba(0,0,0,.48)) drop-shadow(0 0 22px rgba(255,61,115,.26));
-        transform: translateY(12px);
-        transition: all .28s ease;
-    }
+    div[data-testid="stHorizontalBlock"]:first-of-type {{
+        min-height: calc(100vh - 105px);
+        align-items: center !important;
+        gap: 4.2rem !important;
+        position: relative;
+        z-index: 2;
+    }}
 
-    .hero-mascot:hover {
-        transform: translateY(4px) scale(1.035) rotate(-1.5deg);
-        filter:
-            drop-shadow(0 20px 38px rgba(0,0,0,.52))
-            drop-shadow(0 0 24px rgba(255,61,115,.55))
-            drop-shadow(0 0 42px rgba(0,212,255,.24));
-    }
+    div[data-testid="stHorizontalBlock"]:first-of-type > div[data-testid="column"]:nth-child(2) {{
+        max-width: 410px !important;
+        padding: 2rem 2rem 1.65rem 2rem !important;
+        border-radius: 23px !important;
+        background: linear-gradient(180deg, rgba(32, 18, 48, .86), rgba(12, 9, 24, .92)) !important;
+        border: 1px solid rgba(255,255,255,.16) !important;
+        box-shadow: 0 24px 70px rgba(0,0,0,.43), inset 0 1px 0 rgba(255,255,255,.06) !important;
+        backdrop-filter: blur(22px) !important;
+        transition: all .28s ease !important;
+    }}
 
-    .hero-mascot-placeholder {
-        width: 210px;
-        height: 210px;
-        display: grid;
-        place-items: center;
-        border-radius: 50%;
-        font-size: 72px;
-        background: rgba(255,255,255,.08);
-        border: 1px solid rgba(255,255,255,.18);
-    }
-
-    .feature-grid {
-        display: grid;
-        grid-template-columns: repeat(3, minmax(120px, 1fr));
-        gap: 14px;
-        max-width: 650px;
-        margin-top: 10px;
-    }
-
-    .feature-card {
-        min-height: 105px;
-        padding: 16px;
-        border-radius: 24px;
-        background: linear-gradient(135deg, rgba(255,255,255,.13), rgba(255,255,255,.055));
-        border: 1px solid rgba(255,255,255,.18);
-        backdrop-filter: blur(18px);
-        -webkit-backdrop-filter: blur(18px);
-        transition: all .26s ease;
-        box-shadow: 0 15px 36px rgba(0,0,0,.18);
-    }
-
-    .feature-card:hover {
-        transform: translateY(-7px) scale(1.025);
-        border-color: rgba(255,255,255,.34);
+    div[data-testid="stHorizontalBlock"]:first-of-type > div[data-testid="column"]:nth-child(2):hover {{
+        transform: translateY(-5px);
+        border-color: rgba(218, 61, 255, .44) !important;
         box-shadow:
-            0 0 14px rgba(255,61,115,.45),
-            0 0 30px rgba(142,45,226,.36),
-            0 20px 48px rgba(0,0,0,.28);
-    }
+            0 0 18px rgba(255, 60, 130, .32),
+            0 0 42px rgba(139, 45, 226, .28),
+            0 28px 80px rgba(0,0,0,.46) !important;
+    }}
 
-    .feature-icon { font-size: 28px; margin-bottom: 10px; }
-    .feature-title { color: #fff; font-weight: 950; font-size: 16px; }
-    .feature-text { color: rgba(255,255,255,.68); font-size: 12px; margin-top: 4px; }
+    .brand-kicker {{
+        color:#ff3d86;
+        font-weight:900;
+        font-size:.9rem;
+        margin-bottom:.35rem;
+    }}
 
-    .secure-note {
-        margin-top: 12px;
-        text-align: center;
-        color: rgba(255,255,255,.64);
-        font-size: 12px;
-    }
+    .brand-title {{
+        margin:0;
+        color:#9658ff;
+        font-size: clamp(3.15rem, 5.2vw, 4.75rem);
+        line-height:.98;
+        font-weight:1000;
+        letter-spacing:-2px;
+        text-shadow: 0 0 32px rgba(150,88,255,.38);
+    }}
 
-    @media (max-width: 900px) {
-        section.main > div { padding-top: .6rem !important; }
-        .hero-wrap { min-height: auto; }
-        .hero-main { grid-template-columns: 1fr; text-align: center; }
-        .hero-kicker { margin-left: auto; margin-right: auto; }
-        .hero-copy { margin-left: auto; margin-right: auto; }
-        .hero-mascot { margin: 0 auto; width: 190px; transform: translateY(0); }
-        .feature-grid { grid-template-columns: 1fr; }
-        .login-right-card { margin-top: 18px; }
-    }
+    .brand-copy {{
+        color:rgba(255,255,255,.9);
+        max-width:540px;
+        margin:1.6rem 0 1.15rem 0;
+        font-weight:750;
+        line-height:1.45;
+    }}
+
+    .hero-stage {{
+        display:grid;
+        grid-template-columns: 1fr 255px;
+        align-items:end;
+        gap:18px;
+        max-width:680px;
+    }}
+
+    .feature-row {{
+        display:grid;
+        grid-template-columns: repeat(3, minmax(125px, 1fr));
+        gap:14px;
+        align-items:stretch;
+    }}
+
+    .feature-card {{
+        min-height:98px;
+        padding:15px 14px;
+        border-radius:16px;
+        background: linear-gradient(135deg, rgba(255,255,255,.12), rgba(255,255,255,.055));
+        border:1px solid rgba(255,255,255,.15);
+        box-shadow: 0 12px 30px rgba(0,0,0,.20);
+        transition: all .28s ease;
+        backdrop-filter: blur(14px);
+    }}
+
+    .feature-card:hover {{
+        transform: translateY(-7px) scale(1.025);
+        border-color: rgba(255, 65, 135, .46);
+        box-shadow:
+            0 0 14px rgba(255, 61, 115, .42),
+            0 0 32px rgba(142, 45, 226, .32),
+            0 18px 38px rgba(0,0,0,.34);
+    }}
+
+    .feature-icon {{ font-size:1.6rem; margin-bottom:8px; }}
+    .feature-title {{ color:white; font-weight:950; font-size:.92rem; margin-bottom:3px; }}
+    .feature-text {{ color:rgba(255,255,255,.70); font-size:.72rem; line-height:1.35; font-weight:650; }}
+
+    .mascot-wrap {{
+        height:260px;
+        display:flex;
+        align-items:flex-end;
+        justify-content:center;
+        filter: drop-shadow(0 0 32px rgba(255, 190, 66, .32));
+        transition: all .28s ease;
+    }}
+
+    .mascot-wrap:hover {{
+        transform: translateY(-8px) scale(1.035);
+        filter: drop-shadow(0 0 40px rgba(255, 205, 76, .45));
+    }}
+
+    .mascot-wrap img {{
+        width:100%;
+        max-width:265px;
+        object-fit:contain;
+    }}
+
+    .login-icon {{
+        width:64px;
+        height:64px;
+        display:flex;
+        align-items:center;
+        justify-content:center;
+        margin:0 auto 1.2rem auto;
+        border-radius:999px;
+        font-size:1.7rem;
+        background: radial-gradient(circle, #ea42ff 0%, #8f22c7 55%, rgba(143,34,199,.25) 100%);
+        box-shadow:0 0 34px rgba(226,66,255,.38);
+    }}
+
+    .login-title {{
+        text-align:center;
+        color:white;
+        font-size:2rem;
+        line-height:1;
+        font-weight:1000;
+        margin:0 0 .55rem 0;
+        letter-spacing:-.5px;
+    }}
+
+    .login-sub {{
+        text-align:center;
+        color:rgba(255,255,255,.58);
+        font-size:.82rem;
+        font-weight:750;
+        margin-bottom:1.35rem;
+    }}
+
+    .secure-copy {{
+        text-align:center;
+        color:#65e4d4;
+        font-size:.78rem;
+        font-weight:900;
+        margin-top:1.1rem;
+    }}
+
+    div[data-testid="stTextInput"] label {{
+        color:rgba(255,255,255,.82) !important;
+        font-weight:850 !important;
+        font-size:.82rem !important;
+    }}
+
+    div[data-testid="stTextInput"] input {{
+        background: rgba(255,255,255,.14) !important;
+        border: 1px solid rgba(255,255,255,.13) !important;
+        color: white !important;
+        border-radius: 11px !important;
+        height: 46px !important;
+        font-weight:800 !important;
+        transition: all .24s ease !important;
+    }}
+
+    div[data-testid="stTextInput"] input:focus {{
+        border-color: rgba(215,65,255,.72) !important;
+        box-shadow: 0 0 0 1px rgba(215,65,255,.32), 0 0 18px rgba(215,65,255,.24) !important;
+    }}
+
+    .stButton > button {{
+        height:52px !important;
+        border-radius:12px !important;
+        border:none !important;
+        background: linear-gradient(90deg, #ff3d73 0%, #a72fea 55%, #7b2cff 100%) !important;
+        color:white !important;
+        font-weight:1000 !important;
+        box-shadow:0 14px 38px rgba(167,47,234,.28) !important;
+        transition: all .24s ease !important;
+    }}
+
+    .stButton > button:hover {{
+        transform: translateY(-3px) scale(1.01);
+        box-shadow: 0 0 18px rgba(255,61,115,.48), 0 0 40px rgba(123,44,255,.36) !important;
+        filter: brightness(1.06);
+    }}
+
+    .stAlert {{ border-radius: 14px !important; }}
+
+    @media (max-width: 950px) {{
+        div[data-testid="stHorizontalBlock"]:first-of-type {{
+            min-height: auto;
+            align-items: stretch !important;
+            gap: 1.3rem !important;
+        }}
+        .hero-stage {{ grid-template-columns: 1fr; }}
+        .mascot-wrap {{ height:210px; justify-content:flex-start; }}
+        .feature-row {{ grid-template-columns:1fr; }}
+        div[data-testid="stHorizontalBlock"]:first-of-type > div[data-testid="column"]:nth-child(2) {{
+            max-width:100% !important;
+        }}
+    }}
     </style>
+
+    <div class="neon-lines">
+        <span></span><span></span><span></span><span></span>
+        <span></span><span></span><span></span><span></span>
+    </div>
     """, unsafe_allow_html=True)
 
-    left, right = st.columns([1.35, 0.85], gap="large")
+    col_left, col_right = st.columns([1.35, .88], gap="large")
 
-    with left:
+    with col_left:
         st.markdown(f"""
-        <div class="hero-wrap">
-            <div class="hero-kicker">⚡ Sistema comercial en tiempo real</div>
-            <div class="hero-main">
-                <div>
-                    <h1 class="hero-title">Control<span>Ventas</span></h1>
-                    <p class="hero-copy">
-                        Registra ventas, controla stock, revisa rankings y consulta IMEI por marca y fecha desde un solo panel.
-                    </p>
-                </div>
-                <div>{mascota_html}</div>
-            </div>
-            <div class="feature-grid">
+        <div class="brand-kicker">Bienvenido a</div>
+        <h1 class="brand-title">Control<br>Ventas</h1>
+        <p class="brand-copy">Sistema para registrar ventas, controlar stock, revisar rankings y consultar IMEI por marca y fecha.</p>
+
+        <div class="hero-stage">
+            <div class="feature-row">
                 <div class="feature-card">
-                    <div class="feature-icon">📊</div>
+                    <div class="feature-icon">🛒</div>
                     <div class="feature-title">Ventas</div>
-                    <div class="feature-text">Órdenes, chips, equipos y accesorios.</div>
+                    <div class="feature-text">Registra y consulta todas tus ventas.</div>
                 </div>
                 <div class="feature-card">
                     <div class="feature-icon">📦</div>
                     <div class="feature-title">Stock</div>
-                    <div class="feature-text">Ingresos, salidas y traslados.</div>
+                    <div class="feature-text">Controla tu inventario.</div>
                 </div>
                 <div class="feature-card">
-                    <div class="feature-icon">📱</div>
-                    <div class="feature-title">IMEI</div>
-                    <div class="feature-text">Reportes rápidos para promotores.</div>
+                    <div class="feature-icon">📊</div>
+                    <div class="feature-title">Reportes</div>
+                    <div class="feature-text">Rankings y estadísticas de vendedores.</div>
                 </div>
+            </div>
+            <div class="mascot-wrap">
+                {'<img src="data:image/png;base64,' + mascota_b64 + '" />' if mascota_b64 else ''}
             </div>
         </div>
         """, unsafe_allow_html=True)
 
-    with right:
+    with col_right:
         st.markdown("""
-        <div class="login-right-card">
-            <div class="login-title">🔐 Iniciar sesión</div>
-            <div class="login-subtitle">Ingresa con tu usuario autorizado.</div>
+        <div class="login-icon">🔒</div>
+        <h2 class="login-title">Iniciar Sesión</h2>
+        <div class="login-sub">Ingresa tus credenciales para continuar</div>
         """, unsafe_allow_html=True)
 
-        usuario = st.text_input("Usuario", placeholder="Usuario", key="login_usuario").strip().upper()
-        password = st.text_input("Contraseña", type="password", placeholder="Contraseña", key="login_password").strip()
+        usuario = st.text_input("Usuario", placeholder="Usuario").strip().upper()
+        password = st.text_input("Contraseña", type="password", placeholder="Contraseña").strip()
 
-        if st.button("Ingresar", use_container_width=True, key="login_btn"):
-            if not usuario or not password:
-                st.error("Completa usuario y contraseña.")
-            else:
-                with st.spinner("Validando acceso..."):
-                    data = supabase.table("usuarios").select("*").eq("usuario", usuario).execute().data
+        if st.button("Ingresar  ➜", use_container_width=True):
+            with st.spinner("Validando acceso..."):
+                data = supabase.table("usuarios").select("*").eq("usuario", usuario).execute().data
 
-                if data:
-                    user = data[0]
-                    if str(user.get("password", "")) == password and str(user.get("estado", "")).upper() == "ACTIVO":
-                        st.session_state["login_ok"] = True
-                        st.session_state["usuario"] = user.get("usuario", "")
-                        st.session_state["rol"] = user.get("rol", "")
-                        st.session_state["vendedor"] = user.get("vendedor", "")
-                        st.rerun()
-                    else:
-                        st.error("Contraseña incorrecta o usuario inactivo.")
+            if data:
+                user = data[0]
+                if str(user.get("password", "")) == password and str(user.get("estado", "")).upper() == "ACTIVO":
+                    st.session_state["login_ok"] = True
+                    st.session_state["usuario"] = user.get("usuario", "")
+                    st.session_state["rol"] = user.get("rol", "")
+                    st.session_state["vendedor"] = user.get("vendedor", "")
+                    st.rerun()
                 else:
-                    st.error("Usuario no existe.")
+                    st.error("Contraseña incorrecta o usuario inactivo.")
+            else:
+                st.error("Usuario no existe.")
 
-        st.markdown("""
-            <div class="secure-note">🛡️ Acceso seguro · Control Ventas</div>
-        </div>
-        """, unsafe_allow_html=True)
+        st.markdown('<div class="secure-copy">◎ Acceso seguro y protegido</div>', unsafe_allow_html=True)
 
 if not st.session_state["login_ok"]:
     login()
