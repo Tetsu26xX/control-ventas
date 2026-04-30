@@ -1,0 +1,1290 @@
+import streamlit as st
+import pandas as pd
+import matplotlib.pyplot as plt
+import streamlit.components.v1 as components
+import base64
+from supabase import create_client
+
+st.set_page_config(page_title="Sistema Ventas", layout="wide")
+
+# =========================
+# CONEXIÓN SUPABASE
+# =========================
+url = st.secrets["SUPABASE_URL"]
+key = st.secrets["SUPABASE_KEY"]
+supabase = create_client(url, key)
+
+def cargar_tabla(nombre, columnas=None):
+    try:
+        data = supabase.table(nombre).select("*").execute().data
+        df = pd.DataFrame(data)
+        if columnas:
+            for col in columnas:
+                if col not in df.columns:
+                    df[col] = ""
+            df = df[columnas]
+        return df
+    except Exception as e:
+        st.error(f"Error cargando tabla {nombre}: {e}")
+        return pd.DataFrame(columns=columnas or [])
+
+def insertar_registro(tabla, registro):
+    return supabase.table(tabla).insert(registro).execute()
+
+def actualizar_registro(tabla, registro_id, cambios):
+    return supabase.table(tabla).update(cambios).eq("id", registro_id).execute()
+
+def eliminar_registro(tabla, registro_id):
+    return supabase.table(tabla).delete().eq("id", registro_id).execute()
+
+
+# =========================
+# IMÁGENES
+# =========================
+def get_base64_image(path):
+    try:
+        with open(path, "rb") as img_file:
+            return base64.b64encode(img_file.read()).decode()
+    except FileNotFoundError:
+        return ""
+
+# =========================
+# ESTILO VISUAL PERSONALIZADO
+# =========================
+fondo_menu = get_base64_image("assets/fondo_menu.png")
+
+st.markdown(f"""
+<style>
+.stApp {{
+    background: linear-gradient(135deg, #07111f 0%, #0e1726 45%, #111827 100%);
+}}
+
+[data-testid="stSidebar"] {{
+    background-image:
+        linear-gradient(180deg, rgba(0,30,65,0.55), rgba(0,87,168,0.55), rgba(227,6,19,0.45)),
+        url("data:image/png;base64,{fondo_menu}");
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+}}
+
+[data-testid="stSidebar"] * {{
+    color: white !important;
+}}
+
+[data-testid="stSidebar"] details {{
+    background: rgba(255,255,255,0.10);
+    border-radius: 14px;
+    margin-bottom: 10px;
+    padding: 4px 8px;
+    border: 1px solid rgba(255,255,255,0.18);
+    backdrop-filter: blur(8px);
+}}
+
+[data-testid="stSidebar"] summary {{
+    font-weight: 900 !important;
+    font-size: 17px !important;
+}}
+
+[data-testid="stSidebar"] .stButton > button {{
+    background: rgba(255,255,255,0.13) !important;
+    color: white !important;
+    border: 1px solid rgba(255,255,255,0.20) !important;
+    box-shadow: none !important;
+    text-align: left !important;
+    justify-content: flex-start !important;
+    margin: 3px 0 !important;
+    border-radius: 12px !important;
+    font-weight: 800 !important;
+}}
+
+[data-testid="stSidebar"] .stButton > button:hover {{
+    background: rgba(255,255,255,0.26) !important;
+    transform: translateX(3px) !important;
+}}
+
+h1 {{
+    color: #FFFFFF !important;
+    font-size: 42px !important;
+    font-weight: 900 !important;
+    letter-spacing: -0.5px;
+    animation: glowPulse 3s infinite;
+}}
+
+h2, h3 {{
+    color: #F8FAFC !important;
+    font-weight: 800 !important;
+}}
+
+[data-testid="stMetric"] {{
+    background: linear-gradient(135deg, rgba(0,87,168,0.90), rgba(14,165,233,0.85));
+    padding: 18px;
+    border-radius: 20px;
+    border: 1px solid rgba(255,255,255,0.18);
+    box-shadow: 0 10px 25px rgba(0,0,0,0.25);
+}}
+
+.stButton > button {{
+    background: linear-gradient(135deg, #E30613 0%, #FF6B00 100%);
+    color: white !important;
+    border: none;
+    border-radius: 14px;
+    padding: 0.65rem 1.2rem;
+    font-weight: 900;
+}}
+
+[data-testid="stDataFrame"] {{
+    border-radius: 18px;
+    overflow: hidden;
+    border: 1px solid rgba(255,255,255,0.12);
+    box-shadow: 0 8px 28px rgba(0,0,0,0.28);
+}}
+
+.glass-primary {{
+    background: linear-gradient(135deg, rgba(0,87,168,0.78), rgba(227,6,19,0.65));
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border: 1px solid rgba(255,255,255,0.25);
+    box-shadow: 0 18px 45px rgba(0,0,0,0.36);
+    border-radius: 28px;
+    padding: 22px 26px;
+    margin-bottom: 22px;
+}}
+
+.glass-primary h3, .glass-primary p {{
+    color: white !important;
+    margin: 0;
+}}
+
+@keyframes glowPulse {{
+    0% {{ text-shadow: 0 0 8px rgba(14,165,233,0.35); }}
+    50% {{ text-shadow: 0 0 18px rgba(227,6,19,0.35); }}
+    100% {{ text-shadow: 0 0 8px rgba(14,165,233,0.35); }}
+}}
+</style>
+""", unsafe_allow_html=True)
+
+# =========================
+# FUNCIONES BASE
+# =========================
+def cargar_csv(ruta, sep=","):
+    try:
+        df = pd.read_csv(ruta, sep=sep, dtype=str, keep_default_na=False)
+        df.columns = df.columns.str.strip()
+        return df
+    except FileNotFoundError:
+        return pd.DataFrame()
+
+def guardar_csv(df, ruta):
+    # CSV queda solo como respaldo local; Supabase es la base principal.
+    df.to_csv(ruta, index=False)
+
+def guardar_ventas(df):
+    pass
+
+def guardar_movimientos_stock(df):
+    pass
+
+def mostrar_confeti():
+    piezas = ""
+    colores = [
+        "#ff4757", "#ffa502", "#2ed573", "#1e90ff", "#a55eea", "#ff6b81",
+        "#70a1ff", "#7bed9f", "#feca57", "#ff9ff3", "#54a0ff", "#5f27cd",
+        "#00d2d3", "#ff9f43", "#ee5253", "#10ac84", "#341f97", "#48dbfb",
+        "#ff3838", "#32ff7e", "#18dcff", "#7d5fff", "#fff200", "#ffb8b8",
+        "#c56cf0", "#3ae374", "#67e6dc", "#ffd32a", "#ff4d4d", "#4b7bec"
+    ]
+    for i in range(1, 61):
+        color = colores[i % len(colores)]
+        piezas += f'<span style="--i:{i}; --c:{color}; --x:{(i * 17) % 100}; --d:{(i % 9) / 10}s;"></span>'
+
+    components.html(
+        f"""
+        <div class="confetti-wrap">{piezas}</div>
+        <style>
+        .confetti-wrap {{
+            position: relative;
+            height: 140px;
+            overflow: hidden;
+            background: transparent;
+        }}
+        .confetti-wrap span {{
+            position: absolute;
+            top: -25px;
+            left: calc(var(--x) * 1%);
+            width: 9px;
+            height: 15px;
+            background: var(--c);
+            opacity: 0.95;
+            animation: fall 2.4s linear forwards;
+            animation-delay: var(--d);
+            transform: rotate(20deg);
+            border-radius: 2px;
+        }}
+        .confetti-wrap span:nth-child(3n) {{
+            width: 7px;
+            height: 7px;
+            border-radius: 50%;
+        }}
+        .confetti-wrap span:nth-child(4n) {{
+            width: 12px;
+            height: 6px;
+        }}
+        @keyframes fall {{
+            0% {{ transform: translateY(0) rotate(0deg); opacity: 1; }}
+            100% {{ transform: translateY(160px) rotate(900deg); opacity: 0; }}
+        }}
+        </style>
+        """,
+        height=150,
+    )
+
+def texto_top_vendedor(row):
+    if pd.isna(row["vendedor"]) or row["vendedor"] == "":
+        return ""
+    return f'{row["vendedor"]} ({int(row["cantidad"])})'
+
+def semana_del_mes(fecha):
+    if pd.isna(fecha):
+        return None
+    return ((fecha.day - 1) // 7) + 1
+
+def oscurecer_color(hex_color, factor=0.55):
+    hex_color = hex_color.lstrip("#")
+    r = int(hex_color[0:2], 16) / 255
+    g = int(hex_color[2:4], 16) / 255
+    b = int(hex_color[4:6], 16) / 255
+    return (r * factor, g * factor, b * factor)
+
+def seleccionar_producto(df_productos, prefijo="", default_marca=None, default_modelo=None, default_color=None, default_tipo=None):
+    marcas = sorted(df_productos["marca"].dropna().unique())
+
+    if default_marca in marcas:
+        marca_index = marcas.index(default_marca)
+    else:
+        marca_index = 0
+
+    marca = st.selectbox(
+        "Marca",
+        marcas,
+        index=marca_index,
+        key=f"{prefijo}_marca"
+    )
+
+    color_marca = COLORES_MARCA.get(str(marca).upper(), "#95A5A6")
+    st.markdown(
+        f"<div style='background:{color_marca}; color:white; padding:8px 12px; "
+        f"border-radius:10px; display:inline-block; font-weight:700;'>Marca seleccionada: {marca}</div>",
+        unsafe_allow_html=True
+    )
+
+    modelos = sorted(df_productos[df_productos["marca"] == marca]["modelo"].dropna().unique())
+    if default_modelo in modelos:
+        modelo_index = modelos.index(default_modelo)
+    else:
+        modelo_index = 0
+
+    modelo = st.selectbox(
+        "Modelo",
+        modelos,
+        index=modelo_index,
+        key=f"{prefijo}_modelo"
+    )
+
+    colores = sorted(df_productos[
+        (df_productos["marca"] == marca) &
+        (df_productos["modelo"] == modelo)
+    ]["color"].dropna().unique())
+
+    if default_color in colores:
+        color_index = colores.index(default_color)
+    else:
+        color_index = 0
+
+    color = st.selectbox(
+        "Color",
+        colores,
+        index=color_index,
+        key=f"{prefijo}_color"
+    )
+
+    tipos = sorted(df_productos[
+        (df_productos["marca"] == marca) &
+        (df_productos["modelo"] == modelo) &
+        (df_productos["color"] == color)
+    ]["tipo"].dropna().unique())
+
+    if default_tipo in tipos:
+        tipo_index = tipos.index(default_tipo)
+    else:
+        tipo_index = 0
+
+    tipo = st.selectbox(
+        "Tipo",
+        tipos,
+        index=tipo_index,
+        key=f"{prefijo}_tipo"
+    )
+
+    resultado = df_productos[
+        (df_productos["marca"] == marca) &
+        (df_productos["modelo"] == modelo) &
+        (df_productos["color"] == color) &
+        (df_productos["tipo"] == tipo)
+    ]
+
+    return resultado.iloc[0], resultado
+
+def calcular_stock(productos, movimientos_stock, ventas):
+    base = productos.copy()
+    base["sku"] = base["sku"].astype(str)
+
+    if movimientos_stock.empty:
+        mov_resumen = pd.DataFrame(columns=["sku", "movimiento_stock"])
+    else:
+        mov = movimientos_stock.copy()
+        mov["cantidad"] = pd.to_numeric(mov["cantidad"], errors="coerce").fillna(0)
+        mov["signo"] = mov["tipo_movimiento"].map({
+            "STOCK INICIAL": 1,
+            "INGRESO": 1,
+            "TRASLADO INGRESO": 1,
+            "SALIDA": -1,
+            "TRASLADO SALIDA": -1,
+        }).fillna(0)
+        mov["movimiento_stock"] = mov["cantidad"] * mov["signo"]
+        mov_resumen = mov.groupby("sku")["movimiento_stock"].sum().reset_index()
+
+    if ventas.empty:
+        ventas_resumen = pd.DataFrame(columns=["sku", "ventas_stock"])
+    else:
+        ven = ventas.copy()
+        ven["cantidad"] = pd.to_numeric(ven["cantidad"], errors="coerce").fillna(0)
+        ven = ven[ven["sku"].astype(str).str.strip() != ""]
+        ventas_resumen = ven.groupby("sku")["cantidad"].sum().reset_index()
+        ventas_resumen["ventas_stock"] = ventas_resumen["cantidad"] * -1
+        ventas_resumen = ventas_resumen[["sku", "ventas_stock"]]
+
+    stock = base.merge(mov_resumen, on="sku", how="left")
+    stock = stock.merge(ventas_resumen, on="sku", how="left")
+    stock["movimiento_stock"] = pd.to_numeric(stock["movimiento_stock"], errors="coerce").fillna(0)
+    stock["ventas_stock"] = pd.to_numeric(stock["ventas_stock"], errors="coerce").fillna(0)
+    stock["stock_actual"] = stock["movimiento_stock"] + stock["ventas_stock"]
+
+    stock = stock.sort_values(["marca", "modelo", "color", "tipo"])
+    return stock
+
+def registrar_movimiento_stock(tipo_movimiento, requiere_jefe=False):
+    st.subheader(tipo_movimiento.title())
+
+    if st.session_state.get("stock_guardado_ok", ""):
+        st.success(st.session_state["stock_guardado_ok"])
+        mostrar_confeti()
+        st.session_state["stock_guardado_ok"] = ""
+
+    version = st.session_state.get("stock_form_version", 0)
+    prefijo = f"stock_{tipo_movimiento}_{version}"
+
+    fecha = st.date_input("Fecha", key=f"{prefijo}_fecha")
+
+    # Para INGRESO y STOCK INICIAL se muestran todos los productos.
+    # Para SALIDA/TRASLADO SALIDA se muestran solo productos con stock disponible.
+    df_productos = productos.copy()
+    if tipo_movimiento in ["SALIDA", "TRASLADO SALIDA"]:
+        stock_para_salida = calcular_stock(productos, movimientos_stock, ventas)
+        stock_para_salida["stock_actual"] = pd.to_numeric(
+            stock_para_salida["stock_actual"], errors="coerce"
+        ).fillna(0).astype(int)
+
+        df_productos = stock_para_salida[stock_para_salida["stock_actual"] > 0].copy()
+
+        if df_productos.empty:
+            st.warning("No hay productos con stock disponible para salida o traslado.")
+            return
+
+    producto, producto_df = seleccionar_producto(df_productos, prefijo=prefijo)
+
+    st.write("Producto seleccionado:")
+    st.dataframe(producto_df.astype(str), use_container_width=True)
+
+    stock_disponible = None
+    if tipo_movimiento in ["SALIDA", "TRASLADO SALIDA"]:
+        stock_disponible = int(pd.to_numeric(producto.get("stock_actual", 0), errors="coerce"))
+        st.info(f"Stock disponible: {stock_disponible}")
+
+    cantidad = st.number_input("Cantidad", min_value=1, step=1, key=f"{prefijo}_cantidad")
+
+    jefe_solicita = ""
+    if requiere_jefe:
+        jefes_activos = jefes[jefes["estado"] == "ACTIVO"]["nombre"]
+        jefe_solicita = st.selectbox("Jefe que solicita", jefes_activos, key=f"{prefijo}_jefe")
+
+    vendedores_activos = vendedores[vendedores["estado"] == "ACTIVO"]["nombre"]
+    vendedor_responsable = st.selectbox(
+        "Vendedor responsable",
+        vendedores_activos,
+        key=f"{prefijo}_vendedor"
+    )
+
+    detalle = st.text_input("Detalle / observación", key=f"{prefijo}_detalle")
+
+    if st.button(f"Guardar {tipo_movimiento.title()}", key=f"{prefijo}_guardar"):
+        if stock_disponible is not None and int(cantidad) > stock_disponible:
+            st.error(f"No puedes sacar {cantidad}. Solo hay {stock_disponible} en stock.")
+            return
+
+        nuevo_mov = {
+            "fecha": fecha.strftime("%Y-%m-%d"),
+            "tipo_movimiento": tipo_movimiento,
+            "sku": producto["sku"],
+            "cantidad": int(cantidad),
+            "jefe_solicita": jefe_solicita,
+            "vendedor_responsable": vendedor_responsable,
+            "detalle": detalle
+        }
+
+        insertar_registro("movimientos_stock", nuevo_mov)
+
+        st.session_state["stock_guardado_ok"] = (
+            f"{tipo_movimiento.title()} guardado correctamente ✅ Ya puedes registrar otro movimiento."
+        )
+        st.session_state["stock_form_version"] = version + 1
+        st.rerun()
+
+# =========================
+# COLORES Y MESES
+# =========================
+COLORES_MARCA = {
+    "OPPO": "#2ECC71",
+    "SAMSUNG": "#3498DB",
+    "XIAOMI": "#F39C12",
+    "HONOR": "#9B59B6",
+    "APPLE": "#BDC3C7",
+    "MOTOROLA": "#E67E22",
+    "ZTE": "#E74C3C",
+    "VIVO": "#6C5CE7",
+}
+
+MESES = {
+    1: "Enero", 2: "Febrero", 3: "Marzo", 4: "Abril",
+    5: "Mayo", 6: "Junio", 7: "Julio", 8: "Agosto",
+    9: "Septiembre", 10: "Octubre", 11: "Noviembre", 12: "Diciembre",
+}
+MESES_INVERSO = {v: k for k, v in MESES.items()}
+
+# =========================
+# CARGA DE DATOS
+# =========================
+productos = cargar_tabla("productos", ["id", "marca", "sku", "modelo", "color", "tipo"])
+accesorios = cargar_tabla("accesorios", ["id", "marca", "sku", "descripcion"])
+vendedores = cargar_tabla("vendedores", ["id", "nombre", "estado"])
+jefes = cargar_tabla("jefes", ["id", "nombre", "estado"])
+ventas = cargar_tabla("ventas", [
+    "id", "fecha", "vendedor", "orden", "chip", "tipo_chip", "imei",
+    "sku", "marca", "modelo", "color", "tipo", "cantidad",
+    "accesorio_sku", "accesorio", "cantidad_accesorio"
+])
+movimientos_stock = cargar_tabla("movimientos_stock", [
+    "id", "fecha", "tipo_movimiento", "sku", "cantidad",
+    "jefe_solicita", "vendedor_responsable", "detalle"
+])
+
+columnas_ventas = [
+    "id", "fecha", "vendedor", "orden", "chip", "tipo_chip", "imei",
+    "sku", "marca", "modelo", "color", "tipo", "cantidad",
+    "accesorio_sku", "accesorio", "cantidad_accesorio"
+]
+for col in columnas_ventas:
+    if col not in ventas.columns:
+        ventas[col] = ""
+ventas = ventas[columnas_ventas]
+
+columnas_stock = [
+    "fecha", "tipo_movimiento", "sku", "cantidad",
+    "jefe_solicita", "vendedor_responsable", "detalle"
+]
+for col in columnas_stock:
+    if col not in movimientos_stock.columns:
+        movimientos_stock[col] = ""
+movimientos_stock = movimientos_stock[columnas_stock]
+
+if "form_version" not in st.session_state:
+    st.session_state["form_version"] = 0
+
+if "stock_form_version" not in st.session_state:
+    st.session_state["stock_form_version"] = 0
+
+if "stock_guardado_ok" not in st.session_state:
+    st.session_state["stock_guardado_ok"] = ""
+
+stock_actual_df = calcular_stock(productos, movimientos_stock, ventas)
+
+# =========================
+# MENÚ
+# =========================
+st.sidebar.title("⚡ Control Ventas")
+st.sidebar.markdown("### 📲 Menú")
+
+if "menu_actual" not in st.session_state:
+    st.session_state["menu_actual"] = "📊 Dashboard"
+
+def boton_menu(texto):
+    activo = st.session_state["menu_actual"] == texto
+    etiqueta = f"✅ {texto}" if activo else f"　{texto}"
+    if st.button(etiqueta, use_container_width=True, key=f"btn_{texto}"):
+        st.session_state["menu_actual"] = texto
+        st.rerun()
+
+with st.sidebar.expander("✨ Principal", expanded=True):
+    boton_menu("📊 Dashboard")
+    boton_menu("🧾 Registrar Orden")
+
+with st.sidebar.expander("🛒 Gestión de Venta", expanded=False):
+    boton_menu("🔍 Buscar")
+    boton_menu("✏️ Editar Venta")
+    boton_menu("📋 Ventas Registradas")
+
+with st.sidebar.expander("📦 Inventario", expanded=False):
+    boton_menu("📦 Inventario")
+
+with st.sidebar.expander("🧩 Productos", expanded=False):
+    boton_menu("📱 Catálogo Equipos")
+    boton_menu("🎧 Catálogo Accesorios")
+    boton_menu("➕ Nuevo Equipo")
+    boton_menu("➕ Nuevo Accesorio")
+
+with st.sidebar.expander("👥 Equipo", expanded=False):
+    boton_menu("🧑‍💼 Vendedores")
+
+menu = st.session_state["menu_actual"]
+
+# =========================
+# DASHBOARD
+# =========================
+if menu == "📊 Dashboard":
+    st.title("📊 Dashboard de Ventas")
+    st.markdown("""
+    <div class="glass-primary">
+        <h3>🚀 Control en tiempo real</h3>
+        <p>Ventas, rankings, stock y seguimiento en un solo panel.</p>
+    </div>
+    """, unsafe_allow_html=True)
+
+    mascota_dashboard = get_base64_image("assets/mascota_dashboard.png")
+    if mascota_dashboard:
+        st.markdown(f"""
+        <div style="position: fixed; bottom: 14px; right: 24px; z-index: 999;">
+            <img src="data:image/png;base64,{mascota_dashboard}" width="170">
+        </div>
+        """, unsafe_allow_html=True)
+
+    if ventas.empty or ventas["orden"].fillna("").eq("").all():
+        st.info("Aún no hay ventas registradas.")
+    else:
+        ventas_dash = ventas.copy()
+        ventas_dash["fecha"] = pd.to_datetime(ventas_dash["fecha"], errors="coerce")
+        ventas_dash["cantidad"] = pd.to_numeric(ventas_dash["cantidad"], errors="coerce").fillna(0)
+        ventas_dash["cantidad_accesorio"] = pd.to_numeric(
+            ventas_dash["cantidad_accesorio"], errors="coerce"
+        ).fillna(0)
+        ventas_dash["semana_mes"] = ventas_dash["fecha"].apply(semana_del_mes)
+
+        ventas_validas_fecha = ventas_dash.dropna(subset=["fecha"])
+
+        st.subheader("Filtros")
+        col_f1, col_f2, col_f3, col_f4, col_f5 = st.columns(5)
+
+        años = sorted(ventas_validas_fecha["fecha"].dt.year.unique(), reverse=True)
+        with col_f1:
+            año = st.selectbox("Año", ["TODOS"] + años)
+
+        temp_fechas = ventas_validas_fecha.copy()
+        if año != "TODOS":
+            temp_fechas = temp_fechas[temp_fechas["fecha"].dt.year == año]
+
+        meses_numeros = sorted(temp_fechas["fecha"].dt.month.unique())
+        meses_nombres = [MESES[m] for m in meses_numeros]
+
+        with col_f2:
+            mes_nombre = st.selectbox("Mes", ["TODOS"] + meses_nombres)
+
+        mes_numero = MESES_INVERSO.get(mes_nombre, "TODOS")
+
+        if mes_numero != "TODOS":
+            temp_fechas = temp_fechas[temp_fechas["fecha"].dt.month == mes_numero]
+
+        semanas_disponibles = sorted(temp_fechas["fecha"].apply(semana_del_mes).dropna().unique())
+        semanas_opciones = [f"Semana {int(s)}" for s in semanas_disponibles]
+
+        with col_f3:
+            semana_nombre = st.selectbox("Semana del mes", ["TODAS"] + semanas_opciones)
+
+        semana_numero = "TODAS"
+        if semana_nombre != "TODAS":
+            semana_numero = int(semana_nombre.replace("Semana ", ""))
+
+        if semana_numero != "TODAS":
+            temp_fechas = temp_fechas[temp_fechas["fecha"].apply(semana_del_mes) == semana_numero]
+
+        dias_disponibles = sorted(temp_fechas["fecha"].dt.day.unique())
+        with col_f4:
+            dia = st.selectbox("Día", ["TODOS"] + dias_disponibles)
+
+        marcas_disponibles = sorted(ventas_dash["marca"].dropna().replace("", pd.NA).dropna().unique())
+        with col_f5:
+            marca_filtro = st.selectbox("marca", ["TODAS"] + marcas_disponibles)
+
+        ventas_filtradas = ventas_dash.copy()
+
+        if año != "TODOS":
+            ventas_filtradas = ventas_filtradas[ventas_filtradas["fecha"].dt.year == año]
+        if mes_numero != "TODOS":
+            ventas_filtradas = ventas_filtradas[ventas_filtradas["fecha"].dt.month == mes_numero]
+        if semana_numero != "TODAS":
+            ventas_filtradas = ventas_filtradas[ventas_filtradas["semana_mes"] == semana_numero]
+        if dia != "TODOS":
+            ventas_filtradas = ventas_filtradas[ventas_filtradas["fecha"].dt.day == dia]
+        if marca_filtro != "TODAS":
+            ventas_filtradas = ventas_filtradas[ventas_filtradas["marca"] == marca_filtro]
+
+        ventas_equipos = ventas_filtradas[
+            (ventas_filtradas["marca"].fillna("") != "") &
+            (ventas_filtradas["cantidad"] > 0)
+        ]
+
+        st.divider()
+
+        c1, c2, c3 = st.columns(3)
+        c1.metric("Órdenes", ventas_filtradas["orden"].nunique())
+        c2.metric("Equipos vendidos", int(ventas_equipos["cantidad"].sum()))
+        c3.metric("Accesorios vendidos", int(ventas_filtradas["cantidad_accesorio"].sum()))
+
+        st.divider()
+
+        col1, col2 = st.columns(2)
+
+        with col1:
+            st.subheader("🏆 Ranking de Marcas")
+            if ventas_equipos.empty:
+                st.info("No hay ventas de equipos para este filtro.")
+            else:
+                ranking_marca = (
+                    ventas_equipos.groupby("marca")["cantidad"]
+                    .sum()
+                    .sort_values(ascending=False)
+                    .reset_index()
+                )
+                ranking_marca.columns = ["marca", "Total"]
+                st.dataframe(ranking_marca.astype(str), use_container_width=True)
+                st.bar_chart(ranking_marca.set_index("marca"))
+
+        with col2:
+            st.subheader("🥧 Participación de Marcas")
+            if ventas_equipos.empty:
+                st.info("No hay datos para participación.")
+            else:
+                pie_data = ventas_equipos.groupby("marca")["cantidad"].sum().sort_values(ascending=False)
+                colores = [COLORES_MARCA.get(str(marca).upper(), "#95A5A6") for marca in pie_data.index]
+                colores_sombra = [oscurecer_color(c, 0.50) for c in colores]
+
+                fig, ax = plt.subplots(figsize=(7, 4), facecolor="#0E1117")
+                ax.set_facecolor("#0E1117")
+
+                for i in range(10, 0, -1):
+                    ax.pie(
+                        pie_data.values,
+                        radius=1.0,
+                        colors=colores_sombra,
+                        startangle=90,
+                        center=(0, -0.025 * i),
+                        wedgeprops={"linewidth": 0, "edgecolor": "none"}
+                    )
+
+                ax.pie(
+                    pie_data.values,
+                    labels=pie_data.index,
+                    autopct="%1.1f%%",
+                    startangle=90,
+                    colors=colores,
+                    shadow=True,
+                    explode=[0.03] * len(pie_data),
+                    pctdistance=0.72,
+                    labeldistance=1.15,
+                    center=(0, 0),
+                    textprops={"color": "white", "fontsize": 9, "fontweight": "bold"},
+                    wedgeprops={"linewidth": 0.8, "edgecolor": "#222222"}
+                )
+
+                ax.set_aspect(0.55)
+                ax.set_xlim(-1.55, 1.55)
+                ax.set_ylim(-1.05, 1.20)
+                ax.axis("off")
+                st.pyplot(fig)
+
+        st.divider()
+
+        st.subheader("🏅 Top vendedores por marca")
+        if ventas_equipos.empty:
+            st.info("No hay datos suficientes.")
+        else:
+            top_base = (
+                ventas_equipos.groupby(["marca", "vendedor"])["cantidad"]
+                .sum()
+                .reset_index()
+                .sort_values(["marca", "cantidad"], ascending=[True, False])
+            )
+
+            top_base["puesto"] = (
+                top_base.groupby("marca")["cantidad"]
+                .rank(method="first", ascending=False)
+                .astype(int)
+            )
+            top_base["texto"] = top_base.apply(texto_top_vendedor, axis=1)
+            top_filtrado = top_base[top_base["puesto"] <= 4]
+
+            tabla_top = top_filtrado.pivot(index="marca", columns="puesto", values="texto").reset_index()
+            for n in range(1, 5):
+                if n not in tabla_top.columns:
+                    tabla_top[n] = ""
+
+            tabla_top = tabla_top.rename(columns={
+                "marca": "MARCAS",
+                1: "🥇 VENDEDOR TOP 1",
+                2: "🥈 VENDEDOR TOP 2",
+                3: "🥉 VENDEDOR TOP 3",
+                4: "🏅 VENDEDOR TOP 4",
+            })
+
+            totales_marca = (
+                ventas_equipos.groupby("marca")["cantidad"]
+                .sum()
+                .reset_index()
+                .rename(columns={"marca": "MARCAS", "cantidad": "TOTAL"})
+            )
+
+            tabla_top = tabla_top.merge(totales_marca, on="MARCAS", how="left")
+            tabla_top = tabla_top.sort_values("TOTAL", ascending=False)
+
+            columnas_top = [
+                "MARCAS", "🥇 VENDEDOR TOP 1", "🥈 VENDEDOR TOP 2",
+                "🥉 VENDEDOR TOP 3", "🏅 VENDEDOR TOP 4", "TOTAL"
+            ]
+            tabla_top = tabla_top[columnas_top].fillna("")
+            st.dataframe(tabla_top.astype(str), use_container_width=True)
+
+        st.divider()
+
+        col3, col4 = st.columns(2)
+
+        with col3:
+            st.subheader("📱 Ranking de Modelos")
+            if ventas_equipos.empty:
+                st.info("No hay modelos vendidos para este filtro.")
+            else:
+                ranking_modelo = (
+                    ventas_equipos.groupby("modelo")["cantidad"]
+                    .sum()
+                    .sort_values(ascending=False)
+                    .reset_index()
+                )
+                ranking_modelo.columns = ["modelo", "Cantidad"]
+                st.dataframe(ranking_modelo.astype(str), use_container_width=True)
+                st.bar_chart(ranking_modelo.set_index("modelo"))
+
+        with col4:
+            st.subheader("📅 Ventas por Día")
+            if ventas_equipos.empty:
+                st.info("No hay ventas por día para este filtro.")
+            else:
+                ventas_dia = (
+                    ventas_equipos.groupby(ventas_equipos["fecha"].dt.date)["cantidad"]
+                    .sum()
+                    .reset_index()
+                )
+                ventas_dia.columns = ["Fecha", "Ventas"]
+                st.dataframe(ventas_dia.astype(str), use_container_width=True)
+                st.line_chart(ventas_dia.set_index("Fecha"))
+
+        st.divider()
+        st.subheader("Últimas órdenes del filtro")
+        ultimas_ordenes = ventas_filtradas.drop(columns=["semana_mes"], errors="ignore").tail(30).copy()
+        ultimas_ordenes = ultimas_ordenes.replace({"None": "", "nan": "", "NaN": ""})
+        st.dataframe(ultimas_ordenes.astype(str), use_container_width=True)
+
+# =========================
+# INVENTARIO
+# =========================
+elif menu == "📦 Inventario":
+    st.title("📦 Inventario")
+    st.markdown("""
+    <div class="glass-primary">
+        <h3>📦 Inventario vivo</h3>
+        <p>Stock inicial, ingresos, salidas, traslados y disponibilidad.</p>
+    </div>
+    """, unsafe_allow_html=True)
+
+    opcion_inv = st.radio(
+        "Elige una opción",
+        [
+            "📊 Ver Stock Actual",
+            "➕ Ingresar Stock",
+            "📥 Ingreso Mercadería",
+            "📤 Salida Traslado",
+            "📋 Historial Movimientos"
+        ],
+        horizontal=True
+    )
+
+    if opcion_inv == "📊 Ver Stock Actual":
+        st.subheader("📊 Stock Actual")
+
+        stock_vista = stock_actual_df.copy()
+        stock_vista["stock_actual"] = pd.to_numeric(stock_vista["stock_actual"], errors="coerce").fillna(0).astype(int)
+
+        col1, col2, col3 = st.columns(3)
+        marcas_stock = sorted(stock_vista["marca"].dropna().unique())
+        marca_stock = col1.selectbox("Filtrar marca", ["TODAS"] + marcas_stock)
+        solo_con_stock = col2.checkbox("Mostrar solo con stock", value=False)
+        texto_buscar = col3.text_input("Buscar modelo / SKU / color")
+
+        if marca_stock != "TODAS":
+            stock_vista = stock_vista[stock_vista["marca"] == marca_stock]
+
+        if solo_con_stock:
+            stock_vista = stock_vista[stock_vista["stock_actual"] > 0]
+
+        if texto_buscar.strip():
+            t = texto_buscar.strip().lower()
+            stock_vista = stock_vista[
+                stock_vista["modelo"].str.lower().str.contains(t, na=False) |
+                stock_vista["sku"].str.lower().str.contains(t, na=False) |
+                stock_vista["color"].str.lower().str.contains(t, na=False)
+            ]
+
+        mostrar_cols = ["marca", "sku", "modelo", "color", "tipo", "stock_actual"]
+        st.dataframe(stock_vista[mostrar_cols].astype(str), use_container_width=True)
+
+    elif opcion_inv == "➕ Ingresar Stock":
+        st.info("Usa esta opción para cargar tu stock inicial por primera vez.")
+        registrar_movimiento_stock("STOCK INICIAL", requiere_jefe=False)
+
+    elif opcion_inv == "📥 Ingreso Mercadería":
+        tipo_ingreso = st.selectbox("Tipo de ingreso", ["INGRESO", "TRASLADO INGRESO"])
+        requiere_jefe = tipo_ingreso == "TRASLADO INGRESO"
+        registrar_movimiento_stock(tipo_ingreso, requiere_jefe=requiere_jefe)
+
+    elif opcion_inv == "📤 Salida Traslado":
+        tipo_salida = st.selectbox("Tipo de salida", ["TRASLADO SALIDA", "SALIDA"])
+        requiere_jefe = tipo_salida == "TRASLADO SALIDA"
+        registrar_movimiento_stock(tipo_salida, requiere_jefe=requiere_jefe)
+
+    elif opcion_inv == "📋 Historial Movimientos":
+        st.subheader("📋 Historial de movimientos de stock")
+        st.dataframe(movimientos_stock.astype(str), use_container_width=True)
+
+# =========================
+# CATÁLOGOS
+# =========================
+elif menu == "📱 Catálogo Equipos":
+    st.title("📱 Catálogo Equipos")
+    st.dataframe(productos.astype(str), use_container_width=True)
+
+elif menu == "🎧 Catálogo Accesorios":
+    st.title("🎧 Catálogo Accesorios")
+    st.dataframe(accesorios.astype(str), use_container_width=True)
+
+
+elif menu == "➕ Nuevo Equipo":
+    st.title("➕ Nuevo Equipo")
+    st.markdown("""
+    <div class="glass-primary">
+        <h3>📱 Agregar modelo al catálogo</h3>
+        <p>Este producto aparecerá para stock, ventas e inventario.</p>
+    </div>
+    """, unsafe_allow_html=True)
+
+    nueva_marca = st.text_input("marca").strip().upper()
+    nuevo_sku = st.text_input("SKU").strip().upper()
+    nuevo_modelo = st.text_input("modelo").strip().upper()
+    nuevo_color = st.text_input("color").strip().upper()
+    nuevo_tipo = st.selectbox("tipo", ["SOLO", "PACK"])
+
+    if st.button("Guardar nuevo equipo"):
+        if not nueva_marca or not nuevo_sku or not nuevo_modelo or not nuevo_color:
+            st.error("Completa Marca, SKU, Modelo y Color.")
+        elif nuevo_sku in productos["sku"].astype(str).str.strip().values:
+            st.error("Ese SKU ya existe en el catálogo.")
+        else:
+            nuevo_producto = pd.DataFrame([{
+                "marca": nueva_marca,
+                "sku": nuevo_sku,
+                "modelo": nuevo_modelo,
+                "color": nuevo_color,
+                "tipo": nuevo_tipo
+            }])
+            registro = nuevo_producto.iloc[0].to_dict()
+            insertar_registro("productos", registro)
+            st.success("Nuevo equipo agregado correctamente ✅")
+            mostrar_confeti()
+            st.info("Ahora ve a Inventario → Ingresar Stock para cargar unidades.")
+            st.rerun()
+
+elif menu == "➕ Nuevo Accesorio":
+    st.title("➕ Nuevo Accesorio")
+    st.markdown("""
+    <div class="glass-primary">
+        <h3>🎧 Agregar accesorio al catálogo</h3>
+        <p>Este accesorio aparecerá al registrar órdenes.</p>
+    </div>
+    """, unsafe_allow_html=True)
+
+    marca_acc_nueva = st.text_input("Marca accesorio").strip().upper()
+    sku_acc_nuevo = st.text_input("SKU accesorio").strip().upper()
+    desc_acc_nueva = st.text_input("Descripción").strip().upper()
+
+    if st.button("Guardar nuevo accesorio"):
+        if not marca_acc_nueva or not sku_acc_nuevo or not desc_acc_nueva:
+            st.error("Completa Marca, SKU y Descripción.")
+        elif sku_acc_nuevo in accesorios["sku"].astype(str).str.strip().values:
+            st.error("Ese SKU de accesorio ya existe.")
+        else:
+            nuevo_accesorio = pd.DataFrame([{
+                "MARCA": marca_acc_nueva,
+                "SKU": sku_acc_nuevo,
+                "DESCRIPCION": desc_acc_nueva
+            }])
+            accesorios_actualizados = pd.concat([accesorios, nuevo_accesorio], ignore_index=True)
+            accesorios_actualizados = accesorios_actualizados.sort_values(["MARCA", "DESCRIPCION"])
+            accesorios_actualizados.to_csv("data/catalogo_accesorios.csv", sep="\t", index=False)
+            st.success("Nuevo accesorio agregado correctamente ✅")
+            mostrar_confeti()
+
+elif menu == "🧑‍💼 Vendedores":
+    st.title("🧑‍💼 Vendedores")
+    st.dataframe(vendedores.astype(str), use_container_width=True)
+
+# =========================
+# REGISTRAR ORDEN
+# =========================
+elif menu == "🧾 Registrar Orden":
+    st.title("🧾 Registrar Orden")
+    st.markdown("""
+    <div class="glass-primary">
+        <h3>🧾 Registro rápido</h3>
+        <p>Registra chip, equipo y accesorio desde una sola orden.</p>
+    </div>
+    """, unsafe_allow_html=True)
+
+    if st.session_state.get("guardado_ok", False):
+        st.success("Orden guardada correctamente ✅ Ya puedes registrar otra.")
+        mostrar_confeti()
+        st.session_state["guardado_ok"] = False
+
+    version = st.session_state["form_version"]
+    vendedores_activos = vendedores[vendedores["estado"] == "ACTIVO"]["nombre"]
+
+    fecha = st.date_input("Fecha", key=f"fecha_{version}")
+    vendedor = st.selectbox("Vendedor", vendedores_activos, key=f"vendedor_{version}")
+    orden = st.text_input("Número de Orden", key=f"orden_{version}")
+
+    st.subheader("¿Qué incluye la orden?")
+    col1, col2, col3 = st.columns(3)
+    incluye_chip = col1.checkbox("Chip", key=f"incluye_chip_{version}")
+    incluye_equipo = col2.checkbox("Equipo", key=f"incluye_equipo_{version}")
+    incluye_accesorio = col3.checkbox("Accesorio", key=f"incluye_accesorio_{version}")
+
+    chip = ""
+    tipo_chip = ""
+    imei = ""
+    sku = ""
+    marca = ""
+    modelo = ""
+    color = ""
+    tipo = ""
+    accesorio_sku = ""
+    accesorio_desc = ""
+    cantidad_accesorio = 0
+
+    if incluye_chip:
+        st.subheader("📶 Datos del Chip")
+        tipo_chip = st.selectbox("Tipo de chip", ["PREPAGO", "POSPAGO"], key=f"tipo_chip_{version}")
+        chip = st.text_input("Número de chip", key=f"chip_{version}")
+
+    if incluye_equipo:
+        st.subheader("📱 Datos del Equipo")
+
+        productos_disponibles = stock_actual_df[pd.to_numeric(stock_actual_df["stock_actual"], errors="coerce").fillna(0) > 0].copy()
+
+        if productos_disponibles.empty:
+            st.error("No hay equipos con stock disponible. Primero ingresa stock en Inventario.")
+        else:
+            producto, producto_df = seleccionar_producto(productos_disponibles, prefijo=f"venta_{version}")
+            sku = producto["sku"]
+            marca = producto["marca"]
+            modelo = producto["modelo"]
+            color = producto["color"]
+            tipo = producto["tipo"]
+            stock_disponible = int(pd.to_numeric(producto["stock_actual"], errors="coerce"))
+
+            imei = st.text_input("IMEI", key=f"imei_{version}")
+
+            st.write(f"Stock disponible: **{stock_disponible}**")
+            st.write("Producto seleccionado:")
+            st.dataframe(producto_df.astype(str), use_container_width=True)
+
+    if incluye_accesorio:
+        st.subheader("🎧 Datos del Accesorio")
+
+        marca_acc = st.selectbox("Marca accesorio", sorted(accesorios["marca"].dropna().unique()), key=f"marca_acc_{version}")
+        accesorios_filtrados = accesorios[accesorios["marca"] == marca_acc]
+
+        accesorio_desc = st.selectbox(
+            "Accesorio",
+            sorted(accesorios_filtrados["descripcion"].dropna().unique()),
+            key=f"accesorio_{version}"
+        )
+
+        acc_resultado = accesorios_filtrados[
+            accesorios_filtrados["descripcion"] == accesorio_desc
+        ]
+
+        accesorio_sku = acc_resultado.iloc[0]["sku"]
+        cantidad_accesorio = 1
+
+        st.write("Accesorio seleccionado:")
+        st.dataframe(acc_resultado.astype(str), use_container_width=True)
+
+    if st.button("Guardar Orden", key=f"guardar_{version}"):
+        orden_limpia = orden.strip()
+
+        if orden_limpia == "":
+            st.error("Debes ingresar el número de orden.")
+        elif orden_limpia in ventas["orden"].astype(str).str.strip().values:
+            st.error("Esa orden ya está registrada. No se puede duplicar.")
+        elif not incluye_chip and not incluye_equipo and not incluye_accesorio:
+            st.error("Debes seleccionar al menos Chip, Equipo o Accesorio.")
+        elif incluye_equipo and sku == "":
+            st.error("No se seleccionó equipo válido.")
+        elif incluye_equipo and imei.strip() == "":
+            st.error("Debes ingresar el IMEI del equipo.")
+        elif incluye_chip and chip.strip() == "":
+            st.error("Debes ingresar el número de chip.")
+        else:
+            nueva_venta = pd.DataFrame([{
+                "fecha": fecha.strftime("%Y-%m-%d"),
+                "vendedor": vendedor,
+                "orden": orden_limpia,
+                "chip": chip.strip(),
+                "tipo_chip": tipo_chip,
+                "imei": imei.strip(),
+                "sku": sku,
+                "marca": marca,
+                "modelo": modelo,
+                "color": color,
+                "tipo": tipo,
+                "cantidad": 1 if incluye_equipo else 0,
+                "accesorio_sku": accesorio_sku,
+                "accesorio": accesorio_desc,
+                "cantidad_accesorio": cantidad_accesorio if incluye_accesorio else 0
+            }])
+
+            registro = nueva_venta.iloc[0].to_dict()
+            registro["cantidad"] = int(registro.get("cantidad", 0) or 0)
+            registro["cantidad_accesorio"] = int(registro.get("cantidad_accesorio", 0) or 0)
+            insertar_registro("ventas", registro)
+
+            st.session_state["guardado_ok"] = True
+            st.session_state["form_version"] += 1
+            st.rerun()
+
+# =========================
+# VENTAS REGISTRADAS
+# =========================
+elif menu == "📋 Ventas Registradas":
+    st.title("📋 Ventas Registradas")
+
+    if ventas.empty:
+        st.info("No hay ventas registradas.")
+    else:
+        ventas_limpias = ventas.copy().replace({"None": "", "nan": "", "NaN": ""})
+        st.dataframe(ventas_limpias.astype(str), use_container_width=True)
+
+        st.subheader("🗑 Eliminar venta")
+
+        ventas_para_borrar = ventas.copy()
+        ventas_para_borrar["orden"] = ventas_para_borrar["orden"].astype(str)
+
+        ordenes_disponibles = sorted(
+            [o for o in ventas_para_borrar["orden"].dropna().unique() if o.strip() != ""]
+        )
+
+        if not ordenes_disponibles:
+            st.info("No hay órdenes disponibles para eliminar.")
+        else:
+            orden_eliminar = st.selectbox(
+                "Selecciona la orden que quieres eliminar",
+                ordenes_disponibles
+            )
+
+            venta_seleccionada = ventas_para_borrar[
+                ventas_para_borrar["orden"].astype(str) == str(orden_eliminar)
+            ]
+
+            st.warning("Revisa bien antes de eliminar. Esta acción borra la venta seleccionada de Supabase.")
+            st.dataframe(venta_seleccionada.astype(str), use_container_width=True)
+
+            confirmar = st.checkbox("Confirmo que quiero eliminar esta orden")
+
+            if st.button("Eliminar venta"):
+                if not confirmar:
+                    st.error("Primero marca la confirmación para evitar borrar por error.")
+                else:
+                    if "id" in venta_seleccionada.columns and str(venta_seleccionada.iloc[0].get("id", "")).strip() != "":
+                        venta_id = venta_seleccionada.iloc[0]["id"]
+                        eliminar_registro("ventas", venta_id)
+                    else:
+                        supabase.table("ventas").delete().eq("orden", orden_eliminar).execute()
+
+                    st.success("Venta eliminada correctamente ✅")
+                    st.rerun()
+
+# =========================
+# EDITAR VENTA
+# =========================
+elif menu == "✏️ Editar Venta":
+    st.title("✏️ Editar Venta")
+
+    if ventas.empty or ventas["orden"].fillna("").eq("").all():
+        st.info("No hay ventas para editar.")
+    else:
+        ordenes = ventas["orden"].astype(str).dropna().unique()
+        orden_editar = st.selectbox("Selecciona la orden", sorted(ordenes))
+
+        idx = ventas[ventas["orden"].astype(str) == str(orden_editar)].index[0]
+        venta = ventas.loc[idx].copy()
+
+        st.subheader("Datos actuales")
+        st.dataframe(pd.DataFrame([venta]).astype(str), use_container_width=True)
+
+        st.subheader("Editar datos permitidos")
+
+        nueva_orden = st.text_input("Orden", value=str(venta.get("orden", "")))
+        nuevo_chip = st.text_input("Chip", value=str(venta.get("chip", "")))
+
+        tipo_chip_actual = str(venta.get("tipo_chip", ""))
+        opciones_chip = ["", "PREPAGO", "POSPAGO"]
+        if tipo_chip_actual not in opciones_chip:
+            tipo_chip_actual = ""
+        nuevo_tipo_chip = st.selectbox(
+            "Tipo de chip",
+            opciones_chip,
+            index=opciones_chip.index(tipo_chip_actual)
+        )
+
+        nuevo_imei = st.text_input("IMEI", value=str(venta.get("imei", "")))
+
+        tiene_equipo = str(venta.get("marca", "")) != ""
+
+        nueva_marca = str(venta.get("marca", ""))
+        nuevo_modelo = str(venta.get("modelo", ""))
+        nuevo_color = str(venta.get("color", ""))
+        nuevo_tipo = str(venta.get("tipo", ""))
+        nuevo_sku = str(venta.get("sku", ""))
+
+        if tiene_equipo:
+            st.subheader("Editar equipo con selectores seguros")
+            producto, producto_df = seleccionar_producto(
+                productos,
+                prefijo=f"editar_{idx}",
+                default_marca=nueva_marca,
+                default_modelo=nuevo_modelo,
+                default_color=nuevo_color,
+                default_tipo=nuevo_tipo
+            )
+            nuevo_sku = producto["sku"]
+            nueva_marca = producto["marca"]
+            nuevo_modelo = producto["modelo"]
+            nuevo_color = producto["color"]
+            nuevo_tipo = producto["tipo"]
+
+            st.write("Nuevo producto seleccionado:")
+            st.dataframe(producto_df.astype(str), use_container_width=True)
+
+        if st.button("Guardar edición"):
+            nueva_orden_limpia = nueva_orden.strip()
+            ordenes_existentes = ventas.drop(index=idx)["orden"].astype(str).str.strip().values
+
+            if nueva_orden_limpia == "":
+                st.error("La orden no puede quedar vacía.")
+            elif nueva_orden_limpia in ordenes_existentes:
+                st.error("Esa orden ya existe en otra venta.")
+            else:
+                ventas.loc[idx, "orden"] = nueva_orden_limpia
+                ventas.loc[idx, "chip"] = nuevo_chip.strip()
+                ventas.loc[idx, "tipo_chip"] = nuevo_tipo_chip
+                ventas.loc[idx, "imei"] = nuevo_imei.strip()
+
+                if tiene_equipo:
+                    ventas.loc[idx, "sku"] = nuevo_sku
+                    ventas.loc[idx, "marca"] = nueva_marca
+                    ventas.loc[idx, "modelo"] = nuevo_modelo
+                    ventas.loc[idx, "color"] = nuevo_color
+                    ventas.loc[idx, "tipo"] = nuevo_tipo
+
+                venta_id = ventas.loc[idx, "id"]
+                cambios = {
+                    "orden": nueva_orden_limpia,
+                    "chip": nuevo_chip.strip(),
+                    "tipo_chip": nuevo_tipo_chip,
+                    "imei": nuevo_imei.strip(),
+                }
+                if tiene_equipo:
+                    cambios.update({
+                        "sku": nuevo_sku,
+                        "marca": nueva_marca,
+                        "modelo": nuevo_modelo,
+                        "color": nuevo_color,
+                        "tipo": nuevo_tipo,
+                    })
+                actualizar_registro("ventas", venta_id, cambios)
+                st.success("Venta editada correctamente ✅")
+                st.rerun()
+
+# =========================
+# BUSCAR
+# =========================
+elif menu == "🔍 Buscar":
+    st.title("🔍 Buscar Orden / IMEI / CHIP / Accesorio")
+
+    if ventas.empty:
+        st.info("No hay ventas registradas.")
+    else:
+        opcion = st.selectbox("Buscar por", ["ORDEN", "IMEI", "CHIP", "ACCESORIO"])
+        texto = st.text_input("Escribe lo que quieres buscar").strip()
+
+        if texto:
+            ventas_busqueda = ventas.astype(str)
+
+            if opcion == "ORDEN":
+                resultado = ventas_busqueda[
+                    ventas_busqueda["orden"].str.contains(texto, case=False, na=False)
+                ]
+            elif opcion == "IMEI":
+                resultado = ventas_busqueda[
+                    ventas_busqueda["imei"].str.contains(texto, case=False, na=False)
+                ]
+            elif opcion == "CHIP":
+                resultado = ventas_busqueda[
+                    ventas_busqueda["chip"].str.contains(texto, case=False, na=False)
+                ]
+            else:
+                resultado = ventas_busqueda[
+                    ventas_busqueda["accesorio"].str.contains(texto, case=False, na=False) |
+                    ventas_busqueda["accesorio_sku"].str.contains(texto, case=False, na=False)
+                ]
+
+            if resultado.empty:
+                st.warning("No se encontraron resultados.")
+            else:
+                st.success(f"Se encontraron {len(resultado)} resultado(s).")
+                resultado = resultado.replace({"None": "", "nan": "", "NaN": ""})
+                st.dataframe(resultado, use_container_width=True)
