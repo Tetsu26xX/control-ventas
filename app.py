@@ -34,8 +34,9 @@ if "login_ok" not in st.session_state:
 def login():
     fondo_login = get_base64_image("assets/fondo_menu.png")
     mascota_login = get_base64_image("assets/mascota_dashboard.png")
+    img_html = f"<img src='data:image/png;base64,{mascota_login}'>" if mascota_login else ""
 
-    st.markdown(f"""
+    login_html = """
     <style>
     .login-wrap {{
         min-height: 68vh;
@@ -56,8 +57,8 @@ def login():
         min-height: 390px;
         border-radius: 28px;
         background:
-            linear-gradient(135deg, rgba(0,30,65,0.18), rgba(227,6,19,0.12)),
-            url("data:image/png;base64,{fondo_login}");
+            linear-gradient(135deg, rgba(0,30,65,0.20), rgba(227,6,19,0.14)),
+            url("data:image/png;base64,{fondo}");
         background-size: cover;
         background-position: center;
         border: 1px solid rgba(255,255,255,0.24);
@@ -68,8 +69,8 @@ def login():
         padding: 20px;
     }}
     .login-visual img {{
-        width: 120px;
-        opacity: 0.92;
+        width: 115px;
+        opacity: 0.90;
         animation: floatLogin 2.5s ease-in-out infinite;
         filter: drop-shadow(0 14px 24px rgba(0,0,0,0.38));
     }}
@@ -171,14 +172,8 @@ def login():
 [data-testid="stSidebar"] .stButton > button:hover {
     opacity: 1;
     transform: translateX(5px) translateY(-2px) scale(1.015) !important;
-    background: linear-gradient(
-        135deg,
-        rgba(0, 170, 255, 0.24),
-        rgba(255, 45, 45, 0.18)
-    ) !important;
-    box-shadow:
-        0 12px 25px rgba(0, 170, 255, 0.22),
-        0 7px 18px rgba(255, 45, 45, 0.16) !important;
+    background: linear-gradient(135deg, rgba(0, 170, 255, 0.24), rgba(255, 45, 45, 0.18)) !important;
+    box-shadow: 0 12px 25px rgba(0, 170, 255, 0.22), 0 7px 18px rgba(255, 45, 45, 0.16) !important;
     border: 1px solid rgba(255,255,255,0.32) !important;
 }
 
@@ -186,24 +181,11 @@ def login():
     transform: translateX(2px) scale(0.98) !important;
 }
 
-/* El botón activo se marca visualmente con el prefijo ✅ desde Python */
-[data-testid="stSidebar"] button[kind="secondary"] p {
-    color: white !important;
-}
-
-@keyframes activePulse {
-    0% { box-shadow: 0 0 0 rgba(0, 170, 255, 0.0); }
-    50% { box-shadow: 0 0 18px rgba(0, 170, 255, 0.22); }
-    100% { box-shadow: 0 0 0 rgba(0, 170, 255, 0.0); }
-}
-
 </style>
 
     <div class="login-wrap">
         <div class="login-visual">
-              {img_html}
-        </div>
-            img_html = f"<img src='data:image/png;base64,{mascota_login}'>" if mascota_login else ""
+            {img_html}
         </div>
         <div class="login-panel">
             <h1 class="login-title">Control Ventas</h1>
@@ -216,7 +198,9 @@ def login():
             </div>
         </div>
     </div>
-    """, unsafe_allow_html=True)
+    """.format(fondo=fondo_login, img_html=img_html)
+
+    st.markdown(login_html, unsafe_allow_html=True)
 
     st.markdown("### 🔐 Iniciar sesión")
     usuario = st.text_input("Usuario").strip().upper()
@@ -826,134 +810,38 @@ menu = st.session_state["menu_actual"]
 # DASHBOARD
 # =========================
 if menu == "📌 Instrucciones":
-    st.title("📌 Guía rápida del sistema")
+    st.title("📌 Instrucciones rápidas")
 
     st.markdown("""
-    <style>
-    .inst-hero {
-        background: linear-gradient(135deg, rgba(0, 130, 255, 0.35), rgba(227, 6, 19, 0.26));
-        border: 1px solid rgba(255,255,255,0.20);
-        border-radius: 26px;
-        padding: 22px 26px;
-        margin-bottom: 18px;
-        box-shadow: 0 18px 45px rgba(0,0,0,0.28);
-        backdrop-filter: blur(16px);
-    }
-    .inst-hero h3 {
-        margin: 0;
-        color: white;
-        font-size: 25px;
-    }
-    .inst-hero p {
-        margin: 6px 0 0 0;
-        color: rgba(255,255,255,0.92);
-    }
-    .inst-card {
-        background: rgba(255,255,255,0.09);
-        border: 1px solid rgba(255,255,255,0.18);
-        border-radius: 22px;
-        padding: 20px;
-        margin-bottom: 14px;
-        backdrop-filter: blur(14px);
-        box-shadow: 0 12px 30px rgba(0,0,0,0.20);
-        transition: all 0.22s ease;
-        min-height: 235px;
-    }
-    .inst-card:hover {
-        transform: translateY(-4px);
-        background: rgba(255,255,255,0.13);
-        box-shadow:
-            0 16px 34px rgba(0, 130, 255, 0.16),
-            0 10px 26px rgba(227, 6, 19, 0.12);
-    }
-    .inst-card h4 {
-        margin: 0 0 10px 0;
-        color: white;
-        font-size: 20px;
-    }
-    .inst-card ul {
-        margin-top: 8px;
-        padding-left: 19px;
-    }
-    .inst-card li {
-        margin-bottom: 8px;
-        color: rgba(255,255,255,0.92);
-        line-height: 1.35;
-    }
-    .inst-warning {
-        background: linear-gradient(135deg, rgba(255, 193, 7, 0.18), rgba(227, 6, 19, 0.18));
-        border: 1px solid rgba(255,255,255,0.20);
-        border-radius: 22px;
-        padding: 18px 22px;
-        margin-top: 10px;
-        color: white;
-    }
-    .inst-warning b {
-        color: white;
-    }
-    </style>
-
-    <div class="inst-hero">
-        <h3>🚀 Uso rápido y seguro</h3>
-        <p>Estas reglas ayudan a evitar duplicados, errores de stock y registros incompletos.</p>
+    <div class="glass-primary">
+        <h3>Guía rápida de uso</h3>
+        <p>Usa esta sección como recordatorio para trabajar sin errores.</p>
     </div>
     """, unsafe_allow_html=True)
 
-    col1, col2 = st.columns(2)
+    c1, c2 = st.columns(2)
+    with c1:
+        st.subheader("🧾 Registrar orden")
+        st.write("1. Verifica la orden.")
+        st.write("2. Marca si incluye chip, equipo o accesorio.")
+        st.write("3. Si incluye equipo, registra el IMEI correctamente.")
+        st.write("4. Guarda una sola vez y espera el mensaje de confirmación.")
 
-    with col1:
-        st.markdown("""
-        <div class="inst-card">
-            <h4>🧾 Registrar orden</h4>
-            <ul>
-                <li>Verifica que la orden esté correcta antes de guardar.</li>
-                <li>Marca si incluye chip, equipo o accesorio.</li>
-                <li>Si incluye equipo, registra bien el IMEI.</li>
-                <li>Guarda una sola vez y espera la confirmación.</li>
-            </ul>
-        </div>
+        st.subheader("📱 Buscar IMEI")
+        st.write("Filtra por fecha y marca para enviar IMEI vendidos a promotores.")
 
-        <div class="inst-card">
-            <h4>📱 Buscar IMEI</h4>
-            <ul>
-                <li>Filtra por fecha inicio, fecha fin y marca.</li>
-                <li>Útil para reportar IMEI vendidos a promotores.</li>
-                <li>Descarga el reporte si necesitas compartirlo.</li>
-            </ul>
-        </div>
-        """, unsafe_allow_html=True)
+    with c2:
+        st.subheader("📦 Inventario")
+        st.write("Ingreso Stock: carga stock inicial real.")
+        st.write("Ingreso Mercadería: suma equipos nuevos.")
+        st.write("Salida Traslado: descuenta equipos que salen.")
+        st.write("Nunca registres salida mayor al stock disponible.")
 
-    with col2:
-        st.markdown("""
-        <div class="inst-card">
-            <h4>📦 Inventario</h4>
-            <ul>
-                <li>Ingreso Stock sirve para cargar el stock inicial real.</li>
-                <li>Ingreso Mercadería suma equipos nuevos.</li>
-                <li>Salida Traslado descuenta equipos disponibles.</li>
-                <li>No registres salidas mayores al stock.</li>
-            </ul>
-        </div>
-
-        <div class="inst-card">
-            <h4>🔐 Usuarios</h4>
-            <ul>
-                <li>Cada vendedor ingresa con su usuario.</li>
-                <li>El admin puede registrar por cualquier vendedor.</li>
-                <li>No compartir contraseñas.</li>
-            </ul>
-        </div>
-        """, unsafe_allow_html=True)
-
-    st.markdown("""
-    <div class="inst-warning">
-        <b>❗ Reglas importantes:</b><br>
-        No duplicar órdenes · Revisar IMEI antes de guardar · No modificar stock manualmente · Verificar vendedor antes de registrar.
-    </div>
-    """, unsafe_allow_html=True)
+        st.subheader("🔐 Usuarios")
+        st.write("Vendedores registran con su nombre.")
+        st.write("Admin puede registrar por cualquier vendedor.")
 
 elif menu == "📊 Dashboard":
-
     st.title("📊 Dashboard de Ventas")
     st.markdown("""
     <div class="glass-primary">
