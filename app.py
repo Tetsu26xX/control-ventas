@@ -37,71 +37,192 @@ def login():
 
     st.markdown(f"""
     <style>
-    .login-bg {{
-        min-height: 64vh;
-        border-radius: 32px;
-        padding: 24px;
+    .login-wrap {{
+        min-height: 68vh;
+        border-radius: 34px;
+        padding: 26px;
         background:
-            linear-gradient(135deg, rgba(0, 35, 85, 0.78), rgba(227, 6, 19, 0.55)),
+            radial-gradient(circle at top left, rgba(0, 212, 255, 0.22), transparent 28%),
+            radial-gradient(circle at bottom right, rgba(255, 49, 49, 0.22), transparent 30%),
+            linear-gradient(135deg, #102b4d 0%, #133d66 42%, #201d35 72%, #39151f 100%);
+        box-shadow: 0 25px 70px rgba(0,0,0,0.42);
+        display: grid;
+        grid-template-columns: 0.95fr 1.05fr;
+        gap: 22px;
+        align-items: center;
+        overflow: hidden;
+    }}
+    .login-visual {{
+        min-height: 390px;
+        border-radius: 28px;
+        background:
+            linear-gradient(135deg, rgba(0,30,65,0.18), rgba(227,6,19,0.12)),
             url("data:image/png;base64,{fondo_login}");
         background-size: cover;
         background-position: center;
-        box-shadow: 0 25px 70px rgba(0,0,0,0.45);
+        border: 1px solid rgba(255,255,255,0.24);
+        box-shadow: inset 0 0 50px rgba(0,0,0,0.20);
         display: flex;
-        align-items: center;
+        align-items: flex-end;
         justify-content: center;
+        padding: 20px;
     }}
-    .login-card {{
-        width: min(520px, 96%);
-        background: rgba(255,255,255,0.12);
+    .login-visual img {{
+        width: 120px;
+        opacity: 0.92;
+        animation: floatLogin 2.5s ease-in-out infinite;
+        filter: drop-shadow(0 14px 24px rgba(0,0,0,0.38));
+    }}
+    .login-panel {{
+        background: rgba(255,255,255,0.11);
         border: 1px solid rgba(255,255,255,0.25);
         backdrop-filter: blur(20px);
         -webkit-backdrop-filter: blur(20px);
         border-radius: 28px;
-        padding: 22px;
-        box-shadow: 0 18px 55px rgba(0,0,0,0.35);
-        text-align: center;
+        padding: 28px;
+        box-shadow: 0 18px 55px rgba(0,0,0,0.32);
     }}
     .login-title {{
-        font-size: 30px;
+        font-size: 34px;
         font-weight: 1000;
         color: white;
-        margin: 0;
-        text-shadow: 0 0 18px rgba(255,255,255,0.35);
+        margin: 0 0 8px 0;
+        text-shadow: 0 0 20px rgba(255,255,255,0.28);
     }}
     .login-subtitle {{
-        color: white;
-        opacity: 0.95;
-        font-size: 16px;
-        margin-top: 8px;
-        margin-bottom: 14px;
+        color: rgba(255,255,255,0.92);
+        font-size: 15px;
+        margin-bottom: 22px;
     }}
-    .login-mascot {{
-        animation: floatLogin 2.4s ease-in-out infinite;
-        margin-bottom: 8px;
-        filter: drop-shadow(0 14px 24px rgba(0,0,0,0.35));
+    .feature-grid {{
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 10px;
+        margin-top: 18px;
+    }}
+    .feature-card {{
+        background: rgba(255,255,255,0.10);
+        border: 1px solid rgba(255,255,255,0.18);
+        border-radius: 18px;
+        padding: 12px;
+        color: white;
+        text-align: center;
+        min-height: 78px;
+    }}
+    .feature-card b {{
+        display: block;
+        color: white;
+        font-size: 14px;
+        margin-bottom: 4px;
+    }}
+    .feature-card span {{
+        font-size: 11px;
+        opacity: 0.86;
     }}
     @keyframes floatLogin {{
         0% {{ transform: translateY(0px) rotate(-2deg); }}
         50% {{ transform: translateY(-9px) rotate(2deg); }}
         100% {{ transform: translateY(0px) rotate(-2deg); }}
     }}
-    </style>
-    <div class="login-bg">
-      <div class="login-card">
-        {"<img class='login-mascot' src='data:image/png;base64," + mascota_login + "' width='95'>" if mascota_login else ""}
-        <h1 class="login-title">🔐 Control Ventas</h1>
-        <p class="login-subtitle">Ingresa para registrar ventas, stock y consultar reportes.</p>
-      </div>
+    @media (max-width: 900px) {{
+        .login-wrap {{ grid-template-columns: 1fr; }}
+        .login-visual {{ min-height: 220px; }}
+        .feature-grid {{ grid-template-columns: repeat(2, 1fr); }}
+    }}
+    
+/* =========================
+   MENÚ PREMIUM ANIMADO
+   ========================= */
+[data-testid="stSidebar"] details {
+    animation: menuFadeIn 0.55s ease both;
+}
+
+[data-testid="stSidebar"] details:nth-of-type(1) { animation-delay: 0.04s; }
+[data-testid="stSidebar"] details:nth-of-type(2) { animation-delay: 0.08s; }
+[data-testid="stSidebar"] details:nth-of-type(3) { animation-delay: 0.12s; }
+[data-testid="stSidebar"] details:nth-of-type(4) { animation-delay: 0.16s; }
+[data-testid="stSidebar"] details:nth-of-type(5) { animation-delay: 0.20s; }
+
+@keyframes menuFadeIn {
+    from {
+        opacity: 0;
+        transform: translateX(-14px) translateY(6px);
+    }
+    to {
+        opacity: 1;
+        transform: translateX(0) translateY(0);
+    }
+}
+
+[data-testid="stSidebar"] .stButton > button {
+    background: rgba(255,255,255,0.10) !important;
+    color: white !important;
+    border: 1px solid rgba(255,255,255,0.18) !important;
+    box-shadow: 0 6px 18px rgba(0,0,0,0.10) !important;
+    text-align: left !important;
+    justify-content: flex-start !important;
+    margin: 4px 0 !important;
+    border-radius: 14px !important;
+    font-weight: 850 !important;
+    opacity: 0.88;
+    transition: all 0.24s ease !important;
+}
+
+[data-testid="stSidebar"] .stButton > button:hover {
+    opacity: 1;
+    transform: translateX(5px) translateY(-2px) scale(1.015) !important;
+    background: linear-gradient(
+        135deg,
+        rgba(0, 170, 255, 0.24),
+        rgba(255, 45, 45, 0.18)
+    ) !important;
+    box-shadow:
+        0 12px 25px rgba(0, 170, 255, 0.22),
+        0 7px 18px rgba(255, 45, 45, 0.16) !important;
+    border: 1px solid rgba(255,255,255,0.32) !important;
+}
+
+[data-testid="stSidebar"] .stButton > button:active {
+    transform: translateX(2px) scale(0.98) !important;
+}
+
+/* El botón activo se marca visualmente con el prefijo ✅ desde Python */
+[data-testid="stSidebar"] button[kind="secondary"] p {
+    color: white !important;
+}
+
+@keyframes activePulse {
+    0% { box-shadow: 0 0 0 rgba(0, 170, 255, 0.0); }
+    50% { box-shadow: 0 0 18px rgba(0, 170, 255, 0.22); }
+    100% { box-shadow: 0 0 0 rgba(0, 170, 255, 0.0); }
+}
+
+</style>
+
+    <div class="login-wrap">
+        <div class="login-visual">
+            {"<img src='data:image/png;base64," + mascota_login + "'>" if mascota_login else ""}
+        </div>
+        <div class="login-panel">
+            <h1 class="login-title">Control Ventas</h1>
+            <div class="login-subtitle">Ventas, ranking, stock, traslados y reportes IMEI en un solo lugar.</div>
+            <div class="feature-grid">
+                <div class="feature-card"><b>📊 Ranking</b><span>Seguimiento por marca y vendedor</span></div>
+                <div class="feature-card"><b>🧾 Ventas</b><span>Órdenes, equipos, chips y accesorios</span></div>
+                <div class="feature-card"><b>📦 Stock</b><span>Disponibilidad e ingresos</span></div>
+                <div class="feature-card"><b>🚚 Traslados</b><span>Salidas e ingresos controlados</span></div>
+            </div>
+        </div>
     </div>
     """, unsafe_allow_html=True)
 
-    st.markdown("### Acceso")
+    st.markdown("### 🔐 Iniciar sesión")
     usuario = st.text_input("Usuario").strip().upper()
     password = st.text_input("Contraseña", type="password").strip()
 
     if st.button("Ingresar", use_container_width=True):
-        data = supabase.table("usuarios").select("*").eq("usuario", usuario).execute().data
+        with st.spinner("Validando acceso..."):
+            data = supabase.table("usuarios").select("*").eq("usuario", usuario).execute().data
 
         if data:
             user = data[0]
@@ -603,6 +724,7 @@ productos = cargar_tabla("productos", ["id", "marca", "sku", "modelo", "color", 
 accesorios = cargar_tabla("accesorios", ["id", "marca", "sku", "descripcion"])
 vendedores = cargar_tabla("vendedores", ["id", "nombre", "estado"])
 jefes = cargar_tabla("jefes", ["id", "nombre", "estado"])
+usuarios = cargar_tabla("usuarios", ["id", "usuario", "password", "rol", "vendedor", "estado"])
 ventas = cargar_tabla("ventas", [
     "id", "fecha", "creado_en", "vendedor", "orden", "chip", "tipo_chip", "imei",
     "sku", "marca", "modelo", "color", "tipo", "cantidad",
@@ -648,7 +770,12 @@ stock_actual_df = calcular_stock(productos, movimientos_stock, ventas)
 # =========================
 st.sidebar.title("⚡ Control Ventas")
 if st.session_state.get("login_ok", False):
-    st.sidebar.success(f"Usuario: {st.session_state.get('usuario', '')}")
+    rol_txt = str(st.session_state.get("rol", "")).upper()
+    vendedor_txt = str(st.session_state.get("vendedor", "")).upper()
+    if rol_txt == "ADMIN":
+        st.sidebar.success(f"👑 {vendedor_txt} · VENDEDOR ADMIN")
+    else:
+        st.sidebar.success(f"👤 {vendedor_txt} · VENDEDOR")
     if st.sidebar.button("Cerrar sesión"):
         st.session_state["login_ok"] = False
         st.session_state["usuario"] = ""
@@ -671,6 +798,7 @@ def boton_menu(texto):
 with st.sidebar.expander("✨ Principal", expanded=True):
     boton_menu("📊 Dashboard")
     boton_menu("🧾 Registrar Orden")
+    boton_menu("📌 Instrucciones")
 
 with st.sidebar.expander("🛒 Gestión de Venta", expanded=False):
     boton_menu("🔍 Buscar")
@@ -695,7 +823,135 @@ menu = st.session_state["menu_actual"]
 # =========================
 # DASHBOARD
 # =========================
-if menu == "📊 Dashboard":
+if menu == "📌 Instrucciones":
+    st.title("📌 Guía rápida del sistema")
+
+    st.markdown("""
+    <style>
+    .inst-hero {
+        background: linear-gradient(135deg, rgba(0, 130, 255, 0.35), rgba(227, 6, 19, 0.26));
+        border: 1px solid rgba(255,255,255,0.20);
+        border-radius: 26px;
+        padding: 22px 26px;
+        margin-bottom: 18px;
+        box-shadow: 0 18px 45px rgba(0,0,0,0.28);
+        backdrop-filter: blur(16px);
+    }
+    .inst-hero h3 {
+        margin: 0;
+        color: white;
+        font-size: 25px;
+    }
+    .inst-hero p {
+        margin: 6px 0 0 0;
+        color: rgba(255,255,255,0.92);
+    }
+    .inst-card {
+        background: rgba(255,255,255,0.09);
+        border: 1px solid rgba(255,255,255,0.18);
+        border-radius: 22px;
+        padding: 20px;
+        margin-bottom: 14px;
+        backdrop-filter: blur(14px);
+        box-shadow: 0 12px 30px rgba(0,0,0,0.20);
+        transition: all 0.22s ease;
+        min-height: 235px;
+    }
+    .inst-card:hover {
+        transform: translateY(-4px);
+        background: rgba(255,255,255,0.13);
+        box-shadow:
+            0 16px 34px rgba(0, 130, 255, 0.16),
+            0 10px 26px rgba(227, 6, 19, 0.12);
+    }
+    .inst-card h4 {
+        margin: 0 0 10px 0;
+        color: white;
+        font-size: 20px;
+    }
+    .inst-card ul {
+        margin-top: 8px;
+        padding-left: 19px;
+    }
+    .inst-card li {
+        margin-bottom: 8px;
+        color: rgba(255,255,255,0.92);
+        line-height: 1.35;
+    }
+    .inst-warning {
+        background: linear-gradient(135deg, rgba(255, 193, 7, 0.18), rgba(227, 6, 19, 0.18));
+        border: 1px solid rgba(255,255,255,0.20);
+        border-radius: 22px;
+        padding: 18px 22px;
+        margin-top: 10px;
+        color: white;
+    }
+    .inst-warning b {
+        color: white;
+    }
+    </style>
+
+    <div class="inst-hero">
+        <h3>🚀 Uso rápido y seguro</h3>
+        <p>Estas reglas ayudan a evitar duplicados, errores de stock y registros incompletos.</p>
+    </div>
+    """, unsafe_allow_html=True)
+
+    col1, col2 = st.columns(2)
+
+    with col1:
+        st.markdown("""
+        <div class="inst-card">
+            <h4>🧾 Registrar orden</h4>
+            <ul>
+                <li>Verifica que la orden esté correcta antes de guardar.</li>
+                <li>Marca si incluye chip, equipo o accesorio.</li>
+                <li>Si incluye equipo, registra bien el IMEI.</li>
+                <li>Guarda una sola vez y espera la confirmación.</li>
+            </ul>
+        </div>
+
+        <div class="inst-card">
+            <h4>📱 Buscar IMEI</h4>
+            <ul>
+                <li>Filtra por fecha inicio, fecha fin y marca.</li>
+                <li>Útil para reportar IMEI vendidos a promotores.</li>
+                <li>Descarga el reporte si necesitas compartirlo.</li>
+            </ul>
+        </div>
+        """, unsafe_allow_html=True)
+
+    with col2:
+        st.markdown("""
+        <div class="inst-card">
+            <h4>📦 Inventario</h4>
+            <ul>
+                <li>Ingreso Stock sirve para cargar el stock inicial real.</li>
+                <li>Ingreso Mercadería suma equipos nuevos.</li>
+                <li>Salida Traslado descuenta equipos disponibles.</li>
+                <li>No registres salidas mayores al stock.</li>
+            </ul>
+        </div>
+
+        <div class="inst-card">
+            <h4>🔐 Usuarios</h4>
+            <ul>
+                <li>Cada vendedor ingresa con su usuario.</li>
+                <li>El admin puede registrar por cualquier vendedor.</li>
+                <li>No compartir contraseñas.</li>
+            </ul>
+        </div>
+        """, unsafe_allow_html=True)
+
+    st.markdown("""
+    <div class="inst-warning">
+        <b>❗ Reglas importantes:</b><br>
+        No duplicar órdenes · Revisar IMEI antes de guardar · No modificar stock manualmente · Verificar vendedor antes de registrar.
+    </div>
+    """, unsafe_allow_html=True)
+
+elif menu == "📊 Dashboard":
+
     st.title("📊 Dashboard de Ventas")
     st.markdown("""
     <div class="glass-primary">
@@ -1106,7 +1362,51 @@ elif menu == "➕ Nuevo Accesorio":
 
 elif menu == "🧑‍💼 Vendedores":
     st.title("🧑‍💼 Vendedores")
-    st.dataframe(vendedores.astype(str), use_container_width=True)
+
+    if st.session_state.get("rol") == "admin":
+        tab_vendedores, tab_nuevo = st.tabs(["📋 Lista", "➕ Nuevo vendedor / usuario"])
+
+        with tab_vendedores:
+            st.dataframe(vendedores.astype(str), use_container_width=True)
+
+        with tab_nuevo:
+            st.subheader("➕ Crear vendedor y usuario")
+            st.info("Esto crea al vendedor y también su acceso de login.")
+
+            nuevo_nombre = st.text_input("Nombre del vendedor").strip().upper()
+            nuevo_usuario = st.text_input("Usuario").strip().upper()
+            nueva_password = st.text_input("Contraseña inicial", type="password").strip()
+            nuevo_rol = st.selectbox("Rol", ["vendedor", "admin"])
+            nuevo_estado = st.selectbox("Estado", ["ACTIVO", "INACTIVO"])
+
+            if st.button("Crear vendedor / usuario"):
+                if not nuevo_nombre or not nuevo_usuario or not nueva_password:
+                    st.error("Completa nombre, usuario y contraseña.")
+                else:
+                    existe_vendedor = nuevo_nombre in vendedores["nombre"].astype(str).str.upper().values
+                    existe_usuario = nuevo_usuario in usuarios["usuario"].astype(str).str.upper().values if not usuarios.empty else False
+
+                    if existe_usuario:
+                        st.error("Ese usuario ya existe.")
+                    else:
+                        if not existe_vendedor:
+                            insertar_registro("vendedores", {
+                                "nombre": nuevo_nombre,
+                                "estado": nuevo_estado
+                            })
+
+                        insertar_registro("usuarios", {
+                            "usuario": nuevo_usuario,
+                            "password": nueva_password,
+                            "rol": nuevo_rol,
+                            "vendedor": nuevo_nombre,
+                            "estado": nuevo_estado
+                        })
+
+                        st.success("Vendedor / usuario creado correctamente ✅")
+                        st.rerun()
+    else:
+        st.warning("Solo el administrador puede ver y crear vendedores.")
 
 # =========================
 # REGISTRAR ORDEN
