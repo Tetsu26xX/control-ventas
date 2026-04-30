@@ -37,19 +37,29 @@ def login():
 
     st.markdown(f"""
     <style>
-    /* Login a pantalla completa */
-    [data-testid="stSidebar"], [data-testid="stToolbar"], [data-testid="stHeader"] {{
+    /* Quita barras/espacios propios de Streamlit SOLO en login */
+    [data-testid="stSidebar"],
+    [data-testid="stToolbar"],
+    [data-testid="stDecoration"],
+    [data-testid="stStatusWidget"],
+    header {{
         display: none !important;
+        visibility: hidden !important;
+        height: 0 !important;
+    }}
+
+    html, body, .stApp, [data-testid="stAppViewContainer"], .main {{
+        height: 100vh !important;
+        min-height: 100vh !important;
+        overflow: hidden !important;
     }}
 
     .stApp {{
-        min-height: 100vh;
-        overflow: hidden;
         background:
-            radial-gradient(circle at 78% 10%, rgba(224, 20, 121, 0.55), transparent 24%),
-            radial-gradient(circle at 20% 18%, rgba(20, 80, 220, 0.42), transparent 28%),
-            radial-gradient(circle at 88% 78%, rgba(255, 45, 90, 0.42), transparent 26%),
-            linear-gradient(130deg, #041228 0%, #0a1540 39%, #25115a 67%, #5c0735 100%) !important;
+            radial-gradient(circle at 75% 12%, rgba(212, 18, 125, 0.52), transparent 24%),
+            radial-gradient(circle at 18% 15%, rgba(17, 84, 207, 0.46), transparent 30%),
+            radial-gradient(circle at 88% 80%, rgba(255, 42, 90, 0.38), transparent 28%),
+            linear-gradient(130deg, #041228 0%, #081947 39%, #22115a 66%, #610638 100%) !important;
     }}
 
     .stApp::before {{
@@ -57,14 +67,15 @@ def login():
         position: fixed;
         inset: 0;
         pointer-events: none;
-        opacity: 0.9;
+        z-index: 0;
+        opacity: .95;
         background-image:
-            linear-gradient(132deg, transparent 9%, rgba(49, 113, 255, .75) 9.4%, rgba(49, 113, 255, .75) 10.1%, transparent 10.6%),
-            linear-gradient(132deg, transparent 38%, rgba(129, 42, 255, .28) 38%, rgba(129, 42, 255, .28) 43%, transparent 43.4%),
-            linear-gradient(132deg, transparent 56%, rgba(226, 35, 169, .75) 56.4%, rgba(226, 35, 169, .75) 57.2%, transparent 57.8%),
-            linear-gradient(132deg, transparent 81%, rgba(255, 58, 100, .9) 81%, rgba(255, 58, 100, .9) 83%, transparent 83.5%);
-        background-size: 540px 320px, 620px 420px, 520px 320px, 480px 300px;
-        background-position: -50px 20px, 220px 8px, 120px 110px, 720px 130px;
+            linear-gradient(132deg, transparent 7%, rgba(48, 111, 255, .70) 7.4%, rgba(48, 111, 255, .70) 8.1%, transparent 8.5%),
+            linear-gradient(132deg, transparent 37%, rgba(116, 45, 255, .30) 37%, rgba(116, 45, 255, .30) 42%, transparent 42.4%),
+            linear-gradient(132deg, transparent 56%, rgba(221, 35, 170, .72) 56.4%, rgba(221, 35, 170, .72) 57.1%, transparent 57.7%),
+            linear-gradient(132deg, transparent 80%, rgba(255, 58, 101, .88) 80%, rgba(255, 58, 101, .88) 82%, transparent 82.4%);
+        background-size: 530px 310px, 620px 420px, 520px 320px, 480px 300px;
+        background-position: -45px 4px, 220px -8px, 110px 90px, 715px 105px;
     }}
 
     .stApp::after {{
@@ -72,39 +83,46 @@ def login():
         position: fixed;
         inset: 0;
         pointer-events: none;
-        background: rgba(0, 0, 0, 0.06);
+        z-index: 0;
+        background: rgba(0,0,0,.05);
     }}
 
     .block-container {{
-        max-width: 1250px !important;
-        padding-top: 28px !important;
-        padding-bottom: 0 !important;
-        position: relative;
-        z-index: 2;
+        position: relative !important;
+        z-index: 2 !important;
+        max-width: 1180px !important;
+        height: 100vh !important;
+        padding: 0 34px !important;
+        display: flex !important;
+        flex-direction: column !important;
+        justify-content: center !important;
     }}
 
-    .login-shell {{
-        min-height: calc(100vh - 60px);
-        display: flex;
-        align-items: center;
+    div[data-testid="stVerticalBlock"] {{
+        gap: 0 !important;
+    }}
+
+    div[data-testid="stHorizontalBlock"] {{
+        align-items: center !important;
+        gap: 82px !important;
     }}
 
     .login-eyebrow {{
         color: #ff4f9f;
         font-size: 13px;
-        font-weight: 900;
+        font-weight: 950;
         letter-spacing: .3px;
-        margin-bottom: 6px;
+        margin: 0 0 8px 0;
     }}
 
     .login-title {{
         color: #ffffff;
-        font-size: clamp(44px, 5.1vw, 76px);
-        line-height: .82;
+        font-size: clamp(46px, 4.5vw, 66px);
+        line-height: .88;
         font-weight: 950;
-        letter-spacing: -1.6px;
-        margin: 0 0 16px 0;
-        text-shadow: 0 18px 36px rgba(0,0,0,.35);
+        letter-spacing: -1.4px;
+        margin: 0 0 22px 0;
+        text-shadow: 0 18px 38px rgba(0,0,0,.38);
     }}
 
     .login-title span {{
@@ -113,11 +131,12 @@ def login():
     }}
 
     .login-copy {{
-        color: rgba(255,255,255,.84);
+        color: rgba(255,255,255,.86);
         font-size: 12px;
-        font-weight: 650;
-        max-width: 470px;
-        margin-bottom: 26px;
+        line-height: 1.55;
+        font-weight: 750;
+        max-width: 575px;
+        margin: 0 0 26px 0;
     }}
 
     .feature-row {{
@@ -125,91 +144,98 @@ def login():
         grid-template-columns: repeat(3, minmax(0, 1fr));
         gap: 14px;
         max-width: 500px;
-        margin-bottom: 18px;
+        margin-bottom: -10px;
+        position: relative;
+        z-index: 4;
     }}
 
     .feature-card {{
-        min-height: 76px;
-        padding: 14px 14px 12px;
+        height: 88px;
+        padding: 14px 15px 12px;
         border-radius: 12px;
-        background: rgba(255,255,255,.075);
-        border: 1px solid rgba(255,255,255,.13);
-        box-shadow: 0 14px 35px rgba(0,0,0,.19);
+        background: rgba(255,255,255,.08);
+        border: 1px solid rgba(255,255,255,.15);
+        box-shadow: 0 14px 35px rgba(0,0,0,.20);
         backdrop-filter: blur(14px);
     }}
 
     .feature-icon {{
-        font-size: 19px;
-        color: #9d58ff;
-        margin-bottom: 4px;
+        font-size: 20px;
+        margin-bottom: 8px;
     }}
 
     .feature-title {{
         color: white;
         font-size: 11px;
-        font-weight: 900;
-        margin-bottom: 2px;
+        font-weight: 950;
+        margin-bottom: 3px;
     }}
 
     .feature-text {{
-        color: rgba(255,255,255,.62);
+        color: rgba(255,255,255,.68);
         font-size: 9px;
         line-height: 1.25;
+        font-weight: 650;
     }}
 
     .mascot-wrap {{
-        height: 210px;
+        height: 205px;
         position: relative;
         margin-top: -4px;
     }}
 
     .mascot-wrap img {{
         position: absolute;
-        left: 80px;
-        bottom: -6px;
+        left: 98px;
+        bottom: 0;
         width: 310px;
-        max-width: 74%;
+        max-width: 70%;
         filter: drop-shadow(0 24px 24px rgba(0,0,0,.42));
     }}
 
+    /* Card del login: aplica a la columna derecha */
     div[data-testid="stHorizontalBlock"] > div:nth-child(2) > div[data-testid="stVerticalBlock"] {{
-        background: linear-gradient(180deg, rgba(25,18,42,.86), rgba(17,16,31,.92));
+        background: linear-gradient(180deg, rgba(25,18,42,.88), rgba(17,16,31,.94));
         border: 1px solid rgba(255,255,255,.14);
         border-radius: 16px;
-        padding: 28px 34px 22px !important;
-        min-height: 430px;
-        box-shadow: 0 28px 80px rgba(0,0,0,.45);
+        padding: 42px 34px 26px !important;
+        min-height: 520px;
+        box-shadow: 0 28px 80px rgba(0,0,0,.48);
         backdrop-filter: blur(18px);
         -webkit-backdrop-filter: blur(18px);
-        margin-top: 28px;
     }}
 
     .login-lock {{
         width: 74px;
         height: 74px;
-        margin: 0 auto 14px;
+        margin: 0 auto 36px;
         border-radius: 50%;
         display: grid;
         place-items: center;
-        background: radial-gradient(circle, #dd3bca 0%, #8d24b8 42%, rgba(142,36,184,.18) 43%, rgba(142,36,184,.18) 100%);
-        box-shadow: 0 0 35px rgba(225,57,206,.25);
-        font-size: 26px;
+        background: radial-gradient(circle, #dd3bca 0%, #8d24b8 42%, rgba(142,36,184,.20) 43%, rgba(142,36,184,.20) 100%);
+        box-shadow: 0 0 35px rgba(225,57,206,.28);
+        font-size: 27px;
     }}
 
     .login-card-title {{
         color: white;
         text-align: center;
-        font-size: 22px;
+        font-size: 31px;
+        line-height: 1;
         font-weight: 950;
-        margin: 0;
+        margin: 0 0 22px 0;
     }}
 
     .login-card-subtitle {{
-        color: rgba(255,255,255,.55);
+        color: rgba(255,255,255,.58);
         text-align: center;
         font-size: 11px;
-        font-weight: 650;
-        margin: 4px 0 20px;
+        font-weight: 750;
+        margin: 0 0 24px 0;
+    }}
+
+    div[data-testid="stTextInput"] {{
+        margin-bottom: 8px !important;
     }}
 
     div[data-testid="stTextInput"] label {{
@@ -217,41 +243,49 @@ def login():
     }}
 
     div[data-testid="stTextInput"] input {{
-        height: 44px !important;
+        height: 43px !important;
         color: #ffffff !important;
-        background: rgba(255,255,255,.075) !important;
-        border: 1px solid rgba(255,255,255,.09) !important;
+        background: rgba(255,255,255,.13) !important;
+        border: 1px solid rgba(255,255,255,.12) !important;
         border-radius: 8px !important;
-        box-shadow: inset 0 1px 0 rgba(255,255,255,.04) !important;
+        box-shadow: inset 0 1px 0 rgba(255,255,255,.05) !important;
         font-size: 13px !important;
+        font-weight: 750 !important;
     }}
 
     div[data-testid="stTextInput"] input::placeholder {{
-        color: rgba(255,255,255,.48) !important;
+        color: rgba(255,255,255,.50) !important;
     }}
 
-    div[data-testid="stCheckbox"] label, div[data-testid="stCheckbox"] span {{
-        color: rgba(255,255,255,.72) !important;
-        font-size: 11px !important;
+    div[data-testid="stCheckbox"] {{
+        margin-top: 4px !important;
+        margin-bottom: 4px !important;
+    }}
+
+    div[data-testid="stCheckbox"] label,
+    div[data-testid="stCheckbox"] span {{
+        color: rgba(255,255,255,.78) !important;
+        font-size: 13px !important;
+        font-weight: 750 !important;
     }}
 
     .forgot-link {{
         text-align: right;
-        color: #c86fff;
+        color: #cf73ff;
         font-size: 11px;
-        margin-top: -35px;
-        margin-bottom: 12px;
-        font-weight: 700;
+        margin-top: -31px;
+        margin-bottom: 28px;
+        font-weight: 850;
     }}
 
     .stButton > button {{
-        height: 48px !important;
+        height: 52px !important;
         border: 0 !important;
         border-radius: 8px !important;
         color: white !important;
-        font-size: 13px !important;
+        font-size: 14px !important;
         font-weight: 950 !important;
-        background: linear-gradient(90deg, #ff3d73 0%, #8e2de2 76%, #7b2cff 100%) !important;
+        background: linear-gradient(90deg, #ff3d73 0%, #a72ee9 70%, #7b2cff 100%) !important;
         box-shadow: 0 16px 30px rgba(141,45,226,.24) !important;
         transition: all .2s ease !important;
     }}
@@ -259,40 +293,54 @@ def login():
     .stButton > button:hover {{
         transform: translateY(-2px);
         filter: brightness(1.08);
-        box-shadow: 0 20px 38px rgba(255,61,115,.28) !important;
+        box-shadow: 0 20px 38px rgba(255,61,115,.30) !important;
     }}
 
     .safe-access {{
-        margin-top: 18px;
+        margin-top: 26px;
         text-align: center;
-        color: rgba(142, 255, 224, .75);
+        color: rgba(142, 255, 224, .78);
         font-size: 11px;
-        font-weight: 700;
+        font-weight: 850;
     }}
 
     div[data-testid="stAlert"] {{
         border-radius: 10px !important;
-        background: rgba(255, 255, 255, .08) !important;
+        background: rgba(255,255,255,.08) !important;
         color: white !important;
+        margin-top: 10px !important;
     }}
 
     @media (max-width: 900px) {{
-        .feature-row {{ grid-template-columns: 1fr; max-width: 100%; }}
+        html, body, .stApp, [data-testid="stAppViewContainer"], .main {{
+            height: auto !important;
+            min-height: 100vh !important;
+            overflow-y: auto !important;
+        }}
+        .block-container {{
+            height: auto !important;
+            min-height: 100vh !important;
+            padding: 32px 18px !important;
+            justify-content: flex-start !important;
+        }}
+        div[data-testid="stHorizontalBlock"] {{
+            flex-direction: column !important;
+            gap: 22px !important;
+        }}
+        div[data-testid="stHorizontalBlock"] > div {{
+            width: 100% !important;
+        }}
+        .feature-row {{ grid-template-columns: 1fr; max-width: 100%; margin-bottom: 12px; }}
         .mascot-wrap {{ display: none; }}
-        div[data-testid="stHorizontalBlock"] {{ flex-direction: column !important; }}
-        div[data-testid="stHorizontalBlock"] > div {{ width: 100% !important; }}
         div[data-testid="stHorizontalBlock"] > div:nth-child(2) > div[data-testid="stVerticalBlock"] {{
-            margin-top: 10px;
-            padding: 24px 22px !important;
+            min-height: auto;
+            padding: 30px 22px !important;
         }}
     }}
     </style>
-
-    <div class="login-shell">
-        <div style="width:100%">
     """, unsafe_allow_html=True)
 
-    left, right = st.columns([1.28, 0.82], gap="large")
+    left, right = st.columns([1.38, 0.92], gap="large")
 
     with left:
         st.markdown("""
@@ -358,11 +406,6 @@ def login():
                     st.error("Usuario no existe.")
 
         st.markdown('<div class="safe-access">◎ Acceso seguro y protegido</div>', unsafe_allow_html=True)
-
-    st.markdown("""
-        </div>
-    </div>
-    """, unsafe_allow_html=True)
 
 if not st.session_state["login_ok"]:
     login()
