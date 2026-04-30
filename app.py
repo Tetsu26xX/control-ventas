@@ -8,16 +8,6 @@ from supabase import create_client
 
 st.set_page_config(page_title="Sistema Ventas", layout="wide")
 
-# =========================
-# IMÁGENES
-# =========================
-def get_base64_image(path):
-    try:
-        with open(path, "rb") as img_file:
-            return base64.b64encode(img_file.read()).decode()
-    except Exception:
-        return ""
-
 
 # =========================
 # CONEXIÓN SUPABASE
@@ -30,7 +20,9 @@ supabase = create_client(url, key)
 # LOGIN
 # =========================
 if "login_ok" not in st.session_state:
-    st.session_state["login_ok"]def login():
+    st.session_state["login_ok"] = False
+
+def login():
     st.markdown("""
     <style>
     .login-wrapper {
@@ -122,6 +114,15 @@ if "login_ok" not in st.session_state:
         font-size: 13px;
         margin-bottom: 22px;
     }
+    @keyframes floatLogin {
+        0% { transform: translateY(0px) rotate(-2deg); }
+        50% { transform: translateY(-9px) rotate(2deg); }
+        100% { transform: translateY(0px) rotate(-2deg); }
+    }
+    .mascota-login {
+        animation: floatLogin 2.7s ease-in-out infinite;
+        filter: drop-shadow(0 18px 28px rgba(0,0,0,0.35));
+    }
     [data-testid="stSidebar"] details {
         animation: menuFadeIn 0.55s ease both;
     }
@@ -153,7 +154,6 @@ if "login_ok" not in st.session_state:
     """, unsafe_allow_html=True)
 
     st.markdown('<div class="login-wrapper">', unsafe_allow_html=True)
-
     col_left, col_right = st.columns([1.15, 0.85], gap="large")
 
     with col_left:
@@ -165,7 +165,7 @@ if "login_ok" not in st.session_state:
             </div>
         """, unsafe_allow_html=True)
 
-        img_col1, img_col2, img_col3 = st.columns([1, 1.1, 1])
+        img_col1, img_col2, img_col3 = st.columns([1, 1.05, 1])
         with img_col2:
             if os.path.exists("assets/mascota_dashboard.png"):
                 st.image("assets/mascota_dashboard.png", use_container_width=True)
@@ -210,7 +210,6 @@ if "login_ok" not in st.session_state:
         st.markdown("</div>", unsafe_allow_html=True)
 
     st.markdown("</div>", unsafe_allow_html=True)
-existe.")
 
 if not st.session_state["login_ok"]:
     login()
