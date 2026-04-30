@@ -58,7 +58,7 @@ def login():
 
     .login-hero {
         position: relative;
-        min-height: 580px;
+        min-height: 545px;
         border-radius: 28px;
         overflow: hidden;
         padding: 42px 52px;
@@ -69,17 +69,6 @@ def login():
         border: 1px solid rgba(255,255,255,0.18);
         box-shadow: 0 28px 80px rgba(0,0,0,0.42);
         margin-top: 18px;
-    }
-
-    .login-hero::before {
-        content: "";
-        position: absolute;
-        inset: 0;
-        background:
-            linear-gradient(130deg, transparent 0 18%, rgba(255,255,255,0.07) 18.3% 18.8%, transparent 19.2% 100%),
-            linear-gradient(140deg, transparent 0 52%, rgba(255,255,255,0.08) 52.2% 52.6%, transparent 53% 100%);
-        opacity: 0.75;
-        pointer-events: none;
     }
 
     .login-left-content {
@@ -123,16 +112,18 @@ def login():
         display: flex;
         gap: 12px;
         flex-wrap: wrap;
-        margin-bottom: 22px;
+        margin-bottom: 20px;
+        position: relative;
+        z-index: 4;
     }
 
     .login-feature-card {
-        width: 148px;
+        width: 150px;
         min-height: 72px;
         border-radius: 14px;
         padding: 12px;
-        background: rgba(255,255,255,0.10);
-        border: 1px solid rgba(255,255,255,0.18);
+        background: rgba(255,255,255,0.12);
+        border: 1px solid rgba(255,255,255,0.20);
         color: white;
         backdrop-filter: blur(12px);
         box-shadow: 0 10px 24px rgba(0,0,0,0.20);
@@ -141,7 +132,7 @@ def login():
 
     .login-feature-card:hover {
         transform: translateY(-4px);
-        background: rgba(255,255,255,0.16);
+        background: rgba(255,255,255,0.18);
         box-shadow: 0 14px 30px rgba(125,70,255,0.22);
     }
 
@@ -160,8 +151,8 @@ def login():
         position: absolute;
         left: 120px;
         bottom: 0px;
-        width: 360px;
-        max-width: 38vw;
+        width: 350px;
+        max-width: 40vw;
         filter: drop-shadow(0 20px 32px rgba(0,0,0,0.36));
         animation: floatMascot 3s ease-in-out infinite;
         z-index: 3;
@@ -173,10 +164,9 @@ def login():
         100% { transform: translateY(0px); }
     }
 
-    .login-form-card {
-        min-height: 455px;
+    .login-form-box {
         border-radius: 26px;
-        padding: 34px;
+        padding: 30px;
         background: rgba(22, 16, 35, 0.76);
         border: 1px solid rgba(255,255,255,0.18);
         box-shadow:
@@ -184,7 +174,7 @@ def login():
             inset 0 0 40px rgba(255,255,255,0.04);
         backdrop-filter: blur(18px);
         -webkit-backdrop-filter: blur(18px);
-        margin-top: 74px;
+        margin-top: 42px;
     }
 
     .login-form-title {
@@ -199,25 +189,25 @@ def login():
         color: rgba(255,255,255,0.72);
         text-align: center;
         font-size: 13px;
-        margin-bottom: 24px;
+        margin-bottom: 18px;
     }
 
     .login-safe {
-        margin-top: 18px;
+        margin-top: 14px;
         text-align: center;
         color: rgba(255,255,255,0.75);
         font-size: 12px;
     }
 
     div[data-testid="stTextInput"] input {
-        background: rgba(255,255,255,0.10) !important;
-        border: 1px solid rgba(255,255,255,0.16) !important;
+        background: rgba(255,255,255,0.12) !important;
+        border: 1px solid rgba(255,255,255,0.20) !important;
         color: white !important;
         border-radius: 12px !important;
     }
 
     div[data-testid="stTextInput"] label {
-        color: rgba(255,255,255,0.88) !important;
+        color: rgba(255,255,255,0.90) !important;
     }
 
     .stButton > button {
@@ -268,8 +258,8 @@ def login():
     @media (max-width: 900px) {
         .login-hero { padding: 28px; min-height: auto; }
         .login-main-title { font-size: 42px; }
-        .login-mascot { position: relative; left: auto; bottom: auto; width: 240px; max-width: 80%; margin-top: 10px; }
-        .login-form-card { margin-top: 18px; min-height: auto; }
+        .login-mascot { position: relative; left: auto; bottom: auto; width: 230px; max-width: 80%; margin-top: 10px; }
+        .login-form-box { margin-top: 18px; }
     }
     </style>
     """, unsafe_allow_html=True)
@@ -298,11 +288,7 @@ def login():
         st.markdown(left_html.replace("__MASCOTA__", mascota_html), unsafe_allow_html=True)
 
     with col_right:
-        st.markdown("""
-        <div class="login-form-card">
-            <div class="login-form-title">🔐 Iniciar Sesión</div>
-            <div class="login-form-subtitle">Ingresa tus credenciales para continuar</div>
-        """, unsafe_allow_html=True)
+        st.markdown('<div class="login-form-box"><div class="login-form-title">🔐 Iniciar Sesión</div><div class="login-form-subtitle">Ingresa tus credenciales para continuar</div></div>', unsafe_allow_html=True)
 
         usuario = st.text_input("Usuario", placeholder="Usuario").strip().upper()
         password = st.text_input("Contraseña", type="password", placeholder="Contraseña").strip()
@@ -324,7 +310,7 @@ def login():
             else:
                 st.error("Usuario no existe.")
 
-        st.markdown('<div class="login-safe">🛡️ Acceso seguro y protegido</div></div>', unsafe_allow_html=True)
+        st.markdown('<div class="login-safe">🛡️ Acceso seguro y protegido</div>', unsafe_allow_html=True)
 
 if not st.session_state["login_ok"]:
     login()
