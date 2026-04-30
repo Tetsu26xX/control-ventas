@@ -3,6 +3,14 @@ import pandas as pd
 import matplotlib.pyplot as plt
 import streamlit.components.v1 as components
 import base64
+import base64
+
+def get_base64_image(path):
+    try:
+        with open(path, "rb") as img_file:
+            return base64.b64encode(img_file.read()).decode()
+    except:
+        return None
 from supabase import create_client
 
 st.set_page_config(page_title="Sistema Ventas", layout="wide")
