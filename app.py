@@ -8,6 +8,17 @@ from supabase import create_client
 st.set_page_config(page_title="Sistema Ventas", layout="wide")
 
 # =========================
+# IMÁGENES
+# =========================
+def get_base64_image(path):
+    try:
+        with open(path, "rb") as img_file:
+            return base64.b64encode(img_file.read()).decode()
+    except Exception:
+        return ""
+
+
+# =========================
 # CONEXIÓN SUPABASE
 # =========================
 url = st.secrets["SUPABASE_URL"]
@@ -134,15 +145,6 @@ def eliminar_registro(tabla, registro_id):
     return supabase.table(tabla).delete().eq("id", registro_id).execute()
 
 
-# =========================
-# IMÁGENES
-# =========================
-def get_base64_image(path):
-    try:
-        with open(path, "rb") as img_file:
-            return base64.b64encode(img_file.read()).decode()
-    except FileNotFoundError:
-        return ""
 
 # =========================
 # ESTILO VISUAL PERSONALIZADO
