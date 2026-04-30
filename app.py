@@ -34,11 +34,11 @@ if "login_ok" not in st.session_state:
 def login():
     fondo_login = get_base64_image("assets/fondo_menu.png")
     mascota_login = get_base64_image("assets/mascota_dashboard.png")
-    img_html = f"<img src='data:image/png;base64,{mascota_login}'>" if mascota_login else ""
+    img_html = "<img src='data:image/png;base64," + mascota_login + "'>" if mascota_login else ""
 
     login_html = """
     <style>
-    .login-wrap {{
+    .login-wrap {
         min-height: 68vh;
         border-radius: 34px;
         padding: 26px;
@@ -52,13 +52,13 @@ def login():
         gap: 22px;
         align-items: center;
         overflow: hidden;
-    }}
-    .login-visual {{
+    }
+    .login-visual {
         min-height: 390px;
         border-radius: 28px;
         background:
             linear-gradient(135deg, rgba(0,30,65,0.20), rgba(227,6,19,0.14)),
-            url("data:image/png;base64,{fondo}");
+            url("data:image/png;base64,__FONDO_LOGIN__");
         background-size: cover;
         background-position: center;
         border: 1px solid rgba(255,255,255,0.24);
@@ -67,14 +67,14 @@ def login():
         align-items: flex-end;
         justify-content: center;
         padding: 20px;
-    }}
-    .login-visual img {{
+    }
+    .login-visual img {
         width: 115px;
         opacity: 0.90;
         animation: floatLogin 2.5s ease-in-out infinite;
         filter: drop-shadow(0 14px 24px rgba(0,0,0,0.38));
-    }}
-    .login-panel {{
+    }
+    .login-panel {
         background: rgba(255,255,255,0.11);
         border: 1px solid rgba(255,255,255,0.25);
         backdrop-filter: blur(20px);
@@ -82,26 +82,26 @@ def login():
         border-radius: 28px;
         padding: 28px;
         box-shadow: 0 18px 55px rgba(0,0,0,0.32);
-    }}
-    .login-title {{
+    }
+    .login-title {
         font-size: 34px;
         font-weight: 1000;
         color: white;
         margin: 0 0 8px 0;
         text-shadow: 0 0 20px rgba(255,255,255,0.28);
-    }}
-    .login-subtitle {{
+    }
+    .login-subtitle {
         color: rgba(255,255,255,0.92);
         font-size: 15px;
         margin-bottom: 22px;
-    }}
-    .feature-grid {{
+    }
+    .feature-grid {
         display: grid;
         grid-template-columns: repeat(4, 1fr);
         gap: 10px;
         margin-top: 18px;
-    }}
-    .feature-card {{
+    }
+    .feature-card {
         background: rgba(255,255,255,0.10);
         border: 1px solid rgba(255,255,255,0.18);
         border-radius: 18px;
@@ -109,83 +109,32 @@ def login():
         color: white;
         text-align: center;
         min-height: 78px;
-    }}
-    .feature-card b {{
+    }
+    .feature-card b {
         display: block;
         color: white;
         font-size: 14px;
         margin-bottom: 4px;
-    }}
-    .feature-card span {{
+    }
+    .feature-card span {
         font-size: 11px;
         opacity: 0.86;
-    }}
-    @keyframes floatLogin {{
-        0% {{ transform: translateY(0px) rotate(-2deg); }}
-        50% {{ transform: translateY(-9px) rotate(2deg); }}
-        100% {{ transform: translateY(0px) rotate(-2deg); }}
-    }}
-    @media (max-width: 900px) {{
-        .login-wrap {{ grid-template-columns: 1fr; }}
-        .login-visual {{ min-height: 220px; }}
-        .feature-grid {{ grid-template-columns: repeat(2, 1fr); }}
-    }}
-    
-/* =========================
-   MENÚ PREMIUM ANIMADO
-   ========================= */
-[data-testid="stSidebar"] details {
-    animation: menuFadeIn 0.55s ease both;
-}
-
-[data-testid="stSidebar"] details:nth-of-type(1) { animation-delay: 0.04s; }
-[data-testid="stSidebar"] details:nth-of-type(2) { animation-delay: 0.08s; }
-[data-testid="stSidebar"] details:nth-of-type(3) { animation-delay: 0.12s; }
-[data-testid="stSidebar"] details:nth-of-type(4) { animation-delay: 0.16s; }
-[data-testid="stSidebar"] details:nth-of-type(5) { animation-delay: 0.20s; }
-
-@keyframes menuFadeIn {
-    from {
-        opacity: 0;
-        transform: translateX(-14px) translateY(6px);
     }
-    to {
-        opacity: 1;
-        transform: translateX(0) translateY(0);
+    @keyframes floatLogin {
+        0% { transform: translateY(0px) rotate(-2deg); }
+        50% { transform: translateY(-9px) rotate(2deg); }
+        100% { transform: translateY(0px) rotate(-2deg); }
     }
-}
-
-[data-testid="stSidebar"] .stButton > button {
-    background: rgba(255,255,255,0.10) !important;
-    color: white !important;
-    border: 1px solid rgba(255,255,255,0.18) !important;
-    box-shadow: 0 6px 18px rgba(0,0,0,0.10) !important;
-    text-align: left !important;
-    justify-content: flex-start !important;
-    margin: 4px 0 !important;
-    border-radius: 14px !important;
-    font-weight: 850 !important;
-    opacity: 0.88;
-    transition: all 0.24s ease !important;
-}
-
-[data-testid="stSidebar"] .stButton > button:hover {
-    opacity: 1;
-    transform: translateX(5px) translateY(-2px) scale(1.015) !important;
-    background: linear-gradient(135deg, rgba(0, 170, 255, 0.24), rgba(255, 45, 45, 0.18)) !important;
-    box-shadow: 0 12px 25px rgba(0, 170, 255, 0.22), 0 7px 18px rgba(255, 45, 45, 0.16) !important;
-    border: 1px solid rgba(255,255,255,0.32) !important;
-}
-
-[data-testid="stSidebar"] .stButton > button:active {
-    transform: translateX(2px) scale(0.98) !important;
-}
-
-</style>
+    @media (max-width: 900px) {
+        .login-wrap { grid-template-columns: 1fr; }
+        .login-visual { min-height: 220px; }
+        .feature-grid { grid-template-columns: repeat(2, 1fr); }
+    }
+    </style>
 
     <div class="login-wrap">
         <div class="login-visual">
-            {img_html}
+            __IMG_LOGIN__
         </div>
         <div class="login-panel">
             <h1 class="login-title">Control Ventas</h1>
@@ -198,8 +147,9 @@ def login():
             </div>
         </div>
     </div>
-    """.format(fondo=fondo_login, img_html=img_html)
+    """
 
+    login_html = login_html.replace("__FONDO_LOGIN__", fondo_login).replace("__IMG_LOGIN__", img_html)
     st.markdown(login_html, unsafe_allow_html=True)
 
     st.markdown("### 🔐 Iniciar sesión")
