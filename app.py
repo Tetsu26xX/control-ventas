@@ -1216,28 +1216,59 @@ elif menu == "📋 Ventas Registradas":
         fecha_desde = c1.date_input("Desde", value=fecha_min)
         fecha_hasta = c2.date_input("Hasta", value=fecha_max)
 
-        marcas = sorted([m for m in ventas_filtro["marca"].astype(str).unique() if m.strip() != ""])
-        marca_sel = c3.selectbox("Marca", ["TODAS"] + marcas)
+        orden_filtro = c3.text_input("Orden").strip()
+        imei_filtro = c4.text_input("IMEI").strip()
+
+        c5, c6, c7, c8 = st.columns(4)
 
         vendedores_lista = sorted([v for v in ventas_filtro["vendedor"].astype(str).unique() if v.strip() != ""])
-        vendedor_sel = c4.selectbox("Vendedor", ["TODOS"] + vendedores_lista)
+        vendedor_sel = c5.selectbox("Vendedor", ["TODOS"] + vendedores_lista)
 
-        c5, c6, c7 = st.columns(3)
+        marcas = sorted([m for m in ventas_filtro["marca"].astype(str).unique() if m.strip() != ""])
+        marca_sel = c6.selectbox("Marca", ["TODAS"] + marcas)
 
-        ventas_temp_modelo = ventas_filtro.copy()
+        ventas_temp = ventas_filtro.copy()
         if marca_sel != "TODAS":
-            ventas_temp_modelo = ventas_temp_modelo[ventas_temp_modelo["marca"] == marca_sel]
+            ventas_temp = ventas_temp[ventas_temp["marca"] == marca_sel]
 
-        modelos = sorted([m for m in ventas_temp_modelo["modelo"].astype(str).unique() if m.strip() != ""])
-        modelo_sel = c5.selectbox("Modelo", ["TODOS"] + modelos)
+        modelos = sorted([m for m in ventas_temp["modelo"].astype(str).unique() if m.strip() != ""])
+        modelo_sel = c7.selectbox("Modelo", ["TODOS"] + modelos)
 
-        texto_buscar = c6.text_input("Buscar orden / IMEI / chip").strip()
-        solo_equipos = c7.checkbox("Solo ventas con equipo", value=True)
+        ventas_temp_color = ventas_temp.copy()
+        if modelo_sel != "TODOS":
+            ventas_temp_color = ventas_temp_color[ventas_temp_color["modelo"] == modelo_sel]
+
+        colores = sorted([c for c in ventas_temp_color["color"].astype(str).unique() if c.strip() != ""])
+        color_sel = c8.selectbox("Color", ["TODOS"] + colores)
+
+        c9, c10 = st.columns(2)
+
+        ventas_temp_tipo = ventas_temp_color.copy()
+        if color_sel != "TODOS":
+            ventas_temp_tipo = ventas_temp_tipo[ventas_temp_tipo["color"] == color_sel]
+
+        tipos = sorted([t for t in ventas_temp_tipo["tipo"].astype(str).unique() if t.strip() != ""])
+        tipo_sel = c9.selectbox("Tipo", ["TODOS"] + tipos)
+
+        solo_equipos = c10.checkbox("Solo ventas con equipo", value=True)
 
         ventas_filtradas = ventas_filtro[
             (ventas_filtro["fecha_dt"].dt.date >= fecha_desde) &
             (ventas_filtro["fecha_dt"].dt.date <= fecha_hasta)
         ]
+
+        if orden_filtro:
+            ventas_filtradas = ventas_filtradas[
+                ventas_filtradas["orden"].astype(str).str.contains(orden_filtro, case=False, na=False)
+            ]
+
+        if imei_filtro:
+            ventas_filtradas = ventas_filtradas[
+                ventas_filtradas["imei"].astype(str).str.contains(imei_filtro, case=False, na=False)
+            ]
+
+        if vendedor_sel != "TODOS":
+            ventas_filtradas = ventas_filtradas[ventas_filtradas["vendedor"] == vendedor_sel]
 
         if marca_sel != "TODAS":
             ventas_filtradas = ventas_filtradas[ventas_filtradas["marca"] == marca_sel]
@@ -1245,19 +1276,14 @@ elif menu == "📋 Ventas Registradas":
         if modelo_sel != "TODOS":
             ventas_filtradas = ventas_filtradas[ventas_filtradas["modelo"] == modelo_sel]
 
-        if vendedor_sel != "TODOS":
-            ventas_filtradas = ventas_filtradas[ventas_filtradas["vendedor"] == vendedor_sel]
+        if color_sel != "TODOS":
+            ventas_filtradas = ventas_filtradas[ventas_filtradas["color"] == color_sel]
+
+        if tipo_sel != "TODOS":
+            ventas_filtradas = ventas_filtradas[ventas_filtradas["tipo"] == tipo_sel]
 
         if solo_equipos:
             ventas_filtradas = ventas_filtradas[ventas_filtradas["cantidad"] > 0]
-
-        if texto_buscar:
-            t = texto_buscar.lower()
-            ventas_filtradas = ventas_filtradas[
-                ventas_filtradas["orden"].astype(str).str.lower().str.contains(t, na=False) |
-                ventas_filtradas["imei"].astype(str).str.lower().str.contains(t, na=False) |
-                ventas_filtradas["chip"].astype(str).str.lower().str.contains(t, na=False)
-            ]
 
         st.divider()
 
@@ -1267,9 +1293,8 @@ elif menu == "📋 Ventas Registradas":
         m3.metric("Accesorios", int(ventas_filtradas["cantidad_accesorio"].sum()))
 
         columnas_vista = [
-            "fecha", "hora", "vendedor", "orden", "imei", "chip", "tipo_chip",
-            "marca", "modelo", "color", "tipo", "sku",
-            "accesorio", "accesorio_sku", "cantidad", "cantidad_accesorio"
+            "fecha", "hora", "orden", "vendedor",
+            "marca", "modelo", "color", "tipo", "imei"
         ]
 
         ventas_mostrar = ventas_filtradas.drop(columns=["fecha_dt"], errors="ignore").copy()
