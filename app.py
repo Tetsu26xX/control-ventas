@@ -1472,11 +1472,11 @@ elif menu == "📦 Inventario":
             try:
                 numero = int(val)
                 if numero <= 1:
-                    return "background-color: #FF4D4D; color: white; font-weight: 900;"
+                    return "background-color: #FFB3B3; color: white; font-weight: 900;"
                 elif numero == 2:
-                    return "background-color: #FFD54F; color: #111111; font-weight: 900;"
+                    return "background-color: #FFF9C4; color: #111111; font-weight: 900;"
                 else:
-                    return "background-color: #4CAF50; color: white; font-weight: 900;"
+                    return "background-color: #C8E6C9; color: white; font-weight: 900;"
             except Exception:
                 return ""
 
