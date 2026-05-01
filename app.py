@@ -1469,6 +1469,7 @@ elif menu == "📦 Inventario":
             return [""] * len(row)
 
         def estilo_stock_actual(val):
+            return ""
            
         stock_estilizado = (
             stock_tabla.style
