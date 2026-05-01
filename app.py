@@ -39,341 +39,272 @@ def login():
     <style>
     .stApp {{
         background:
-            radial-gradient(circle at 8% 22%, rgba(0, 101, 255, .28), transparent 30%),
-            radial-gradient(circle at 93% 24%, rgba(255, 0, 112, .36), transparent 36%),
-            linear-gradient(135deg, #061530 0%, #10154a 48%, #2a135f 72%, #a10f58 100%) !important;
+            radial-gradient(circle at 10% 12%, rgba(28, 102, 230, .38), transparent 28%),
+            radial-gradient(circle at 87% 36%, rgba(255, 36, 122, .42), transparent 34%),
+            linear-gradient(135deg, #06152e 0%, #0b1640 44%, #211351 70%, #760d4e 100%) !important;
         background-attachment: fixed !important;
-        overflow-x: hidden !important;
     }}
 
     .block-container {{
-        padding-top: .55rem !important;
-        padding-bottom: 0 !important;
-        max-width: 1340px !important;
+        padding-top: 1.1rem !important;
+        padding-bottom: 0rem !important;
+        max-width: 1360px !important;
     }}
 
     header[data-testid="stHeader"] {{ background: transparent !important; }}
-    [data-testid="stToolbar"], [data-testid="stDecoration"], #MainMenu, footer {{ visibility: hidden !important; }}
+    #MainMenu, footer {{ visibility: hidden !important; }}
 
-    .login-bg-lines {{
+    .neon-lines {{
         position: fixed;
         inset: 0;
         pointer-events: none;
         z-index: 0;
         overflow: hidden;
-        opacity: .95;
+        opacity: .94;
     }}
 
-    .login-bg-lines span {{
+    .neon-lines span {{
         position: absolute;
         display: block;
+        width: 8px;
+        height: 150px;
         border-radius: 999px;
         transform: rotate(38deg);
-        background: linear-gradient(180deg, rgba(255, 49, 113, .95), rgba(155, 53, 255, .10));
-        box-shadow: 0 0 22px rgba(255, 49, 113, .32);
+        background: linear-gradient(180deg, rgba(255,57,115,.95), rgba(119,44,255,.15));
+        box-shadow: 0 0 22px rgba(255,57,115,.30);
     }}
 
-    .login-bg-lines span:nth-child(1) {{ left: 7%; top: -9%; width: 9px; height: 230px; }}
-    .login-bg-lines span:nth-child(2) {{ left: 21%; top: 11%; width: 9px; height: 175px; background: linear-gradient(180deg, rgba(39,127,255,.95), rgba(39,127,255,.12)); }}
-    .login-bg-lines span:nth-child(3) {{ left: 43%; top: -2%; width: 58px; height: 230px; background: rgba(91,45,231,.32); }}
-    .login-bg-lines span:nth-child(4) {{ left: 56%; top: 39%; width: 10px; height: 245px; }}
-    .login-bg-lines span:nth-child(5) {{ right: 26%; top: 5%; width: 8px; height: 185px; background: linear-gradient(180deg, rgba(44,126,255,.95), rgba(44,126,255,.14)); }}
-    .login-bg-lines span:nth-child(6) {{ right: 11%; top: -3%; width: 58px; height: 250px; background: rgba(121,39,221,.30); }}
-    .login-bg-lines span:nth-child(7) {{ right: 2%; bottom: 4%; width: 9px; height: 185px; }}
-    .login-bg-lines span:nth-child(8) {{ left: 2%; bottom: 34%; width: 9px; height: 160px; background: linear-gradient(180deg, rgba(39,127,255,.95), rgba(39,127,255,.12)); }}
-    .login-bg-lines span:nth-child(9) {{ left: 18%; bottom: 2%; width: 60px; height: 220px; background: rgba(91,45,231,.28); }}
-    .login-bg-lines span:nth-child(10) {{ right: 37%; bottom: 0%; width: 62px; height: 230px; background: rgba(91,45,231,.28); }}
+    .neon-lines span:nth-child(1) {{ left: 8%; top: -5%; height: 210px; }}
+    .neon-lines span:nth-child(2) {{ left: 19%; top: 62%; height: 195px; width: 55px; background: rgba(104,58,255,.34); }}
+    .neon-lines span:nth-child(3) {{ left: 36%; top: 8%; height: 160px; }}
+    .neon-lines span:nth-child(4) {{ left: 55%; top: 3%; height: 235px; width: 55px; background: rgba(104,58,255,.32); }}
+    .neon-lines span:nth-child(5) {{ right: 14%; top: 9%; height: 185px; }}
+    .neon-lines span:nth-child(6) {{ right: 6%; bottom: 4%; height: 215px; width: 58px; background: rgba(104,58,255,.32); }}
+    .neon-lines span:nth-child(7) {{ left: 72%; bottom: 9%; height: 165px; }}
+    .neon-lines span:nth-child(8) {{ left: 3%; bottom: 26%; height: 140px; background: rgba(42,133,255,.9); }}
 
     div[data-testid="stHorizontalBlock"]:first-of-type {{
-        min-height: calc(100vh - 125px);
+        min-height: calc(100vh - 105px);
         align-items: center !important;
-        gap: 3.8rem !important;
+        gap: 4.2rem !important;
         position: relative;
         z-index: 2;
     }}
 
-    div[data-testid="stHorizontalBlock"]:first-of-type > div[data-testid="column"]:nth-child(1) {{
-        padding-left: .8rem !important;
-    }}
-
     div[data-testid="stHorizontalBlock"]:first-of-type > div[data-testid="column"]:nth-child(2) {{
-        max-width: 390px !important;
-        padding: 2.2rem 1.7rem 1.7rem 1.7rem !important;
-        border-radius: 18px !important;
-        background: linear-gradient(180deg, rgba(24, 14, 36, .88), rgba(12, 9, 23, .95)) !important;
-        border: 1px solid rgba(255,255,255,.17) !important;
-        box-shadow:
-            0 22px 70px rgba(0,0,0,.48),
-            inset 0 1px 0 rgba(255,255,255,.06) !important;
+        max-width: 410px !important;
+        padding: 2rem 2rem 1.65rem 2rem !important;
+        border-radius: 23px !important;
+        background: linear-gradient(180deg, rgba(32, 18, 48, .86), rgba(12, 9, 24, .92)) !important;
+        border: 1px solid rgba(255,255,255,.16) !important;
+        box-shadow: 0 24px 70px rgba(0,0,0,.43), inset 0 1px 0 rgba(255,255,255,.06) !important;
         backdrop-filter: blur(22px) !important;
-        -webkit-backdrop-filter: blur(22px) !important;
         transition: all .28s ease !important;
     }}
 
     div[data-testid="stHorizontalBlock"]:first-of-type > div[data-testid="column"]:nth-child(2):hover {{
         transform: translateY(-5px);
-        border-color: rgba(231, 65, 255, .45) !important;
+        border-color: rgba(218, 61, 255, .44) !important;
         box-shadow:
-            0 0 18px rgba(255, 61, 115, .36),
-            0 0 45px rgba(142, 45, 226, .31),
-            0 28px 80px rgba(0,0,0,.54) !important;
+            0 0 18px rgba(255, 60, 130, .32),
+            0 0 42px rgba(139, 45, 226, .28),
+            0 28px 80px rgba(0,0,0,.46) !important;
     }}
 
-    div[data-testid="column"]:has(.login-panel-marker) {{
-        max-width: 395px !important;
-        padding: 2.05rem 1.7rem 1.6rem 1.7rem !important;
-        border-radius: 18px !important;
-        background: linear-gradient(180deg, rgba(24, 14, 36, .91), rgba(9, 7, 18, .96)) !important;
-        border: 1px solid rgba(255,255,255,.17) !important;
-        box-shadow:
-            0 24px 70px rgba(0,0,0,.52),
-            inset 0 1px 0 rgba(255,255,255,.07),
-            0 0 42px rgba(180, 41, 255, .12) !important;
-        backdrop-filter: blur(22px) !important;
-        -webkit-backdrop-filter: blur(22px) !important;
-        transition: all .28s ease !important;
-    }}
-
-    div[data-testid="column"]:has(.login-panel-marker):hover {{
-        transform: translateY(-5px);
-        border-color: rgba(231, 65, 255, .48) !important;
-        box-shadow:
-            0 0 18px rgba(255, 61, 115, .38),
-            0 0 45px rgba(142, 45, 226, .34),
-            0 30px 84px rgba(0,0,0,.58) !important;
-    }}
-
-    .login-panel-marker {{ display:none; }}
-
-    .login-kicker {{
+    .brand-kicker {{
         color:#ff3d86;
-        font-weight:1000;
-        font-size:.88rem;
-        margin-bottom:.25rem;
-        letter-spacing:.1px;
+        font-weight:900;
+        font-size:.9rem;
+        margin-bottom:.35rem;
     }}
 
-    .login-brand {{
+    .brand-title {{
         margin:0;
-        color:white;
-        font-size: clamp(2.75rem, 4.7vw, 4.35rem);
-        line-height:.96;
+        color:#9658ff;
+        font-size: clamp(3.15rem, 5.2vw, 4.75rem);
+        line-height:.98;
         font-weight:1000;
-        letter-spacing:-1.8px;
-        text-shadow: 0 0 28px rgba(255,255,255,.15);
+        letter-spacing:-2px;
+        text-shadow: 0 0 32px rgba(150,88,255,.38);
     }}
 
-    .login-brand span {{
-        color:#9559ff;
-        text-shadow: 0 0 36px rgba(149,89,255,.45);
+    .brand-copy {{
+        color:rgba(255,255,255,.9);
+        max-width:540px;
+        margin:1.6rem 0 1.15rem 0;
+        font-weight:750;
+        line-height:1.45;
     }}
 
-    .login-desc {{
-        color:rgba(255,255,255,.88);
-        max-width:500px;
-        margin:1rem 0 .95rem 0;
-        font-weight:800;
-        line-height:1.42;
-        font-size:.88rem;
-    }}
-
-    .hero-mini {{
-        position: relative;
-        min-height: 305px;
-        max-width: 640px;
-    }}
-
-    .feature-strip {{
+    .hero-stage {{
         display:grid;
-        grid-template-columns: repeat(3, minmax(110px, 1fr));
-        gap:13px;
-        max-width:520px;
-        position: relative;
-        transform: translateY(-4px);
-        z-index: 3;
+        grid-template-columns: 1fr 255px;
+        align-items:end;
+        gap:18px;
+        max-width:680px;
+    }}
+
+    .feature-row {{
+        display:grid;
+        grid-template-columns: repeat(3, minmax(125px, 1fr));
+        gap:14px;
+        align-items:stretch;
     }}
 
     .feature-card {{
-        min-height:80px;
-        padding:12px 13px;
-        border-radius:12px;
+        min-height:98px;
+        padding:15px 14px;
+        border-radius:16px;
         background: linear-gradient(135deg, rgba(255,255,255,.12), rgba(255,255,255,.055));
         border:1px solid rgba(255,255,255,.15);
-        box-shadow: 0 12px 28px rgba(0,0,0,.22);
+        box-shadow: 0 12px 30px rgba(0,0,0,.20);
         transition: all .28s ease;
         backdrop-filter: blur(14px);
     }}
 
     .feature-card:hover {{
         transform: translateY(-7px) scale(1.025);
-        border-color: rgba(255, 65, 135, .48);
+        border-color: rgba(255, 65, 135, .46);
         box-shadow:
             0 0 14px rgba(255, 61, 115, .42),
-            0 0 34px rgba(142, 45, 226, .32),
+            0 0 32px rgba(142, 45, 226, .32),
             0 18px 38px rgba(0,0,0,.34);
     }}
 
-    .feature-icon {{ font-size:1.25rem; margin-bottom:6px; }}
-    .feature-title {{ color:white; font-weight:1000; font-size:.78rem; margin-bottom:3px; }}
-    .feature-text {{ color:rgba(255,255,255,.69); font-size:.60rem; line-height:1.28; font-weight:750; }}
+    .feature-icon {{ font-size:1.6rem; margin-bottom:8px; }}
+    .feature-title {{ color:white; font-weight:950; font-size:.92rem; margin-bottom:3px; }}
+    .feature-text {{ color:rgba(255,255,255,.70); font-size:.72rem; line-height:1.35; font-weight:650; }}
 
-    .mascot-stage {{
-        position:absolute;
-        left: 90px;
-        top: 104px;
-        z-index: 2;
-        width: 350px;
-        height: 225px;
+    .mascot-wrap {{
+        height:260px;
         display:flex;
         align-items:flex-end;
         justify-content:center;
-        filter: drop-shadow(0 0 34px rgba(255, 190, 66, .34));
+        filter: drop-shadow(0 0 32px rgba(255, 190, 66, .32));
         transition: all .28s ease;
     }}
 
-    .mascot-stage:hover {{
+    .mascot-wrap:hover {{
         transform: translateY(-8px) scale(1.035);
-        filter: drop-shadow(0 0 42px rgba(255, 205, 76, .48));
+        filter: drop-shadow(0 0 40px rgba(255, 205, 76, .45));
     }}
 
-    .mascot-stage img {{
+    .mascot-wrap img {{
         width:100%;
-        max-width:345px;
+        max-width:265px;
         object-fit:contain;
     }}
 
-    .login-lock {{
-        width:62px;
-        height:62px;
+    .login-icon {{
+        width:64px;
+        height:64px;
         display:flex;
         align-items:center;
         justify-content:center;
-        margin:.2rem auto 1.35rem auto;
+        margin:0 auto 1.2rem auto;
         border-radius:999px;
-        font-size:1.75rem;
-        background: radial-gradient(circle, #f343ff 0%, #9b26d4 56%, rgba(155,38,212,.24) 100%);
-        box-shadow:0 0 34px rgba(226,66,255,.40);
+        font-size:1.7rem;
+        background: radial-gradient(circle, #ea42ff 0%, #8f22c7 55%, rgba(143,34,199,.25) 100%);
+        box-shadow:0 0 34px rgba(226,66,255,.38);
     }}
 
-    .login-card-title {{
+    .login-title {{
         text-align:center;
         color:white;
-        font-size:1.72rem;
+        font-size:2rem;
         line-height:1;
         font-weight:1000;
         margin:0 0 .55rem 0;
-        letter-spacing:-.4px;
+        letter-spacing:-.5px;
     }}
 
-    .login-card-sub {{
+    .login-sub {{
         text-align:center;
-        color:rgba(255,255,255,.56);
-        font-size:.70rem;
-        font-weight:800;
-        margin-bottom:1.05rem;
-    }}
-
-    .forgot-row {{
-        text-align:right;
-        margin-top:-.45rem;
-        margin-bottom:.95rem;
-        color:#d568ff;
-        font-size:.68rem;
-        font-weight:950;
-        text-shadow:0 0 16px rgba(213,104,255,.35);
+        color:rgba(255,255,255,.58);
+        font-size:.82rem;
+        font-weight:750;
+        margin-bottom:1.35rem;
     }}
 
     .secure-copy {{
         text-align:center;
-        color:#66e7d4;
-        font-size:.70rem;
-        font-weight:950;
-        margin-top:1.25rem;
-        text-shadow:0 0 16px rgba(102,231,212,.25);
+        color:#65e4d4;
+        font-size:.78rem;
+        font-weight:900;
+        margin-top:1.1rem;
     }}
 
-    div[data-testid="stTextInput"] {{ margin-bottom: .55rem !important; }}
-
     div[data-testid="stTextInput"] label {{
-        color:rgba(255,255,255,.76) !important;
+        color:rgba(255,255,255,.82) !important;
         font-weight:850 !important;
-        font-size:.78rem !important;
+        font-size:.82rem !important;
     }}
 
     div[data-testid="stTextInput"] input {{
-        background: rgba(255,255,255,.13) !important;
-        border: 1px solid rgba(255,255,255,.12) !important;
+        background: rgba(255,255,255,.14) !important;
+        border: 1px solid rgba(255,255,255,.13) !important;
         color: white !important;
-        border-radius: 9px !important;
-        height: 42px !important;
-        font-weight:850 !important;
+        border-radius: 11px !important;
+        height: 46px !important;
+        font-weight:800 !important;
         transition: all .24s ease !important;
     }}
 
-    div[data-testid="stTextInput"] input::placeholder {{
-        color: rgba(255,255,255,.48) !important;
-        font-weight:800 !important;
-    }}
-
     div[data-testid="stTextInput"] input:focus {{
-        border-color: rgba(216,74,255,.78) !important;
-        box-shadow: 0 0 0 1px rgba(216,74,255,.30), 0 0 20px rgba(216,74,255,.24) !important;
+        border-color: rgba(215,65,255,.72) !important;
+        box-shadow: 0 0 0 1px rgba(215,65,255,.32), 0 0 18px rgba(215,65,255,.24) !important;
     }}
 
     .stButton > button {{
-        height:46px !important;
-        border-radius:9px !important;
+        height:52px !important;
+        border-radius:12px !important;
         border:none !important;
-        background: linear-gradient(90deg, #ff3d73 0%, #bd31df 55%, #8230ff 100%) !important;
+        background: linear-gradient(90deg, #ff3d73 0%, #a72fea 55%, #7b2cff 100%) !important;
         color:white !important;
         font-weight:1000 !important;
-        font-size:.78rem !important;
-        box-shadow:0 14px 38px rgba(167,47,234,.30) !important;
+        box-shadow:0 14px 38px rgba(167,47,234,.28) !important;
         transition: all .24s ease !important;
     }}
 
     .stButton > button:hover {{
         transform: translateY(-3px) scale(1.01);
-        box-shadow:
-            0 0 18px rgba(255,61,115,.52),
-            0 0 44px rgba(123,44,255,.38) !important;
-        filter: brightness(1.07);
+        box-shadow: 0 0 18px rgba(255,61,115,.48), 0 0 40px rgba(123,44,255,.36) !important;
+        filter: brightness(1.06);
     }}
 
     .stAlert {{ border-radius: 14px !important; }}
 
-    @media (max-width: 980px) {{
-        .block-container {{ padding-top: .7rem !important; }}
+    @media (max-width: 950px) {{
         div[data-testid="stHorizontalBlock"]:first-of-type {{
             min-height: auto;
             align-items: stretch !important;
-            gap: 1.35rem !important;
+            gap: 1.3rem !important;
         }}
+        .hero-stage {{ grid-template-columns: 1fr; }}
+        .mascot-wrap {{ height:210px; justify-content:flex-start; }}
+        .feature-row {{ grid-template-columns:1fr; }}
         div[data-testid="stHorizontalBlock"]:first-of-type > div[data-testid="column"]:nth-child(2) {{
             max-width:100% !important;
         }}
-        .hero-mini {{ min-height: 420px; }}
-        .feature-strip {{ grid-template-columns:1fr; max-width: 100%; }}
-        .mascot-stage {{ position:relative; left:0; top:20px; width: 100%; }}
     }}
     </style>
 
-    <div class="login-bg-lines">
-        <span></span><span></span><span></span><span></span><span></span>
-        <span></span><span></span><span></span><span></span><span></span>
+    <div class="neon-lines">
+        <span></span><span></span><span></span><span></span>
+        <span></span><span></span><span></span><span></span>
     </div>
     """, unsafe_allow_html=True)
 
-    col_left, col_right = st.columns([1.28, .86], gap="large")
+    col_left, col_right = st.columns([1.35, .88], gap="large")
 
     with col_left:
         st.markdown(f"""
-        <div class="login-kicker">Bienvenido a</div>
-        <h1 class="login-brand">Control<br><span>Ventas</span></h1>
-        <p class="login-desc">Sistema para registrar ventas, controlar stock, revisar rankings y consultar IMEI por marca y fecha.</p>
+        <div class="brand-kicker">Bienvenido a</div>
+        <h1 class="brand-title">Control<br>Ventas</h1>
+        <p class="brand-copy">Sistema para registrar ventas, controlar stock, revisar rankings y consultar IMEI por marca y fecha.</p>
 
-        <div class="hero-mini">
-            <div class="feature-strip">
+        <div class="hero-stage">
+            <div class="feature-row">
                 <div class="feature-card">
                     <div class="feature-icon">🛒</div>
                     <div class="feature-title">Ventas</div>
@@ -390,7 +321,7 @@ def login():
                     <div class="feature-text">Rankings y estadísticas de vendedores.</div>
                 </div>
             </div>
-            <div class="mascot-stage">
+            <div class="mascot-wrap">
                 {'<img src="data:image/png;base64,' + mascota_b64 + '" />' if mascota_b64 else ''}
             </div>
         </div>
@@ -398,16 +329,13 @@ def login():
 
     with col_right:
         st.markdown("""
-        <div class="login-panel-marker"></div>
-        <div class="login-lock">🔒</div>
-        <h2 class="login-card-title">Iniciar Sesión</h2>
-        <div class="login-card-sub">Ingresa tus credenciales para continuar</div>
+        <div class="login-icon">🔒</div>
+        <h2 class="login-title">Iniciar Sesión</h2>
+        <div class="login-sub">Ingresa tus credenciales para continuar</div>
         """, unsafe_allow_html=True)
 
         usuario = st.text_input("Usuario", placeholder="Usuario").strip().upper()
         password = st.text_input("Contraseña", type="password", placeholder="Contraseña").strip()
-
-        st.markdown('<div class="forgot-row">¿Olvidaste tu contraseña?</div>', unsafe_allow_html=True)
 
         if st.button("Ingresar  ➜", use_container_width=True):
             with st.spinner("Validando acceso..."):
@@ -1881,154 +1809,38 @@ elif menu == "✏️ Editar Venta":
 # BUSCAR
 # =========================
 elif menu == "🔍 Buscar":
-    st.title("🔍 Buscar Orden / IMEI / CHIP / Accesorio / Vendedor")
+    st.title("🔍 Buscar Orden / IMEI / CHIP / Accesorio")
 
     if ventas.empty:
         st.info("No hay ventas registradas.")
     else:
-        opcion = st.selectbox(
-            "Buscar por",
-            ["ORDEN", "IMEI", "CHIP", "ACCESORIO", "REPORTE VENDEDOR"]
-        )
+        opcion = st.selectbox("Buscar por", ["ORDEN", "IMEI", "CHIP", "ACCESORIO"])
+        texto = st.text_input("Escribe lo que quieres buscar").strip()
 
-        # ================= BUSQUEDAS NORMALES =================
-        if opcion in ["ORDEN", "IMEI", "CHIP", "ACCESORIO"]:
-            texto = st.text_input("Escribe lo que quieres buscar").strip()
+        if texto:
+            ventas_busqueda = ventas.astype(str)
 
-            if texto:
-                ventas_busqueda = ventas.astype(str)
-
-                if opcion == "ORDEN":
-                    resultado = ventas_busqueda[
-                        ventas_busqueda["orden"].str.contains(texto, case=False, na=False)
-                    ]
-                elif opcion == "IMEI":
-                    resultado = ventas_busqueda[
-                        ventas_busqueda["imei"].str.contains(texto, case=False, na=False)
-                    ]
-                elif opcion == "CHIP":
-                    resultado = ventas_busqueda[
-                        ventas_busqueda["chip"].str.contains(texto, case=False, na=False)
-                    ]
-                else:
-                    resultado = ventas_busqueda[
-                        ventas_busqueda["accesorio"].str.contains(texto, case=False, na=False) |
-                        ventas_busqueda["accesorio_sku"].str.contains(texto, case=False, na=False)
-                    ]
-
-                if resultado.empty:
-                    st.warning("No se encontraron resultados.")
-                else:
-                    st.success(f"Se encontraron {len(resultado)} resultado(s).")
-                    resultado = resultado.replace({"None": "", "nan": "", "NaN": ""})
-                    st.dataframe(resultado, use_container_width=True)
-
-        # ================= REPORTE POR VENDEDOR =================
-        if opcion == "REPORTE VENDEDOR":
-            st.subheader("📊 Reporte por vendedor")
-
-            ventas_rep = ventas.copy()
-            ventas_rep["fecha_dt"] = pd.to_datetime(ventas_rep["fecha"], errors="coerce")
-
-            fechas_validas = ventas_rep["fecha_dt"].dropna()
-            if not fechas_validas.empty:
-                fecha_min = fechas_validas.min().date()
-                fecha_max = fechas_validas.max().date()
+            if opcion == "ORDEN":
+                resultado = ventas_busqueda[
+                    ventas_busqueda["orden"].str.contains(texto, case=False, na=False)
+                ]
+            elif opcion == "IMEI":
+                resultado = ventas_busqueda[
+                    ventas_busqueda["imei"].str.contains(texto, case=False, na=False)
+                ]
+            elif opcion == "CHIP":
+                resultado = ventas_busqueda[
+                    ventas_busqueda["chip"].str.contains(texto, case=False, na=False)
+                ]
             else:
-                fecha_min = pd.Timestamp.today().date()
-                fecha_max = pd.Timestamp.today().date()
+                resultado = ventas_busqueda[
+                    ventas_busqueda["accesorio"].str.contains(texto, case=False, na=False) |
+                    ventas_busqueda["accesorio_sku"].str.contains(texto, case=False, na=False)
+                ]
 
-            vendedores_lista = sorted([
-                v for v in ventas_rep["vendedor"].astype(str).unique()
-                if v.strip() != ""
-            ])
-
-            if not vendedores_lista:
-                st.warning("No hay vendedores registrados en ventas.")
+            if resultado.empty:
+                st.warning("No se encontraron resultados.")
             else:
-                col1, col2, col3, col4 = st.columns(4)
-
-                with col1:
-                    fecha_inicio = st.date_input("Desde", value=fecha_min, key="rep_vendedor_desde")
-
-                with col2:
-                    fecha_fin = st.date_input("Hasta", value=fecha_max, key="rep_vendedor_hasta")
-
-                with col3:
-                    vendedor_sel = st.selectbox("Vendedor", vendedores_lista, key="rep_vendedor_nombre")
-
-                with col4:
-                    tipo_reporte = st.selectbox("Tipo", ["EQUIPO", "ACCESORIO"], key="rep_vendedor_tipo")
-
-                if fecha_inicio > fecha_fin:
-                    st.error("La fecha Desde no puede ser mayor que la fecha Hasta.")
-                else:
-                    resultado = ventas_rep[
-                        (ventas_rep["fecha_dt"].dt.date >= fecha_inicio) &
-                        (ventas_rep["fecha_dt"].dt.date <= fecha_fin) &
-                        (ventas_rep["vendedor"].astype(str) == vendedor_sel)
-                    ].copy()
-
-                    # -------- EQUIPOS --------
-                    if tipo_reporte == "EQUIPO":
-                        resultado["cantidad"] = pd.to_numeric(
-                            resultado["cantidad"], errors="coerce"
-                        ).fillna(0).astype(int)
-
-                        resultado = resultado[resultado["cantidad"] > 0]
-
-                        columnas = [
-                            "fecha", "hora", "vendedor", "orden", "imei",
-                            "marca", "modelo", "color", "tipo", "cantidad"
-                        ]
-                        total_label = "Total equipos vendidos"
-                        total_col = "cantidad"
-                        nombre_archivo = f"reporte_equipos_{vendedor_sel}.csv"
-
-                    # -------- ACCESORIOS --------
-                    else:
-                        resultado["cantidad_accesorio"] = pd.to_numeric(
-                            resultado["cantidad_accesorio"], errors="coerce"
-                        ).fillna(0).astype(int)
-
-                        resultado = resultado[resultado["cantidad_accesorio"] > 0]
-
-                        columnas = [
-                            "fecha", "hora", "vendedor", "orden",
-                            "accesorio_sku", "accesorio", "cantidad_accesorio"
-                        ]
-                        total_label = "Total accesorios vendidos"
-                        total_col = "cantidad_accesorio"
-                        nombre_archivo = f"reporte_accesorios_{vendedor_sel}.csv"
-
-                    st.divider()
-
-                    if resultado.empty:
-                        st.warning("No hay datos con ese filtro.")
-                    else:
-                        resultado_vista = preparar_fecha_hora(resultado)
-
-                        for col in columnas:
-                            if col not in resultado_vista.columns:
-                                resultado_vista[col] = ""
-
-                        resultado_vista = resultado_vista[columnas]
-                        resultado_vista = resultado_vista.replace({"None": "", "nan": "", "NaN": ""})
-
-                        total = pd.to_numeric(
-                            resultado_vista[total_col], errors="coerce"
-                        ).fillna(0).sum()
-
-                        c_total1, c_total2 = st.columns(2)
-                        c_total1.metric("Registros encontrados", len(resultado_vista))
-                        c_total2.metric(total_label, int(total))
-
-                        st.dataframe(resultado_vista.astype(str), use_container_width=True)
-
-                        csv = resultado_vista.to_csv(index=False).encode("utf-8-sig")
-                        st.download_button(
-                            "📥 Descargar reporte",
-                            data=csv,
-                            file_name=nombre_archivo,
-                            mime="text/csv"
-                        )
+                st.success(f"Se encontraron {len(resultado)} resultado(s).")
+                resultado = resultado.replace({"None": "", "nan": "", "NaN": ""})
+                st.dataframe(resultado, use_container_width=True)
