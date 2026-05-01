@@ -1000,33 +1000,12 @@ if st.session_state.get("login_ok", False):
         st.sidebar.success(f"👑 {vendedor_txt} · VENDEDOR ADMIN")
     else:
         st.sidebar.success(f"👤 {vendedor_txt} · VENDEDOR")
-    if  st.sidebar.button("Cerrar sesión"):
-
-        st.markdown("""
-        <div style="
-        position: fixed;
-        inset: 0;
-        z-index: 999999;
-        background: rgba(5, 8, 18, 0.92);
-        backdrop-filter: blur(10px);
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        color: white;
-        font-size: 28px;
-        font-weight: 900;
-        text-shadow: 0 0 18px #7CFF6B;
-    ">
-        🔒 Cerrando sesión...
-    </div>
-    """, unsafe_allow_html=True)
-
-    for key in list(st.session_state.keys()):
-        del st.session_state[key]
-
-        st.session_state["login_ok"] = False
-
-        st.rerun()
+    if st.sidebar.button("Cerrar sesión"):
+    st.session_state["login_ok"] = False
+    st.session_state["usuario"] = ""
+    st.session_state["rol"] = ""
+    st.session_state["vendedor"] = ""
+    st.rerun()
 
 st.sidebar.markdown("### 📲 Menú")
 
