@@ -1001,11 +1001,11 @@ if st.session_state.get("login_ok", False):
     else:
         st.sidebar.success(f"👤 {vendedor_txt} · VENDEDOR")
     if st.sidebar.button("Cerrar sesión"):
-    st.session_state["login_ok"] = False
-    st.session_state["usuario"] = ""
-    st.session_state["rol"] = ""
-    st.session_state["vendedor"] = ""
-    st.rerun()
+       st.session_state["login_ok"] = False
+       st.session_state["usuario"] = ""
+       st.session_state["rol"] = ""
+       st.session_state["vendedor"] = ""
+       st.rerun()
 
 st.sidebar.markdown("### 📲 Menú")
 
