@@ -11,11 +11,11 @@ st.set_page_config(layout="wide")
 st.markdown("""
 <style>
 [data-testid="stDataFrame"] td {
-    font-size: 14px;
+    font-size: 24px;
 }
 
-[data-testid="stDataFrame"] td:nth-child(7) {
-    font-size: 22px !important;
+[data-testid="stDataFrame"] td:nth-child(8) {
+    font-size: 26px !important;
     font-weight: 800;
     text-align: center;
 }
