@@ -1814,7 +1814,10 @@ elif menu == "🔍 Buscar":
     if ventas.empty:
         st.info("No hay ventas registradas.")
     else:
-        opcion = st.selectbox("Buscar por", ["ORDEN", "IMEI", "CHIP", "ACCESORIO"])
+        opcion = st.selectbox(
+            "Buscar por",
+            ["ORDEN", "IMEI", "CHIP", "ACCESORIO", "REPORTE VENDEDOR"]
+        )
         texto = st.text_input("Escribe lo que quieres buscar").strip()
 
         if texto:
@@ -1844,3 +1847,71 @@ elif menu == "🔍 Buscar":
                 st.success(f"Se encontraron {len(resultado)} resultado(s).")
                 resultado = resultado.replace({"None": "", "nan": "", "NaN": ""})
                 st.dataframe(resultado, use_container_width=True)
+                elif opcion == "REPORTE VENDEDOR":
+
+    st.subheader("📊 Reporte por vendedor")
+
+    ventas_rep = ventas.copy()
+    ventas_rep["fecha_dt"] = pd.to_datetime(ventas_rep["fecha"], errors="coerce")
+
+    vendedores_lista = sorted([
+        v for v in ventas_rep["vendedor"].astype(str).unique()
+        if v.strip() != ""
+    ])
+
+    col1, col2, col3, col4 = st.columns(4)
+
+    with col1:
+        fecha_inicio = st.date_input("Desde")
+
+    with col2:
+        fecha_fin = st.date_input("Hasta")
+
+    with col3:
+        vendedor_sel = st.selectbox("Vendedor", vendedores_lista)
+
+    with col4:
+        tipo = st.selectbox("Tipo", ["EQUIPO", "ACCESORIO"])
+
+    resultado = ventas_rep[
+        (ventas_rep["fecha_dt"].dt.date >= fecha_inicio) &
+        (ventas_rep["fecha_dt"].dt.date <= fecha_fin) &
+        (ventas_rep["vendedor"] == vendedor_sel)
+    ].copy()
+
+    if tipo == "EQUIPO":
+        resultado["cantidad"] = pd.to_numeric(resultado["cantidad"], errors="coerce").fillna(0)
+        resultado = resultado[resultado["cantidad"] > 0]
+
+        columnas = [
+            "fecha", "hora", "vendedor", "orden", "imei",
+            "marca", "modelo", "color", "tipo", "cantidad"
+        ]
+
+    else:
+        resultado["cantidad_accesorio"] = pd.to_numeric(resultado["cantidad_accesorio"], errors="coerce").fillna(0)
+        resultado = resultado[resultado["cantidad_accesorio"] > 0]
+
+        columnas = [
+            "fecha", "hora", "vendedor", "orden",
+            "accesorio_sku", "accesorio", "cantidad_accesorio"
+        ]
+
+    if resultado.empty:
+        st.warning("No hay datos con ese filtro.")
+    else:
+        resultado = preparar_fecha_hora(resultado)
+        resultado = resultado[columnas]
+
+        st.success(f"{len(resultado)} registros encontrados")
+
+        st.dataframe(resultado.astype(str), use_container_width=True)
+
+        csv = resultado.to_csv(index=False).encode("utf-8-sig")
+
+        st.download_button(
+            "📥 Descargar reporte",
+            csv,
+            "reporte_vendedor.csv",
+            "text/csv"
+        )
