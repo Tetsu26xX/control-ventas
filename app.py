@@ -1020,36 +1020,74 @@ menu = st.session_state["menu_actual"]
 # DASHBOARD
 # =========================
 if menu == "📌 Instrucciones":
-    st.title("📌 Instrucciones rápidas")
+    st.title("📌 Guía de uso del sistema")
 
     st.markdown("""
     <div class="glass-primary">
-        <h3>Guía rápida de uso</h3>
-        <p>Usa esta sección como recordatorio para trabajar sin errores.</p>
+        <h3>⚠️ Uso correcto obligatorio</h3>
+        <p>Este sistema controla ventas e inventario en tiempo real. Un error afecta todo el stock.</p>
     </div>
     """, unsafe_allow_html=True)
 
-    c1, c2 = st.columns(2)
-    with c1:
-        st.subheader("🧾 Registrar orden")
-        st.write("1. Verifica la orden.")
-        st.write("2. Marca si incluye chip, equipo o accesorio.")
-        st.write("3. Si incluye equipo, registra el IMEI correctamente.")
-        st.write("4. Guarda una sola vez y espera el mensaje de confirmación.")
+    st.markdown("""
+    <div class="glass-card">
+    <h4>🧾 Registro de ventas</h4>
+    <ul>
+        <li>Selecciona correctamente si la orden incluye: Chip, Equipo o Accesorio.</li>
+        <li>Si hay equipo, ingresa el IMEI correctamente.</li>
+        <li>Verifica marca, modelo, color y tipo antes de guardar.</li>
+        <li>No repitas órdenes ya registradas.</li>
+        <li>Presiona <b>Guardar una sola vez</b> y espera la confirmación.</li>
+    </ul>
+    </div>
+    """, unsafe_allow_html=True)
 
-        st.subheader("📱 Buscar IMEI")
-        st.write("Filtra por fecha y marca para enviar IMEI vendidos a promotores.")
+    st.markdown("""
+    <div class="glass-card">
+    <h4>📦 Ingreso de mercadería</h4>
+    <ul>
+        <li>Usa esta opción solo cuando ingresen equipos nuevos.</li>
+        <li>Elige bien marca, modelo, color y tipo.</li>
+        <li>Verifica la cantidad antes de guardar.</li>
+        <li>Presiona guardar una sola vez y espera confirmación.</li>
+    </ul>
+    </div>
+    """, unsafe_allow_html=True)
 
-    with c2:
-        st.subheader("📦 Inventario")
-        st.write("Ingreso Stock: carga stock inicial real.")
-        st.write("Ingreso Mercadería: suma equipos nuevos.")
-        st.write("Salida Traslado: descuenta equipos que salen.")
-        st.write("Nunca registres salida mayor al stock disponible.")
+    st.markdown("""
+    <div class="glass-card">
+    <h4>🔁 Traslados y salidas</h4>
+    <ul>
+        <li>Usa traslado solo cuando el equipo se mueve de ubicación o responsable.</li>
+        <li>Usa salida cuando el equipo debe descontarse del stock.</li>
+        <li>No registres cantidades mayores al stock disponible.</li>
+        <li>Revisa siempre el producto antes de guardar.</li>
+    </ul>
+    </div>
+    """, unsafe_allow_html=True)
 
-        st.subheader("🔐 Usuarios")
-        st.write("Vendedores registran con su nombre.")
-        st.write("Admin puede registrar por cualquier vendedor.")
+    st.markdown("""
+    <div class="glass-card">
+    <h4>🚫 Reglas importantes</h4>
+    <ul>
+        <li>No tocar vendedores sin autorización.</li>
+        <li>No editar ni eliminar órdenes de otros vendedores.</li>
+        <li>No registrar información incompleta.</li>
+        <li>Todo cambio afecta ventas, reportes e inventario.</li>
+    </ul>
+    </div>
+    """, unsafe_allow_html=True)
+
+    st.markdown("""
+    <div class="glass-card">
+    <h4>✅ Recomendación final</h4>
+    <ul>
+        <li>Revisa todo antes de guardar.</li>
+        <li>Registra con calma.</li>
+        <li>Ante cualquier duda, consulta antes de ingresar datos.</li>
+    </ul>
+    </div>
+    """, unsafe_allow_html=True)
 
 elif menu == "📊 Dashboard":
     st.title("📊 Dashboard de Ventas")
