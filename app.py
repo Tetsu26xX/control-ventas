@@ -14,7 +14,7 @@ st.markdown("""
     font-size: 24px;
 }
 
-[data-testid="stDataFrame"] td:nth-child(8) {
+[data-testid="stDataFrame"] td:nth-child(11) {
     font-size: 26px !important;
     font-weight: 800;
     text-align: center;
