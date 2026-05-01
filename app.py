@@ -1472,7 +1472,7 @@ elif menu == "📦 Inventario":
             try:
                 val = int(val)
         
-                estilo_base = "font-size: 20px; font-weight: 800; text-align: center;"
+                estilo_base = "font-size: 28px; font-weight: 800; text-align: center;"
         
                 if val <= 1:
                     return estilo_base + "background-color: #FFB3B3; color: #111111;"
