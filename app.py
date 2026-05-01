@@ -273,7 +273,7 @@ def login():
 
     with col_login:
         st.markdown("""
-        <div class="login-logo">Control<span>Ventas</span></div>
+        <div class="login-logo">Control<span>Ventas Plaza Vea</span></div>
         <div class="google-btn">🔐 Acceso autorizado</div>
         <div class="login-divider">O</div>
         """, unsafe_allow_html=True)
