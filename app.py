@@ -279,14 +279,14 @@ def login():
         """, unsafe_allow_html=True)
 
         with st.form("login_form", clear_on_submit=False):
-            usuario = st.text_input("Correo electrónico / Usuario", placeholder="Usuario").strip().upper()
-            password = st.text_input("Contraseña", type="password", placeholder="Contraseña").strip()
+            usuario = st.text_input("Usuario 🧐", placeholder="Usuario").strip().upper()
+            password = st.text_input("Contraseña 🔑", type="password", placeholder="Contraseña").strip()
             submitted = st.form_submit_button("Iniciar sesión")
 
         st.markdown("""
         <div class="helper-link">Olvidé mi contraseña</div>
         <div class="login-terms">
-            ¿Necesito ayuda?<br>
+            ¿Me valoran?-_- porque siento que no<br>
             Al iniciar sesión, aceptas el uso autorizado del sistema <b>Control Ventas</b>.
         </div>
         """, unsafe_allow_html=True)
