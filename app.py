@@ -1470,14 +1470,17 @@ elif menu == "📦 Inventario":
 
         def estilo_stock_actual(val):
             try:
-                numero = int(val)
-                if numero <= 1:
-                    return "background-color: #FFB3B3; color: #111111; font-weight: 900;"
-                elif numero == 2:
-                    return "background-color: #FFF9C4; color: #111111; font-weight: 900;"
+                val = int(val)
+        
+                estilo_base = "font-size: 20px; font-weight: 800; text-align: center;"
+        
+                if val <= 1:
+                    return estilo_base + "background-color: #FFB3B3; color: #111111;"
+                elif val == 2:
+                    return estilo_base + "background-color: #FFF9C4; color: #111111;"
                 else:
-                    return "background-color: #C8E6C9; color: #111111; font-weight: 900;"
-            except Exception:
+                    return estilo_base + "background-color: #C8E6C9; color: #111111;"
+            except:
                 return ""
 
         stock_estilizado = (
