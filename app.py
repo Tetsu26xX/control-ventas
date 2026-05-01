@@ -39,322 +39,295 @@ def login():
     <style>
     .stApp {{
         background:
-            radial-gradient(circle at 10% 12%, rgba(28, 102, 230, .38), transparent 28%),
-            radial-gradient(circle at 87% 36%, rgba(255, 36, 122, .42), transparent 34%),
-            linear-gradient(135deg, #06152e 0%, #0b1640 44%, #211351 70%, #760d4e 100%) !important;
+            radial-gradient(circle at 78% 18%, rgba(205, 230, 80, .20), transparent 18%),
+            radial-gradient(circle at 92% 68%, rgba(205, 230, 80, .12), transparent 28%),
+            linear-gradient(120deg, #17191f 0%, #1c1f27 42%, #101216 100%) !important;
         background-attachment: fixed !important;
     }}
-
-    .block-container {{
-        padding-top: 1.1rem !important;
-        padding-bottom: 0rem !important;
-        max-width: 1360px !important;
-    }}
-
-    header[data-testid="stHeader"] {{ background: transparent !important; }}
-    #MainMenu, footer {{ visibility: hidden !important; }}
-
-    .neon-lines {{
+    .stApp::before {{
+        content: "";
         position: fixed;
         inset: 0;
         pointer-events: none;
+        background:
+            radial-gradient(circle at 78% 10%, rgba(224,255,76,.28) 0 2px, transparent 3px),
+            radial-gradient(circle at 84% 23%, rgba(224,255,76,.25) 0 2px, transparent 3px),
+            radial-gradient(circle at 89% 38%, rgba(224,255,76,.20) 0 2px, transparent 3px),
+            radial-gradient(circle at 75% 72%, rgba(224,255,76,.16) 0 2px, transparent 3px);
+        opacity: .85;
         z-index: 0;
-        overflow: hidden;
-        opacity: .94;
     }}
-
-    .neon-lines span {{
-        position: absolute;
-        display: block;
-        width: 8px;
-        height: 150px;
-        border-radius: 999px;
-        transform: rotate(38deg);
-        background: linear-gradient(180deg, rgba(255,57,115,.95), rgba(119,44,255,.15));
-        box-shadow: 0 0 22px rgba(255,57,115,.30);
+    .stApp::after {{
+        content: "";
+        position: fixed;
+        right: -80px;
+        top: -70px;
+        width: 55vw;
+        height: 110vh;
+        pointer-events: none;
+        background:
+            linear-gradient(115deg, transparent 0 44%, rgba(210,245,62,.10) 45%, transparent 47%),
+            linear-gradient(118deg, transparent 0 52%, rgba(210,245,62,.16) 53%, transparent 55%),
+            radial-gradient(circle at 60% 30%, rgba(225,255,90,.22), transparent 9%),
+            radial-gradient(circle at 70% 47%, rgba(225,255,90,.16), transparent 7%);
+        filter: blur(1px);
+        opacity: .9;
+        z-index: 0;
     }}
-
-    .neon-lines span:nth-child(1) {{ left: 8%; top: -5%; height: 210px; }}
-    .neon-lines span:nth-child(2) {{ left: 19%; top: 62%; height: 195px; width: 55px; background: rgba(104,58,255,.34); }}
-    .neon-lines span:nth-child(3) {{ left: 36%; top: 8%; height: 160px; }}
-    .neon-lines span:nth-child(4) {{ left: 55%; top: 3%; height: 235px; width: 55px; background: rgba(104,58,255,.32); }}
-    .neon-lines span:nth-child(5) {{ right: 14%; top: 9%; height: 185px; }}
-    .neon-lines span:nth-child(6) {{ right: 6%; bottom: 4%; height: 215px; width: 58px; background: rgba(104,58,255,.32); }}
-    .neon-lines span:nth-child(7) {{ left: 72%; bottom: 9%; height: 165px; }}
-    .neon-lines span:nth-child(8) {{ left: 3%; bottom: 26%; height: 140px; background: rgba(42,133,255,.9); }}
-
-    div[data-testid="stHorizontalBlock"]:first-of-type {{
-        min-height: calc(100vh - 105px);
-        align-items: center !important;
-        gap: 4.2rem !important;
+    header[data-testid="stHeader"] {{ background: transparent !important; }}
+    #MainMenu, footer {{ visibility: hidden !important; }}
+    .block-container {{
+        max-width: 1280px !important;
+        padding-top: 3.2rem !important;
+        padding-bottom: 0rem !important;
         position: relative;
         z-index: 2;
     }}
-
-    div[data-testid="stHorizontalBlock"]:first-of-type > div[data-testid="column"]:nth-child(2) {{
-        max-width: 410px !important;
-        padding: 2rem 2rem 1.65rem 2rem !important;
-        border-radius: 23px !important;
-        background: linear-gradient(180deg, rgba(32, 18, 48, .86), rgba(12, 9, 24, .92)) !important;
-        border: 1px solid rgba(255,255,255,.16) !important;
-        box-shadow: 0 24px 70px rgba(0,0,0,.43), inset 0 1px 0 rgba(255,255,255,.06) !important;
-        backdrop-filter: blur(22px) !important;
-        transition: all .28s ease !important;
+    div[data-testid="stHorizontalBlock"]:first-of-type {{
+        min-height: calc(100vh - 125px);
+        align-items: center !important;
+        gap: 4rem !important;
     }}
-
-    div[data-testid="stHorizontalBlock"]:first-of-type > div[data-testid="column"]:nth-child(2):hover {{
-        transform: translateY(-5px);
-        border-color: rgba(218, 61, 255, .44) !important;
-        box-shadow:
-            0 0 18px rgba(255, 60, 130, .32),
-            0 0 42px rgba(139, 45, 226, .28),
-            0 28px 80px rgba(0,0,0,.46) !important;
+    div[data-testid="stHorizontalBlock"]:first-of-type > div[data-testid="column"]:first-child {{
+        max-width: 390px !important;
+        padding-left: 1.8rem !important;
     }}
-
-    .brand-kicker {{
-        color:#ff3d86;
-        font-weight:900;
-        font-size:.9rem;
-        margin-bottom:.35rem;
+    .login-logo {{
+        color: #ffffff;
+        font-size: 3rem;
+        line-height: .94;
+        font-weight: 1000;
+        letter-spacing: -1px;
+        margin-bottom: 1.35rem;
+        text-transform: uppercase;
+        transform: skew(-7deg);
+        text-shadow: 0 10px 30px rgba(0,0,0,.35);
     }}
-
-    .brand-title {{
-        margin:0;
-        color:#9658ff;
-        font-size: clamp(3.15rem, 5.2vw, 4.75rem);
-        line-height:.98;
-        font-weight:1000;
-        letter-spacing:-2px;
-        text-shadow: 0 0 32px rgba(150,88,255,.38);
+    .login-logo span {{ color: #d9f34c; display: block; }}
+    .login-divider {{
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        color: rgba(255,255,255,.66);
+        font-size: .76rem;
+        margin: 1.1rem 0 1.25rem;
     }}
-
-    .brand-copy {{
-        color:rgba(255,255,255,.9);
-        max-width:540px;
-        margin:1.6rem 0 1.15rem 0;
-        font-weight:750;
+    .login-divider::before, .login-divider::after {{
+        content: "";
+        height: 1px;
+        flex: 1;
+        background: rgba(255,255,255,.34);
+    }}
+    .helper-link {{
+        text-align:center;
+        color:#d9f34c;
+        font-size:.78rem;
+        font-weight:800;
+        margin-top: 1.15rem;
+        opacity:.92;
+    }}
+    .login-terms {{
+        color: rgba(255,255,255,.68);
+        text-align:center;
+        font-size:.68rem;
         line-height:1.45;
+        margin-top:1.55rem;
     }}
-
-    .hero-stage {{
-        display:grid;
-        grid-template-columns: 1fr 255px;
-        align-items:end;
-        gap:18px;
-        max-width:680px;
-    }}
-
-    .feature-row {{
-        display:grid;
-        grid-template-columns: repeat(3, minmax(125px, 1fr));
-        gap:14px;
-        align-items:stretch;
-    }}
-
-    .feature-card {{
-        min-height:98px;
-        padding:15px 14px;
-        border-radius:16px;
-        background: linear-gradient(135deg, rgba(255,255,255,.12), rgba(255,255,255,.055));
-        border:1px solid rgba(255,255,255,.15);
-        box-shadow: 0 12px 30px rgba(0,0,0,.20);
-        transition: all .28s ease;
-        backdrop-filter: blur(14px);
-    }}
-
-    .feature-card:hover {{
-        transform: translateY(-7px) scale(1.025);
-        border-color: rgba(255, 65, 135, .46);
-        box-shadow:
-            0 0 14px rgba(255, 61, 115, .42),
-            0 0 32px rgba(142, 45, 226, .32),
-            0 18px 38px rgba(0,0,0,.34);
-    }}
-
-    .feature-icon {{ font-size:1.6rem; margin-bottom:8px; }}
-    .feature-title {{ color:white; font-weight:950; font-size:.92rem; margin-bottom:3px; }}
-    .feature-text {{ color:rgba(255,255,255,.70); font-size:.72rem; line-height:1.35; font-weight:650; }}
-
-    .mascot-wrap {{
-        height:260px;
-        display:flex;
-        align-items:flex-end;
-        justify-content:center;
-        filter: drop-shadow(0 0 32px rgba(255, 190, 66, .32));
-        transition: all .28s ease;
-    }}
-
-    .mascot-wrap:hover {{
-        transform: translateY(-8px) scale(1.035);
-        filter: drop-shadow(0 0 40px rgba(255, 205, 76, .45));
-    }}
-
-    .mascot-wrap img {{
-        width:100%;
-        max-width:265px;
-        object-fit:contain;
-    }}
-
-    .login-icon {{
-        width:64px;
-        height:64px;
+    .login-terms b {{ color:#d9f34c; }}
+    .google-btn {{
+        height: 2.55rem;
+        border: 1px solid rgba(255,255,255,.34);
+        color: rgba(255,255,255,.82);
         display:flex;
         align-items:center;
         justify-content:center;
-        margin:0 auto 1.2rem auto;
-        border-radius:999px;
-        font-size:1.7rem;
-        background: radial-gradient(circle, #ea42ff 0%, #8f22c7 55%, rgba(143,34,199,.25) 100%);
-        box-shadow:0 0 34px rgba(226,66,255,.38);
+        gap:.55rem;
+        font-size:.76rem;
+        font-weight:800;
+        margin-bottom:.85rem;
+        background: rgba(0,0,0,.08);
     }}
-
-    .login-title {{
-        text-align:center;
-        color:white;
-        font-size:2rem;
-        line-height:1;
-        font-weight:1000;
-        margin:0 0 .55rem 0;
-        letter-spacing:-.5px;
-    }}
-
-    .login-sub {{
-        text-align:center;
-        color:rgba(255,255,255,.58);
-        font-size:.82rem;
-        font-weight:750;
-        margin-bottom:1.35rem;
-    }}
-
-    .secure-copy {{
-        text-align:center;
-        color:#65e4d4;
-        font-size:.78rem;
-        font-weight:900;
-        margin-top:1.1rem;
-    }}
-
     div[data-testid="stTextInput"] label {{
-        color:rgba(255,255,255,.82) !important;
-        font-weight:850 !important;
-        font-size:.82rem !important;
+        color: rgba(255,255,255,.88) !important;
+        font-weight: 700 !important;
+        font-size: .8rem !important;
     }}
-
     div[data-testid="stTextInput"] input {{
-        background: rgba(255,255,255,.14) !important;
-        border: 1px solid rgba(255,255,255,.13) !important;
+        background: #2b2d36 !important;
+        border: 1px solid rgba(255,255,255,.08) !important;
         color: white !important;
-        border-radius: 11px !important;
-        height: 46px !important;
-        font-weight:800 !important;
-        transition: all .24s ease !important;
+        border-radius: 0 !important;
+        min-height: 2.75rem !important;
+        font-weight: 700 !important;
+        box-shadow: none !important;
     }}
-
     div[data-testid="stTextInput"] input:focus {{
-        border-color: rgba(215,65,255,.72) !important;
-        box-shadow: 0 0 0 1px rgba(215,65,255,.32), 0 0 18px rgba(215,65,255,.24) !important;
+        border-color: #d9f34c !important;
+        box-shadow: 0 0 0 1px rgba(217,243,76,.55), 0 0 26px rgba(217,243,76,.12) !important;
     }}
-
-    .stButton > button {{
-        height:52px !important;
-        border-radius:12px !important;
-        border:none !important;
-        background: linear-gradient(90deg, #ff3d73 0%, #a72fea 55%, #7b2cff 100%) !important;
-        color:white !important;
-        font-weight:1000 !important;
-        box-shadow:0 14px 38px rgba(167,47,234,.28) !important;
-        transition: all .24s ease !important;
+    .stButton > button, [data-testid="stFormSubmitButton"] button {{
+        width: 100% !important;
+        min-height: 2.85rem !important;
+        border-radius: 2px !important;
+        border: none !important;
+        background: #d9f34c !important;
+        color: #22252b !important;
+        font-weight: 900 !important;
+        box-shadow: 0 0 0 rgba(217,243,76,0) !important;
+        transition: all .22s ease !important;
     }}
-
-    .stButton > button:hover {{
-        transform: translateY(-3px) scale(1.01);
-        box-shadow: 0 0 18px rgba(255,61,115,.48), 0 0 40px rgba(123,44,255,.36) !important;
-        filter: brightness(1.06);
+    .stButton > button:hover, [data-testid="stFormSubmitButton"] button:hover {{
+        transform: translateY(-2px) !important;
+        box-shadow: 0 0 18px rgba(217,243,76,.35), 0 14px 30px rgba(0,0,0,.28) !important;
+        filter: brightness(1.04);
     }}
-
-    .stAlert {{ border-radius: 14px !important; }}
-
-    @media (max-width: 950px) {{
-        div[data-testid="stHorizontalBlock"]:first-of-type {{
-            min-height: auto;
-            align-items: stretch !important;
-            gap: 1.3rem !important;
-        }}
-        .hero-stage {{ grid-template-columns: 1fr; }}
-        .mascot-wrap {{ height:210px; justify-content:flex-start; }}
-        .feature-row {{ grid-template-columns:1fr; }}
-        div[data-testid="stHorizontalBlock"]:first-of-type > div[data-testid="column"]:nth-child(2) {{
-            max-width:100% !important;
-        }}
+    .hero-wrap {{
+        width: min(660px, 100%);
+        min-height: 560px;
+        position: relative;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }}
+    .hero-copy {{
+        position: absolute;
+        left: 0;
+        top: 28px;
+        max-width: 390px;
+        color: white;
+        z-index: 3;
+    }}
+    .hero-kicker {{ color:#d9f34c; font-weight:1000; font-size:.9rem; margin-bottom:.45rem; }}
+    .hero-title {{
+        margin:0;
+        color:#ffffff;
+        font-size: clamp(2.7rem, 4.4vw, 4.45rem);
+        line-height:.96;
+        font-weight:1000;
+        letter-spacing:-1.5px;
+        text-shadow: 0 15px 45px rgba(0,0,0,.45);
+    }}
+    .hero-title span {{ color:#d9f34c; }}
+    .hero-sub {{
+        margin-top:1.15rem;
+        color: rgba(255,255,255,.88);
+        font-weight:750;
+        line-height:1.45;
+        max-width: 520px;
+    }}
+    .mascot-box {{
+        position:absolute;
+        right: 4%;
+        bottom: 18px;
+        width: min(420px, 72%);
+        z-index: 2;
+        filter: drop-shadow(0 20px 35px rgba(0,0,0,.42));
+        transition: all .25s ease;
+    }}
+    .mascot-box:hover {{
+        transform: translateY(-5px) scale(1.015);
+        filter: drop-shadow(0 0 24px rgba(217,243,76,.22)) drop-shadow(0 24px 38px rgba(0,0,0,.44));
+    }}
+    .mascot-box img {{ width:100%; display:block; }}
+    .feature-row {{
+        position: absolute;
+        left: 0;
+        bottom: 40px;
+        width: 430px;
+        display:grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap:12px;
+        z-index: 4;
+    }}
+    .feature-card {{
+        min-height:84px;
+        padding:12px 12px;
+        border-radius:4px;
+        background: rgba(30,32,40,.72);
+        border:1px solid rgba(255,255,255,.13);
+        color:white;
+        backdrop-filter: blur(12px);
+        box-shadow: 0 14px 34px rgba(0,0,0,.24);
+        transition: all .24s ease;
+    }}
+    .feature-card:hover {{
+        transform: translateY(-5px);
+        border-color: rgba(217,243,76,.55);
+        box-shadow: 0 0 18px rgba(217,243,76,.20), 0 18px 38px rgba(0,0,0,.34);
+    }}
+    .feature-icon {{font-size:1.4rem; margin-bottom:.35rem;}}
+    .feature-title {{font-weight:1000; font-size:.92rem;}}
+    .feature-text {{font-size:.70rem; opacity:.76; margin-top:.25rem; line-height:1.3;}}
+    @media (max-width: 900px) {{
+        .block-container {{ padding-top: 1.5rem !important; }}
+        div[data-testid="stHorizontalBlock"]:first-of-type {{ min-height: auto; gap: 1.5rem !important; }}
+        .hero-wrap {{ min-height: 500px; }}
+        .hero-copy {{ position:relative; top:auto; left:auto; }}
+        .mascot-box {{ position:relative; right:auto; bottom:auto; width:80%; margin: 1rem auto 0; }}
+        .feature-row {{ position:relative; left:auto; bottom:auto; width:100%; margin-top:1rem; }}
     }}
     </style>
-
-    <div class="neon-lines">
-        <span></span><span></span><span></span><span></span>
-        <span></span><span></span><span></span><span></span>
-    </div>
     """, unsafe_allow_html=True)
 
-    col_left, col_right = st.columns([1.35, .88], gap="large")
+    col_login, col_hero = st.columns([0.38, 0.62], gap="large")
 
-    with col_left:
-        st.markdown(f"""
-        <div class="brand-kicker">Bienvenido a</div>
-        <h1 class="brand-title">Control<br>Ventas</h1>
-        <p class="brand-copy">Sistema para registrar ventas, controlar stock, revisar rankings y consultar IMEI por marca y fecha.</p>
+    with col_login:
+        st.markdown("""
+        <div class="login-logo">Control<span>Ventas</span></div>
+        <div class="google-btn">🔐 Acceso autorizado</div>
+        <div class="login-divider">O</div>
+        """, unsafe_allow_html=True)
 
-        <div class="hero-stage">
-            <div class="feature-row">
-                <div class="feature-card">
-                    <div class="feature-icon">🛒</div>
-                    <div class="feature-title">Ventas</div>
-                    <div class="feature-text">Registra y consulta todas tus ventas.</div>
-                </div>
-                <div class="feature-card">
-                    <div class="feature-icon">📦</div>
-                    <div class="feature-title">Stock</div>
-                    <div class="feature-text">Controla tu inventario.</div>
-                </div>
-                <div class="feature-card">
-                    <div class="feature-icon">📊</div>
-                    <div class="feature-title">Reportes</div>
-                    <div class="feature-text">Rankings y estadísticas de vendedores.</div>
-                </div>
-            </div>
-            <div class="mascot-wrap">
-                {'<img src="data:image/png;base64,' + mascota_b64 + '" />' if mascota_b64 else ''}
-            </div>
+        with st.form("login_form", clear_on_submit=False):
+            usuario = st.text_input("Correo electrónico / Usuario", placeholder="Usuario").strip().upper()
+            password = st.text_input("Contraseña", type="password", placeholder="Contraseña").strip()
+            submitted = st.form_submit_button("Iniciar sesión")
+
+        st.markdown("""
+        <div class="helper-link">Olvidé mi contraseña</div>
+        <div class="login-terms">
+            ¿Necesito ayuda?<br>
+            Al iniciar sesión, aceptas el uso autorizado del sistema <b>Control Ventas</b>.
         </div>
         """, unsafe_allow_html=True)
 
-    with col_right:
-        st.markdown("""
-        <div class="login-icon">🔒</div>
-        <h2 class="login-title">Iniciar Sesión</h2>
-        <div class="login-sub">Ingresa tus credenciales para continuar</div>
-        """, unsafe_allow_html=True)
-
-        usuario = st.text_input("Usuario", placeholder="Usuario").strip().upper()
-        password = st.text_input("Contraseña", type="password", placeholder="Contraseña").strip()
-
-        if st.button("Ingresar  ➜", use_container_width=True):
-            with st.spinner("Validando acceso..."):
-                data = supabase.table("usuarios").select("*").eq("usuario", usuario).execute().data
-
-            if data:
-                user = data[0]
-                if str(user.get("password", "")) == password and str(user.get("estado", "")).upper() == "ACTIVO":
-                    st.session_state["login_ok"] = True
-                    st.session_state["usuario"] = user.get("usuario", "")
-                    st.session_state["rol"] = user.get("rol", "")
-                    st.session_state["vendedor"] = user.get("vendedor", "")
-                    st.rerun()
-                else:
-                    st.error("Contraseña incorrecta o usuario inactivo.")
+        if submitted:
+            if not usuario or not password:
+                st.error("Ingresa usuario y contraseña.")
             else:
-                st.error("Usuario no existe.")
+                with st.spinner("Validando acceso..."):
+                    data = supabase.table("usuarios").select("*").eq("usuario", usuario).execute().data
 
-        st.markdown('<div class="secure-copy">◎ Acceso seguro y protegido</div>', unsafe_allow_html=True)
+                if data:
+                    user = data[0]
+                    if str(user.get("password", "")) == password and str(user.get("estado", "")).upper() == "ACTIVO":
+                        st.session_state["login_ok"] = True
+                        st.session_state["usuario"] = user.get("usuario", "")
+                        st.session_state["rol"] = user.get("rol", "")
+                        st.session_state["vendedor"] = user.get("vendedor", "")
+                        st.rerun()
+                    else:
+                        st.error("Contraseña incorrecta o usuario inactivo.")
+                else:
+                    st.error("Usuario no existe.")
+
+    with col_hero:
+        mascota_html = f'<div class="mascot-box"><img src="data:image/png;base64,{mascota_b64}"></div>' if mascota_b64 else ""
+        st.markdown(f"""
+        <div class="hero-wrap">
+            <div class="hero-copy">
+                <div class="hero-kicker">Bienvenido a</div>
+                <h1 class="hero-title">Control<br><span>Ventas</span></h1>
+                <div class="hero-sub">Sistema para registrar ventas, controlar stock, revisar rankings y consultar IMEI por marca y fecha.</div>
+            </div>
+            {mascota_html}
+            <div class="feature-row">
+                <div class="feature-card"><div class="feature-icon">🛒</div><div class="feature-title">Ventas</div><div class="feature-text">Registra y consulta todas tus ventas.</div></div>
+                <div class="feature-card"><div class="feature-icon">📦</div><div class="feature-title">Stock</div><div class="feature-text">Controla ingresos, salidas y traslados.</div></div>
+                <div class="feature-card"><div class="feature-icon">📊</div><div class="feature-title">Reportes</div><div class="feature-text">Rankings y estadísticas rápidas.</div></div>
+            </div>
+        </div>
+        """, unsafe_allow_html=True)
 
 if not st.session_state["login_ok"]:
     login()
