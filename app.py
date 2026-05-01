@@ -273,7 +273,7 @@ def login():
 
     with col_login:
         st.markdown("""
-        <div class="login-logo">Control<span>Ventas</span></div>
+        <div class="login-logo">Control<span>Ventas</span>Plaza Vea-Hyo</span></div>
         <div class="google-btn">🔐 Acceso autorizado</div>
         <div class="login-divider">O</div>
         """, unsafe_allow_html=True)
@@ -1472,11 +1472,11 @@ elif menu == "📦 Inventario":
             try:
                 numero = int(val)
                 if numero <= 1:
-                    return "background-color: #FFB3B3; color: white; font-weight: 900;"
+                    return "background-color: #FFB3B3; color: #111111; font-weight: 900;"
                 elif numero == 2:
                     return "background-color: #FFF9C4; color: #111111; font-weight: 900;"
                 else:
-                    return "background-color: #C8E6C9; color: white; font-weight: 900;"
+                    return "background-color: #C8E6C9; color: #111111; font-weight: 900;"
             except Exception:
                 return ""
 
