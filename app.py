@@ -1809,7 +1809,7 @@ elif menu == "✏️ Editar Venta":
 # BUSCAR
 # =========================
 elif menu == "🔍 Buscar":
-    st.title("🔍 Buscar Orden / IMEI / CHIP / Accesorio")
+    st.title("🔍 Buscar Orden / IMEI / CHIP / Accesorio / Vendedor")
 
     if ventas.empty:
         st.info("No hay ventas registradas.")
@@ -1818,100 +1818,145 @@ elif menu == "🔍 Buscar":
             "Buscar por",
             ["ORDEN", "IMEI", "CHIP", "ACCESORIO", "REPORTE VENDEDOR"]
         )
-        texto = st.text_input("Escribe lo que quieres buscar").strip()
 
-        if texto:
-            ventas_busqueda = ventas.astype(str)
+        # ================= BUSQUEDAS NORMALES =================
+        if opcion in ["ORDEN", "IMEI", "CHIP", "ACCESORIO"]:
+            texto = st.text_input("Escribe lo que quieres buscar").strip()
 
-            if opcion == "ORDEN":
-                resultado = ventas_busqueda[
-                    ventas_busqueda["orden"].str.contains(texto, case=False, na=False)
-                ]
-            elif opcion == "IMEI":
-                resultado = ventas_busqueda[
-                    ventas_busqueda["imei"].str.contains(texto, case=False, na=False)
-                ]
-            elif opcion == "CHIP":
-                resultado = ventas_busqueda[
-                    ventas_busqueda["chip"].str.contains(texto, case=False, na=False)
-                ]
+            if texto:
+                ventas_busqueda = ventas.astype(str)
+
+                if opcion == "ORDEN":
+                    resultado = ventas_busqueda[
+                        ventas_busqueda["orden"].str.contains(texto, case=False, na=False)
+                    ]
+                elif opcion == "IMEI":
+                    resultado = ventas_busqueda[
+                        ventas_busqueda["imei"].str.contains(texto, case=False, na=False)
+                    ]
+                elif opcion == "CHIP":
+                    resultado = ventas_busqueda[
+                        ventas_busqueda["chip"].str.contains(texto, case=False, na=False)
+                    ]
+                else:
+                    resultado = ventas_busqueda[
+                        ventas_busqueda["accesorio"].str.contains(texto, case=False, na=False) |
+                        ventas_busqueda["accesorio_sku"].str.contains(texto, case=False, na=False)
+                    ]
+
+                if resultado.empty:
+                    st.warning("No se encontraron resultados.")
+                else:
+                    st.success(f"Se encontraron {len(resultado)} resultado(s).")
+                    resultado = resultado.replace({"None": "", "nan": "", "NaN": ""})
+                    st.dataframe(resultado, use_container_width=True)
+
+        # ================= REPORTE POR VENDEDOR =================
+        if opcion == "REPORTE VENDEDOR":
+            st.subheader("📊 Reporte por vendedor")
+
+            ventas_rep = ventas.copy()
+            ventas_rep["fecha_dt"] = pd.to_datetime(ventas_rep["fecha"], errors="coerce")
+
+            fechas_validas = ventas_rep["fecha_dt"].dropna()
+            if not fechas_validas.empty:
+                fecha_min = fechas_validas.min().date()
+                fecha_max = fechas_validas.max().date()
             else:
-                resultado = ventas_busqueda[
-                    ventas_busqueda["accesorio"].str.contains(texto, case=False, na=False) |
-                    ventas_busqueda["accesorio_sku"].str.contains(texto, case=False, na=False)
-                ]
+                fecha_min = pd.Timestamp.today().date()
+                fecha_max = pd.Timestamp.today().date()
 
-            if resultado.empty:
-                st.warning("No se encontraron resultados.")
+            vendedores_lista = sorted([
+                v for v in ventas_rep["vendedor"].astype(str).unique()
+                if v.strip() != ""
+            ])
+
+            if not vendedores_lista:
+                st.warning("No hay vendedores registrados en ventas.")
             else:
-                st.success(f"Se encontraron {len(resultado)} resultado(s).")
-                resultado = resultado.replace({"None": "", "nan": "", "NaN": ""})
-                st.dataframe(resultado, use_container_width=True)
-                elif opcion == "REPORTE VENDEDOR":
+                col1, col2, col3, col4 = st.columns(4)
 
-    st.subheader("📊 Reporte por vendedor")
+                with col1:
+                    fecha_inicio = st.date_input("Desde", value=fecha_min, key="rep_vendedor_desde")
 
-    ventas_rep = ventas.copy()
-    ventas_rep["fecha_dt"] = pd.to_datetime(ventas_rep["fecha"], errors="coerce")
+                with col2:
+                    fecha_fin = st.date_input("Hasta", value=fecha_max, key="rep_vendedor_hasta")
 
-    vendedores_lista = sorted([
-        v for v in ventas_rep["vendedor"].astype(str).unique()
-        if v.strip() != ""
-    ])
+                with col3:
+                    vendedor_sel = st.selectbox("Vendedor", vendedores_lista, key="rep_vendedor_nombre")
 
-    col1, col2, col3, col4 = st.columns(4)
+                with col4:
+                    tipo_reporte = st.selectbox("Tipo", ["EQUIPO", "ACCESORIO"], key="rep_vendedor_tipo")
 
-    with col1:
-        fecha_inicio = st.date_input("Desde")
+                if fecha_inicio > fecha_fin:
+                    st.error("La fecha Desde no puede ser mayor que la fecha Hasta.")
+                else:
+                    resultado = ventas_rep[
+                        (ventas_rep["fecha_dt"].dt.date >= fecha_inicio) &
+                        (ventas_rep["fecha_dt"].dt.date <= fecha_fin) &
+                        (ventas_rep["vendedor"].astype(str) == vendedor_sel)
+                    ].copy()
 
-    with col2:
-        fecha_fin = st.date_input("Hasta")
+                    # -------- EQUIPOS --------
+                    if tipo_reporte == "EQUIPO":
+                        resultado["cantidad"] = pd.to_numeric(
+                            resultado["cantidad"], errors="coerce"
+                        ).fillna(0).astype(int)
 
-    with col3:
-        vendedor_sel = st.selectbox("Vendedor", vendedores_lista)
+                        resultado = resultado[resultado["cantidad"] > 0]
 
-    with col4:
-        tipo = st.selectbox("Tipo", ["EQUIPO", "ACCESORIO"])
+                        columnas = [
+                            "fecha", "hora", "vendedor", "orden", "imei",
+                            "marca", "modelo", "color", "tipo", "cantidad"
+                        ]
+                        total_label = "Total equipos vendidos"
+                        total_col = "cantidad"
+                        nombre_archivo = f"reporte_equipos_{vendedor_sel}.csv"
 
-    resultado = ventas_rep[
-        (ventas_rep["fecha_dt"].dt.date >= fecha_inicio) &
-        (ventas_rep["fecha_dt"].dt.date <= fecha_fin) &
-        (ventas_rep["vendedor"] == vendedor_sel)
-    ].copy()
+                    # -------- ACCESORIOS --------
+                    else:
+                        resultado["cantidad_accesorio"] = pd.to_numeric(
+                            resultado["cantidad_accesorio"], errors="coerce"
+                        ).fillna(0).astype(int)
 
-    if tipo == "EQUIPO":
-        resultado["cantidad"] = pd.to_numeric(resultado["cantidad"], errors="coerce").fillna(0)
-        resultado = resultado[resultado["cantidad"] > 0]
+                        resultado = resultado[resultado["cantidad_accesorio"] > 0]
 
-        columnas = [
-            "fecha", "hora", "vendedor", "orden", "imei",
-            "marca", "modelo", "color", "tipo", "cantidad"
-        ]
+                        columnas = [
+                            "fecha", "hora", "vendedor", "orden",
+                            "accesorio_sku", "accesorio", "cantidad_accesorio"
+                        ]
+                        total_label = "Total accesorios vendidos"
+                        total_col = "cantidad_accesorio"
+                        nombre_archivo = f"reporte_accesorios_{vendedor_sel}.csv"
 
-    else:
-        resultado["cantidad_accesorio"] = pd.to_numeric(resultado["cantidad_accesorio"], errors="coerce").fillna(0)
-        resultado = resultado[resultado["cantidad_accesorio"] > 0]
+                    st.divider()
 
-        columnas = [
-            "fecha", "hora", "vendedor", "orden",
-            "accesorio_sku", "accesorio", "cantidad_accesorio"
-        ]
+                    if resultado.empty:
+                        st.warning("No hay datos con ese filtro.")
+                    else:
+                        resultado_vista = preparar_fecha_hora(resultado)
 
-    if resultado.empty:
-        st.warning("No hay datos con ese filtro.")
-    else:
-        resultado = preparar_fecha_hora(resultado)
-        resultado = resultado[columnas]
+                        for col in columnas:
+                            if col not in resultado_vista.columns:
+                                resultado_vista[col] = ""
 
-        st.success(f"{len(resultado)} registros encontrados")
+                        resultado_vista = resultado_vista[columnas]
+                        resultado_vista = resultado_vista.replace({"None": "", "nan": "", "NaN": ""})
 
-        st.dataframe(resultado.astype(str), use_container_width=True)
+                        total = pd.to_numeric(
+                            resultado_vista[total_col], errors="coerce"
+                        ).fillna(0).sum()
 
-        csv = resultado.to_csv(index=False).encode("utf-8-sig")
+                        c_total1, c_total2 = st.columns(2)
+                        c_total1.metric("Registros encontrados", len(resultado_vista))
+                        c_total2.metric(total_label, int(total))
 
-        st.download_button(
-            "📥 Descargar reporte",
-            csv,
-            "reporte_vendedor.csv",
-            "text/csv"
-        )
+                        st.dataframe(resultado_vista.astype(str), use_container_width=True)
+
+                        csv = resultado_vista.to_csv(index=False).encode("utf-8-sig")
+                        st.download_button(
+                            "📥 Descargar reporte",
+                            data=csv,
+                            file_name=nombre_archivo,
+                            mime="text/csv"
+                        )
