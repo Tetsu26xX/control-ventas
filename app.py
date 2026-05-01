@@ -332,23 +332,29 @@ def login():
 if not st.session_state["login_ok"]:
     login()
     st.stop()
-    if "aviso_instrucciones_visto" not in st.session_state:
+
+# =========================
+# AVISO INSTRUCCIONES
+# =========================
+if "aviso_instrucciones_visto" not in st.session_state:
     st.session_state["aviso_instrucciones_visto"] = False
 
 if not st.session_state["aviso_instrucciones_visto"]:
-    st.warning("⚠️ IMPORTANTE: antes de usar el sistema, lee la sección 📌 Instrucciones.")
+
+    st.warning("⚠️ IMPORTANTE: antes de usar el sistema, lee las instrucciones.")
 
     st.markdown("""
     <div class="glass-card">
-        <h3>📌 Lee las instrucciones antes de registrar ventas o movimientos</h3>
+        <h3>📌 Lee las instrucciones antes de trabajar</h3>
         <p>
-        Recuerda revisar bien orden, IMEI, vendedor, equipo, accesorio y cantidades antes de guardar.
-        No edites órdenes de otros vendedores ni modifiques usuarios sin autorización.
+        Verifica siempre la información antes de guardar.  
+        No edites órdenes de otros vendedores.  
+        No registres datos incompletos.
         </p>
     </div>
     """, unsafe_allow_html=True)
 
-    if st.button("✅ Entendido, ir al sistema", use_container_width=True):
+    if st.button("✅ Entendido, continuar", use_container_width=True):
         st.session_state["aviso_instrucciones_visto"] = True
         st.session_state["menu_actual"] = "📌 Instrucciones"
         st.rerun()
