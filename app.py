@@ -47,13 +47,13 @@ def login():
     }}
 
     .block-container {{
-        padding-top: 1.05rem !important;
+        padding-top: .55rem !important;
         padding-bottom: 0 !important;
         max-width: 1340px !important;
     }}
 
     header[data-testid="stHeader"] {{ background: transparent !important; }}
-    #MainMenu, footer {{ visibility: hidden !important; }}
+    [data-testid="stToolbar"], [data-testid="stDecoration"], #MainMenu, footer {{ visibility: hidden !important; }}
 
     .login-bg-lines {{
         position: fixed;
@@ -85,7 +85,7 @@ def login():
     .login-bg-lines span:nth-child(10) {{ right: 37%; bottom: 0%; width: 62px; height: 230px; background: rgba(91,45,231,.28); }}
 
     div[data-testid="stHorizontalBlock"]:first-of-type {{
-        min-height: calc(100vh - 102px);
+        min-height: calc(100vh - 125px);
         align-items: center !important;
         gap: 3.8rem !important;
         position: relative;
@@ -118,6 +118,32 @@ def login():
             0 0 45px rgba(142, 45, 226, .31),
             0 28px 80px rgba(0,0,0,.54) !important;
     }}
+
+    div[data-testid="column"]:has(.login-panel-marker) {{
+        max-width: 395px !important;
+        padding: 2.05rem 1.7rem 1.6rem 1.7rem !important;
+        border-radius: 18px !important;
+        background: linear-gradient(180deg, rgba(24, 14, 36, .91), rgba(9, 7, 18, .96)) !important;
+        border: 1px solid rgba(255,255,255,.17) !important;
+        box-shadow:
+            0 24px 70px rgba(0,0,0,.52),
+            inset 0 1px 0 rgba(255,255,255,.07),
+            0 0 42px rgba(180, 41, 255, .12) !important;
+        backdrop-filter: blur(22px) !important;
+        -webkit-backdrop-filter: blur(22px) !important;
+        transition: all .28s ease !important;
+    }}
+
+    div[data-testid="column"]:has(.login-panel-marker):hover {{
+        transform: translateY(-5px);
+        border-color: rgba(231, 65, 255, .48) !important;
+        box-shadow:
+            0 0 18px rgba(255, 61, 115, .38),
+            0 0 45px rgba(142, 45, 226, .34),
+            0 30px 84px rgba(0,0,0,.58) !important;
+    }}
+
+    .login-panel-marker {{ display:none; }}
 
     .login-kicker {{
         color:#ff3d86;
@@ -153,7 +179,7 @@ def login():
 
     .hero-mini {{
         position: relative;
-        min-height: 275px;
+        min-height: 305px;
         max-width: 640px;
     }}
 
@@ -163,6 +189,7 @@ def login():
         gap:13px;
         max-width:520px;
         position: relative;
+        transform: translateY(-4px);
         z-index: 3;
     }}
 
@@ -192,10 +219,10 @@ def login():
 
     .mascot-stage {{
         position:absolute;
-        left: 78px;
-        top: 64px;
+        left: 90px;
+        top: 104px;
         z-index: 2;
-        width: 360px;
+        width: 350px;
         height: 225px;
         display:flex;
         align-items:flex-end;
@@ -371,6 +398,7 @@ def login():
 
     with col_right:
         st.markdown("""
+        <div class="login-panel-marker"></div>
         <div class="login-lock">🔒</div>
         <h2 class="login-card-title">Iniciar Sesión</h2>
         <div class="login-card-sub">Ingresa tus credenciales para continuar</div>
