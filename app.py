@@ -1482,7 +1482,6 @@ elif menu == "📦 Inventario":
 
         stock_estilizado = (
             stock_tabla.style
-            .apply(estilo_fila_marca, axis=1)
             .map(estilo_stock_actual, subset=["stock_actual"])
         )
 
