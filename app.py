@@ -279,14 +279,14 @@ def login():
         """, unsafe_allow_html=True)
 
         with st.form("login_form", clear_on_submit=False):
-            usuario = st.text_input("Usuario", placeholder="Usuario").strip().upper()
+            usuario = st.text_input("Correo electrónico / Usuario", placeholder="Usuario").strip().upper()
             password = st.text_input("Contraseña", type="password", placeholder="Contraseña").strip()
             submitted = st.form_submit_button("Iniciar sesión")
 
         st.markdown("""
-        <div class="helper-link">Si lees esto eres sapa</div>
+        <div class="helper-link">Olvidé mi contraseña</div>
         <div class="login-terms">
-            ¿Necesitamos mas XD?<br>
+            ¿Necesito ayuda?<br>
             Al iniciar sesión, aceptas el uso autorizado del sistema <b>Control Ventas</b>.
         </div>
         """, unsafe_allow_html=True)
@@ -471,6 +471,110 @@ h2, h3 {{
     0% {{ text-shadow: 0 0 8px rgba(14,165,233,0.35); }}
     50% {{ text-shadow: 0 0 18px rgba(227,6,19,0.35); }}
     100% {{ text-shadow: 0 0 8px rgba(14,165,233,0.35); }}
+}}
+</style>
+""", unsafe_allow_html=True)
+
+
+# =========================
+# OVERRIDE VISUAL: combina con login oscuro/lima
+# =========================
+st.markdown(f"""
+<style>
+.stApp {{
+    background:
+        radial-gradient(circle at top left, rgba(207, 237, 62, 0.13), transparent 34%),
+        radial-gradient(circle at bottom right, rgba(207, 237, 62, 0.10), transparent 30%),
+        linear-gradient(135deg, #17191f 0%, #1c1f27 52%, #101216 100%) !important;
+}}
+
+[data-testid="stSidebar"] {{
+    background-image:
+        linear-gradient(180deg, rgba(14, 16, 22, 0.76), rgba(20, 23, 31, 0.74), rgba(10, 11, 15, 0.82)),
+        url("data:image/png;base64,{fondo_menu}") !important;
+    background-size: cover !important;
+    background-position: center !important;
+    background-repeat: no-repeat !important;
+    border-right: 1px solid rgba(210,245,62,0.20) !important;
+    box-shadow: 10px 0 35px rgba(0,0,0,.24), 0 0 24px rgba(210,245,62,.10) !important;
+}}
+
+[data-testid="stSidebar"] * {{ color: #F6F7EE !important; }}
+
+[data-testid="stSidebar"] details {{
+    background: linear-gradient(135deg, rgba(255,255,255,0.105), rgba(255,255,255,0.045)) !important;
+    border-radius: 18px !important;
+    margin-bottom: 12px !important;
+    padding: 5px 8px !important;
+    border: 1px solid rgba(255,255,255,0.16) !important;
+    box-shadow: inset 0 1px 0 rgba(255,255,255,.16), 0 8px 20px rgba(0,0,0,.18) !important;
+    backdrop-filter: blur(14px) !important;
+    -webkit-backdrop-filter: blur(14px) !important;
+}}
+
+[data-testid="stSidebar"] summary {{
+    font-weight: 900 !important;
+    font-size: 17px !important;
+}}
+
+[data-testid="stSidebar"] .stButton > button {{
+    background: linear-gradient(135deg, rgba(255,255,255,0.13), rgba(255,255,255,0.055)) !important;
+    color: #F8FAFC !important;
+    border: 1px solid rgba(255,255,255,0.18) !important;
+    box-shadow: inset 0 1px 0 rgba(255,255,255,.16), 0 8px 18px rgba(0,0,0,.14) !important;
+    text-align: left !important;
+    justify-content: flex-start !important;
+    margin: 4px 0 !important;
+    border-radius: 15px !important;
+    font-weight: 850 !important;
+    transition: all .22s ease !important;
+    backdrop-filter: blur(12px) !important;
+    -webkit-backdrop-filter: blur(12px) !important;
+}}
+
+[data-testid="stSidebar"] .stButton > button:hover {{
+    transform: translateX(5px) translateY(-1px) !important;
+    background: linear-gradient(135deg, rgba(210,245,62,.18), rgba(255,255,255,.08)) !important;
+    border-color: rgba(210,245,62,.55) !important;
+    box-shadow:
+        0 0 0 1px rgba(210,245,62,.14),
+        0 0 18px rgba(210,245,62,.25),
+        0 10px 24px rgba(0,0,0,.22) !important;
+}}
+
+h1 {{ color: #F3F5EB !important; }}
+h2, h3 {{ color: #F8FAFC !important; }}
+
+[data-testid="stMetric"] {{
+    background: linear-gradient(135deg, rgba(30,33,42,0.92), rgba(44,48,58,0.82)) !important;
+    border: 1px solid rgba(210,245,62,0.18) !important;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.25), 0 0 18px rgba(210,245,62,.08) !important;
+}}
+
+.stButton > button {{
+    background: linear-gradient(90deg, #d7f54a 0%, #9acb31 100%) !important;
+    color: #14161b !important;
+    border: none !important;
+    border-radius: 14px !important;
+    font-weight: 900 !important;
+    box-shadow: 0 8px 22px rgba(210,245,62,.20) !important;
+    transition: all .22s ease !important;
+}}
+
+.stButton > button:hover {{
+    transform: translateY(-2px) !important;
+    box-shadow: 0 0 18px rgba(210,245,62,.42), 0 14px 28px rgba(0,0,0,.24) !important;
+}}
+
+[data-testid="stDataFrame"] {{
+    border: 1px solid rgba(210,245,62,0.13) !important;
+    box-shadow: 0 8px 28px rgba(0,0,0,0.28) !important;
+}}
+
+.glass-primary {{
+    background: linear-gradient(135deg, rgba(255,255,255,0.10), rgba(255,255,255,0.045)) !important;
+    border: 1px solid rgba(210,245,62,0.16) !important;
+    box-shadow: 0 18px 45px rgba(0,0,0,0.34), 0 0 22px rgba(210,245,62,.08) !important;
 }}
 </style>
 """, unsafe_allow_html=True)
@@ -1782,38 +1886,143 @@ elif menu == "✏️ Editar Venta":
 # BUSCAR
 # =========================
 elif menu == "🔍 Buscar":
-    st.title("🔍 Buscar Orden / IMEI / CHIP / Accesorio")
+    st.title("🔍 Buscar Orden / IMEI / CHIP / Accesorio / Vendedor")
 
     if ventas.empty:
         st.info("No hay ventas registradas.")
     else:
-        opcion = st.selectbox("Buscar por", ["ORDEN", "IMEI", "CHIP", "ACCESORIO"])
-        texto = st.text_input("Escribe lo que quieres buscar").strip()
+        opcion = st.selectbox(
+            "Buscar por",
+            ["ORDEN", "IMEI", "CHIP", "ACCESORIO", "REPORTE VENDEDOR"]
+        )
 
-        if texto:
-            ventas_busqueda = ventas.astype(str)
+        # ================= BUSQUEDAS NORMALES =================
+        if opcion in ["ORDEN", "IMEI", "CHIP", "ACCESORIO"]:
+            texto = st.text_input("Escribe lo que quieres buscar").strip()
 
-            if opcion == "ORDEN":
-                resultado = ventas_busqueda[
-                    ventas_busqueda["orden"].str.contains(texto, case=False, na=False)
-                ]
-            elif opcion == "IMEI":
-                resultado = ventas_busqueda[
-                    ventas_busqueda["imei"].str.contains(texto, case=False, na=False)
-                ]
-            elif opcion == "CHIP":
-                resultado = ventas_busqueda[
-                    ventas_busqueda["chip"].str.contains(texto, case=False, na=False)
-                ]
+            if texto:
+                ventas_busqueda = ventas.astype(str)
+
+                if opcion == "ORDEN":
+                    resultado = ventas_busqueda[
+                        ventas_busqueda["orden"].str.contains(texto, case=False, na=False)
+                    ]
+                elif opcion == "IMEI":
+                    resultado = ventas_busqueda[
+                        ventas_busqueda["imei"].str.contains(texto, case=False, na=False)
+                    ]
+                elif opcion == "CHIP":
+                    resultado = ventas_busqueda[
+                        ventas_busqueda["chip"].str.contains(texto, case=False, na=False)
+                    ]
+                else:
+                    resultado = ventas_busqueda[
+                        ventas_busqueda["accesorio"].str.contains(texto, case=False, na=False) |
+                        ventas_busqueda["accesorio_sku"].str.contains(texto, case=False, na=False)
+                    ]
+
+                if resultado.empty:
+                    st.warning("No se encontraron resultados.")
+                else:
+                    st.success(f"Se encontraron {len(resultado)} resultado(s).")
+                    resultado = resultado.replace({"None": "", "nan": "", "NaN": ""})
+                    st.dataframe(resultado, use_container_width=True)
+
+        # ================= REPORTE POR VENDEDOR =================
+        if opcion == "REPORTE VENDEDOR":
+            st.subheader("📊 Reporte por vendedor")
+
+            ventas_rep = ventas.copy()
+            ventas_rep["fecha_dt"] = pd.to_datetime(ventas_rep["fecha"], errors="coerce")
+
+            fechas_validas = ventas_rep["fecha_dt"].dropna()
+            if not fechas_validas.empty:
+                fecha_min = fechas_validas.min().date()
+                fecha_max = fechas_validas.max().date()
             else:
-                resultado = ventas_busqueda[
-                    ventas_busqueda["accesorio"].str.contains(texto, case=False, na=False) |
-                    ventas_busqueda["accesorio_sku"].str.contains(texto, case=False, na=False)
-                ]
+                fecha_min = pd.Timestamp.today().date()
+                fecha_max = pd.Timestamp.today().date()
 
-            if resultado.empty:
-                st.warning("No se encontraron resultados.")
+            vendedores_lista = sorted([
+                v for v in ventas_rep["vendedor"].astype(str).unique()
+                if v.strip() != ""
+            ])
+
+            if not vendedores_lista:
+                st.warning("No hay vendedores registrados en ventas.")
             else:
-                st.success(f"Se encontraron {len(resultado)} resultado(s).")
-                resultado = resultado.replace({"None": "", "nan": "", "NaN": ""})
-                st.dataframe(resultado, use_container_width=True)
+                col1, col2, col3, col4 = st.columns(4)
+
+                with col1:
+                    fecha_inicio = st.date_input("Desde", value=fecha_min, key="reporte_vendedor_desde")
+
+                with col2:
+                    fecha_fin = st.date_input("Hasta", value=fecha_max, key="reporte_vendedor_hasta")
+
+                with col3:
+                    vendedor_sel = st.selectbox("Vendedor", vendedores_lista, key="reporte_vendedor_nombre")
+
+                with col4:
+                    tipo_reporte = st.selectbox("Tipo", ["EQUIPO", "ACCESORIO"], key="reporte_vendedor_tipo")
+
+                resultado = ventas_rep[
+                    (ventas_rep["fecha_dt"].dt.date >= fecha_inicio) &
+                    (ventas_rep["fecha_dt"].dt.date <= fecha_fin) &
+                    (ventas_rep["vendedor"].astype(str) == str(vendedor_sel))
+                ].copy()
+
+                if tipo_reporte == "EQUIPO":
+                    resultado["cantidad"] = pd.to_numeric(
+                        resultado["cantidad"], errors="coerce"
+                    ).fillna(0).astype(int)
+                    resultado = resultado[resultado["cantidad"] > 0]
+
+                    columnas = [
+                        "fecha", "hora", "vendedor", "orden", "imei",
+                        "marca", "modelo", "color", "tipo", "cantidad"
+                    ]
+                    nombre_archivo = f"reporte_equipos_{vendedor_sel}.csv"
+                else:
+                    resultado["cantidad_accesorio"] = pd.to_numeric(
+                        resultado["cantidad_accesorio"], errors="coerce"
+                    ).fillna(0).astype(int)
+                    resultado = resultado[resultado["cantidad_accesorio"] > 0]
+
+                    columnas = [
+                        "fecha", "hora", "vendedor", "orden",
+                        "accesorio_sku", "accesorio", "cantidad_accesorio"
+                    ]
+                    nombre_archivo = f"reporte_accesorios_{vendedor_sel}.csv"
+
+                st.divider()
+
+                if resultado.empty:
+                    st.warning("No hay datos con ese filtro.")
+                else:
+                    resultado_vista = preparar_fecha_hora(resultado)
+
+                    for col in columnas:
+                        if col not in resultado_vista.columns:
+                            resultado_vista[col] = ""
+
+                    resultado_vista = resultado_vista[columnas]
+                    resultado_vista = resultado_vista.replace({"None": "", "nan": "", "NaN": ""})
+
+                    st.success(f"{len(resultado_vista)} registros encontrados")
+
+                    if tipo_reporte == "EQUIPO":
+                        total = pd.to_numeric(resultado_vista["cantidad"], errors="coerce").fillna(0).sum()
+                        st.metric("Total equipos vendidos", int(total))
+                    else:
+                        total = pd.to_numeric(resultado_vista["cantidad_accesorio"], errors="coerce").fillna(0).sum()
+                        st.metric("Total accesorios vendidos", int(total))
+
+                    st.dataframe(resultado_vista.astype(str), use_container_width=True)
+
+                    csv = resultado_vista.to_csv(index=False).encode("utf-8-sig")
+                    st.download_button(
+                        "📥 Descargar reporte",
+                        data=csv,
+                        file_name=nombre_archivo,
+                        mime="text/csv"
+                    )
