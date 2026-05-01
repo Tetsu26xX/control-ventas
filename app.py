@@ -39,272 +39,314 @@ def login():
     <style>
     .stApp {{
         background:
-            radial-gradient(circle at 10% 12%, rgba(28, 102, 230, .38), transparent 28%),
-            radial-gradient(circle at 87% 36%, rgba(255, 36, 122, .42), transparent 34%),
-            linear-gradient(135deg, #06152e 0%, #0b1640 44%, #211351 70%, #760d4e 100%) !important;
+            radial-gradient(circle at 8% 22%, rgba(0, 101, 255, .28), transparent 30%),
+            radial-gradient(circle at 93% 24%, rgba(255, 0, 112, .36), transparent 36%),
+            linear-gradient(135deg, #061530 0%, #10154a 48%, #2a135f 72%, #a10f58 100%) !important;
         background-attachment: fixed !important;
+        overflow-x: hidden !important;
     }}
 
     .block-container {{
-        padding-top: 1.1rem !important;
-        padding-bottom: 0rem !important;
-        max-width: 1360px !important;
+        padding-top: 1.05rem !important;
+        padding-bottom: 0 !important;
+        max-width: 1340px !important;
     }}
 
     header[data-testid="stHeader"] {{ background: transparent !important; }}
     #MainMenu, footer {{ visibility: hidden !important; }}
 
-    .neon-lines {{
+    .login-bg-lines {{
         position: fixed;
         inset: 0;
         pointer-events: none;
         z-index: 0;
         overflow: hidden;
-        opacity: .94;
+        opacity: .95;
     }}
 
-    .neon-lines span {{
+    .login-bg-lines span {{
         position: absolute;
         display: block;
-        width: 8px;
-        height: 150px;
         border-radius: 999px;
         transform: rotate(38deg);
-        background: linear-gradient(180deg, rgba(255,57,115,.95), rgba(119,44,255,.15));
-        box-shadow: 0 0 22px rgba(255,57,115,.30);
+        background: linear-gradient(180deg, rgba(255, 49, 113, .95), rgba(155, 53, 255, .10));
+        box-shadow: 0 0 22px rgba(255, 49, 113, .32);
     }}
 
-    .neon-lines span:nth-child(1) {{ left: 8%; top: -5%; height: 210px; }}
-    .neon-lines span:nth-child(2) {{ left: 19%; top: 62%; height: 195px; width: 55px; background: rgba(104,58,255,.34); }}
-    .neon-lines span:nth-child(3) {{ left: 36%; top: 8%; height: 160px; }}
-    .neon-lines span:nth-child(4) {{ left: 55%; top: 3%; height: 235px; width: 55px; background: rgba(104,58,255,.32); }}
-    .neon-lines span:nth-child(5) {{ right: 14%; top: 9%; height: 185px; }}
-    .neon-lines span:nth-child(6) {{ right: 6%; bottom: 4%; height: 215px; width: 58px; background: rgba(104,58,255,.32); }}
-    .neon-lines span:nth-child(7) {{ left: 72%; bottom: 9%; height: 165px; }}
-    .neon-lines span:nth-child(8) {{ left: 3%; bottom: 26%; height: 140px; background: rgba(42,133,255,.9); }}
+    .login-bg-lines span:nth-child(1) {{ left: 7%; top: -9%; width: 9px; height: 230px; }}
+    .login-bg-lines span:nth-child(2) {{ left: 21%; top: 11%; width: 9px; height: 175px; background: linear-gradient(180deg, rgba(39,127,255,.95), rgba(39,127,255,.12)); }}
+    .login-bg-lines span:nth-child(3) {{ left: 43%; top: -2%; width: 58px; height: 230px; background: rgba(91,45,231,.32); }}
+    .login-bg-lines span:nth-child(4) {{ left: 56%; top: 39%; width: 10px; height: 245px; }}
+    .login-bg-lines span:nth-child(5) {{ right: 26%; top: 5%; width: 8px; height: 185px; background: linear-gradient(180deg, rgba(44,126,255,.95), rgba(44,126,255,.14)); }}
+    .login-bg-lines span:nth-child(6) {{ right: 11%; top: -3%; width: 58px; height: 250px; background: rgba(121,39,221,.30); }}
+    .login-bg-lines span:nth-child(7) {{ right: 2%; bottom: 4%; width: 9px; height: 185px; }}
+    .login-bg-lines span:nth-child(8) {{ left: 2%; bottom: 34%; width: 9px; height: 160px; background: linear-gradient(180deg, rgba(39,127,255,.95), rgba(39,127,255,.12)); }}
+    .login-bg-lines span:nth-child(9) {{ left: 18%; bottom: 2%; width: 60px; height: 220px; background: rgba(91,45,231,.28); }}
+    .login-bg-lines span:nth-child(10) {{ right: 37%; bottom: 0%; width: 62px; height: 230px; background: rgba(91,45,231,.28); }}
 
     div[data-testid="stHorizontalBlock"]:first-of-type {{
-        min-height: calc(100vh - 105px);
+        min-height: calc(100vh - 102px);
         align-items: center !important;
-        gap: 4.2rem !important;
+        gap: 3.8rem !important;
         position: relative;
         z-index: 2;
     }}
 
+    div[data-testid="stHorizontalBlock"]:first-of-type > div[data-testid="column"]:nth-child(1) {{
+        padding-left: .8rem !important;
+    }}
+
     div[data-testid="stHorizontalBlock"]:first-of-type > div[data-testid="column"]:nth-child(2) {{
-        max-width: 410px !important;
-        padding: 2rem 2rem 1.65rem 2rem !important;
-        border-radius: 23px !important;
-        background: linear-gradient(180deg, rgba(32, 18, 48, .86), rgba(12, 9, 24, .92)) !important;
-        border: 1px solid rgba(255,255,255,.16) !important;
-        box-shadow: 0 24px 70px rgba(0,0,0,.43), inset 0 1px 0 rgba(255,255,255,.06) !important;
+        max-width: 390px !important;
+        padding: 2.2rem 1.7rem 1.7rem 1.7rem !important;
+        border-radius: 18px !important;
+        background: linear-gradient(180deg, rgba(24, 14, 36, .88), rgba(12, 9, 23, .95)) !important;
+        border: 1px solid rgba(255,255,255,.17) !important;
+        box-shadow:
+            0 22px 70px rgba(0,0,0,.48),
+            inset 0 1px 0 rgba(255,255,255,.06) !important;
         backdrop-filter: blur(22px) !important;
+        -webkit-backdrop-filter: blur(22px) !important;
         transition: all .28s ease !important;
     }}
 
     div[data-testid="stHorizontalBlock"]:first-of-type > div[data-testid="column"]:nth-child(2):hover {{
         transform: translateY(-5px);
-        border-color: rgba(218, 61, 255, .44) !important;
+        border-color: rgba(231, 65, 255, .45) !important;
         box-shadow:
-            0 0 18px rgba(255, 60, 130, .32),
-            0 0 42px rgba(139, 45, 226, .28),
-            0 28px 80px rgba(0,0,0,.46) !important;
+            0 0 18px rgba(255, 61, 115, .36),
+            0 0 45px rgba(142, 45, 226, .31),
+            0 28px 80px rgba(0,0,0,.54) !important;
     }}
 
-    .brand-kicker {{
+    .login-kicker {{
         color:#ff3d86;
-        font-weight:900;
-        font-size:.9rem;
-        margin-bottom:.35rem;
-    }}
-
-    .brand-title {{
-        margin:0;
-        color:#9658ff;
-        font-size: clamp(3.15rem, 5.2vw, 4.75rem);
-        line-height:.98;
         font-weight:1000;
-        letter-spacing:-2px;
-        text-shadow: 0 0 32px rgba(150,88,255,.38);
+        font-size:.88rem;
+        margin-bottom:.25rem;
+        letter-spacing:.1px;
     }}
 
-    .brand-copy {{
-        color:rgba(255,255,255,.9);
-        max-width:540px;
-        margin:1.6rem 0 1.15rem 0;
-        font-weight:750;
-        line-height:1.45;
+    .login-brand {{
+        margin:0;
+        color:white;
+        font-size: clamp(2.75rem, 4.7vw, 4.35rem);
+        line-height:.96;
+        font-weight:1000;
+        letter-spacing:-1.8px;
+        text-shadow: 0 0 28px rgba(255,255,255,.15);
     }}
 
-    .hero-stage {{
+    .login-brand span {{
+        color:#9559ff;
+        text-shadow: 0 0 36px rgba(149,89,255,.45);
+    }}
+
+    .login-desc {{
+        color:rgba(255,255,255,.88);
+        max-width:500px;
+        margin:1rem 0 .95rem 0;
+        font-weight:800;
+        line-height:1.42;
+        font-size:.88rem;
+    }}
+
+    .hero-mini {{
+        position: relative;
+        min-height: 275px;
+        max-width: 640px;
+    }}
+
+    .feature-strip {{
         display:grid;
-        grid-template-columns: 1fr 255px;
-        align-items:end;
-        gap:18px;
-        max-width:680px;
-    }}
-
-    .feature-row {{
-        display:grid;
-        grid-template-columns: repeat(3, minmax(125px, 1fr));
-        gap:14px;
-        align-items:stretch;
+        grid-template-columns: repeat(3, minmax(110px, 1fr));
+        gap:13px;
+        max-width:520px;
+        position: relative;
+        z-index: 3;
     }}
 
     .feature-card {{
-        min-height:98px;
-        padding:15px 14px;
-        border-radius:16px;
+        min-height:80px;
+        padding:12px 13px;
+        border-radius:12px;
         background: linear-gradient(135deg, rgba(255,255,255,.12), rgba(255,255,255,.055));
         border:1px solid rgba(255,255,255,.15);
-        box-shadow: 0 12px 30px rgba(0,0,0,.20);
+        box-shadow: 0 12px 28px rgba(0,0,0,.22);
         transition: all .28s ease;
         backdrop-filter: blur(14px);
     }}
 
     .feature-card:hover {{
         transform: translateY(-7px) scale(1.025);
-        border-color: rgba(255, 65, 135, .46);
+        border-color: rgba(255, 65, 135, .48);
         box-shadow:
             0 0 14px rgba(255, 61, 115, .42),
-            0 0 32px rgba(142, 45, 226, .32),
+            0 0 34px rgba(142, 45, 226, .32),
             0 18px 38px rgba(0,0,0,.34);
     }}
 
-    .feature-icon {{ font-size:1.6rem; margin-bottom:8px; }}
-    .feature-title {{ color:white; font-weight:950; font-size:.92rem; margin-bottom:3px; }}
-    .feature-text {{ color:rgba(255,255,255,.70); font-size:.72rem; line-height:1.35; font-weight:650; }}
+    .feature-icon {{ font-size:1.25rem; margin-bottom:6px; }}
+    .feature-title {{ color:white; font-weight:1000; font-size:.78rem; margin-bottom:3px; }}
+    .feature-text {{ color:rgba(255,255,255,.69); font-size:.60rem; line-height:1.28; font-weight:750; }}
 
-    .mascot-wrap {{
-        height:260px;
+    .mascot-stage {{
+        position:absolute;
+        left: 78px;
+        top: 64px;
+        z-index: 2;
+        width: 360px;
+        height: 225px;
         display:flex;
         align-items:flex-end;
         justify-content:center;
-        filter: drop-shadow(0 0 32px rgba(255, 190, 66, .32));
+        filter: drop-shadow(0 0 34px rgba(255, 190, 66, .34));
         transition: all .28s ease;
     }}
 
-    .mascot-wrap:hover {{
+    .mascot-stage:hover {{
         transform: translateY(-8px) scale(1.035);
-        filter: drop-shadow(0 0 40px rgba(255, 205, 76, .45));
+        filter: drop-shadow(0 0 42px rgba(255, 205, 76, .48));
     }}
 
-    .mascot-wrap img {{
+    .mascot-stage img {{
         width:100%;
-        max-width:265px;
+        max-width:345px;
         object-fit:contain;
     }}
 
-    .login-icon {{
-        width:64px;
-        height:64px;
+    .login-lock {{
+        width:62px;
+        height:62px;
         display:flex;
         align-items:center;
         justify-content:center;
-        margin:0 auto 1.2rem auto;
+        margin:.2rem auto 1.35rem auto;
         border-radius:999px;
-        font-size:1.7rem;
-        background: radial-gradient(circle, #ea42ff 0%, #8f22c7 55%, rgba(143,34,199,.25) 100%);
-        box-shadow:0 0 34px rgba(226,66,255,.38);
+        font-size:1.75rem;
+        background: radial-gradient(circle, #f343ff 0%, #9b26d4 56%, rgba(155,38,212,.24) 100%);
+        box-shadow:0 0 34px rgba(226,66,255,.40);
     }}
 
-    .login-title {{
+    .login-card-title {{
         text-align:center;
         color:white;
-        font-size:2rem;
+        font-size:1.72rem;
         line-height:1;
         font-weight:1000;
         margin:0 0 .55rem 0;
-        letter-spacing:-.5px;
+        letter-spacing:-.4px;
     }}
 
-    .login-sub {{
+    .login-card-sub {{
         text-align:center;
-        color:rgba(255,255,255,.58);
-        font-size:.82rem;
-        font-weight:750;
-        margin-bottom:1.35rem;
+        color:rgba(255,255,255,.56);
+        font-size:.70rem;
+        font-weight:800;
+        margin-bottom:1.05rem;
+    }}
+
+    .forgot-row {{
+        text-align:right;
+        margin-top:-.45rem;
+        margin-bottom:.95rem;
+        color:#d568ff;
+        font-size:.68rem;
+        font-weight:950;
+        text-shadow:0 0 16px rgba(213,104,255,.35);
     }}
 
     .secure-copy {{
         text-align:center;
-        color:#65e4d4;
-        font-size:.78rem;
-        font-weight:900;
-        margin-top:1.1rem;
+        color:#66e7d4;
+        font-size:.70rem;
+        font-weight:950;
+        margin-top:1.25rem;
+        text-shadow:0 0 16px rgba(102,231,212,.25);
     }}
 
+    div[data-testid="stTextInput"] {{ margin-bottom: .55rem !important; }}
+
     div[data-testid="stTextInput"] label {{
-        color:rgba(255,255,255,.82) !important;
+        color:rgba(255,255,255,.76) !important;
         font-weight:850 !important;
-        font-size:.82rem !important;
+        font-size:.78rem !important;
     }}
 
     div[data-testid="stTextInput"] input {{
-        background: rgba(255,255,255,.14) !important;
-        border: 1px solid rgba(255,255,255,.13) !important;
+        background: rgba(255,255,255,.13) !important;
+        border: 1px solid rgba(255,255,255,.12) !important;
         color: white !important;
-        border-radius: 11px !important;
-        height: 46px !important;
-        font-weight:800 !important;
+        border-radius: 9px !important;
+        height: 42px !important;
+        font-weight:850 !important;
         transition: all .24s ease !important;
     }}
 
+    div[data-testid="stTextInput"] input::placeholder {{
+        color: rgba(255,255,255,.48) !important;
+        font-weight:800 !important;
+    }}
+
     div[data-testid="stTextInput"] input:focus {{
-        border-color: rgba(215,65,255,.72) !important;
-        box-shadow: 0 0 0 1px rgba(215,65,255,.32), 0 0 18px rgba(215,65,255,.24) !important;
+        border-color: rgba(216,74,255,.78) !important;
+        box-shadow: 0 0 0 1px rgba(216,74,255,.30), 0 0 20px rgba(216,74,255,.24) !important;
     }}
 
     .stButton > button {{
-        height:52px !important;
-        border-radius:12px !important;
+        height:46px !important;
+        border-radius:9px !important;
         border:none !important;
-        background: linear-gradient(90deg, #ff3d73 0%, #a72fea 55%, #7b2cff 100%) !important;
+        background: linear-gradient(90deg, #ff3d73 0%, #bd31df 55%, #8230ff 100%) !important;
         color:white !important;
         font-weight:1000 !important;
-        box-shadow:0 14px 38px rgba(167,47,234,.28) !important;
+        font-size:.78rem !important;
+        box-shadow:0 14px 38px rgba(167,47,234,.30) !important;
         transition: all .24s ease !important;
     }}
 
     .stButton > button:hover {{
         transform: translateY(-3px) scale(1.01);
-        box-shadow: 0 0 18px rgba(255,61,115,.48), 0 0 40px rgba(123,44,255,.36) !important;
-        filter: brightness(1.06);
+        box-shadow:
+            0 0 18px rgba(255,61,115,.52),
+            0 0 44px rgba(123,44,255,.38) !important;
+        filter: brightness(1.07);
     }}
 
     .stAlert {{ border-radius: 14px !important; }}
 
-    @media (max-width: 950px) {{
+    @media (max-width: 980px) {{
+        .block-container {{ padding-top: .7rem !important; }}
         div[data-testid="stHorizontalBlock"]:first-of-type {{
             min-height: auto;
             align-items: stretch !important;
-            gap: 1.3rem !important;
+            gap: 1.35rem !important;
         }}
-        .hero-stage {{ grid-template-columns: 1fr; }}
-        .mascot-wrap {{ height:210px; justify-content:flex-start; }}
-        .feature-row {{ grid-template-columns:1fr; }}
         div[data-testid="stHorizontalBlock"]:first-of-type > div[data-testid="column"]:nth-child(2) {{
             max-width:100% !important;
         }}
+        .hero-mini {{ min-height: 420px; }}
+        .feature-strip {{ grid-template-columns:1fr; max-width: 100%; }}
+        .mascot-stage {{ position:relative; left:0; top:20px; width: 100%; }}
     }}
     </style>
 
-    <div class="neon-lines">
-        <span></span><span></span><span></span><span></span>
-        <span></span><span></span><span></span><span></span>
+    <div class="login-bg-lines">
+        <span></span><span></span><span></span><span></span><span></span>
+        <span></span><span></span><span></span><span></span><span></span>
     </div>
     """, unsafe_allow_html=True)
 
-    col_left, col_right = st.columns([1.35, .88], gap="large")
+    col_left, col_right = st.columns([1.28, .86], gap="large")
 
     with col_left:
         st.markdown(f"""
-        <div class="brand-kicker">Bienvenido a</div>
-        <h1 class="brand-title">Control<br>Ventas</h1>
-        <p class="brand-copy">Sistema para registrar ventas, controlar stock, revisar rankings y consultar IMEI por marca y fecha.</p>
+        <div class="login-kicker">Bienvenido a</div>
+        <h1 class="login-brand">Control<br><span>Ventas</span></h1>
+        <p class="login-desc">Sistema para registrar ventas, controlar stock, revisar rankings y consultar IMEI por marca y fecha.</p>
 
-        <div class="hero-stage">
-            <div class="feature-row">
+        <div class="hero-mini">
+            <div class="feature-strip">
                 <div class="feature-card">
                     <div class="feature-icon">🛒</div>
                     <div class="feature-title">Ventas</div>
@@ -321,7 +363,7 @@ def login():
                     <div class="feature-text">Rankings y estadísticas de vendedores.</div>
                 </div>
             </div>
-            <div class="mascot-wrap">
+            <div class="mascot-stage">
                 {'<img src="data:image/png;base64,' + mascota_b64 + '" />' if mascota_b64 else ''}
             </div>
         </div>
@@ -329,13 +371,15 @@ def login():
 
     with col_right:
         st.markdown("""
-        <div class="login-icon">🔒</div>
-        <h2 class="login-title">Iniciar Sesión</h2>
-        <div class="login-sub">Ingresa tus credenciales para continuar</div>
+        <div class="login-lock">🔒</div>
+        <h2 class="login-card-title">Iniciar Sesión</h2>
+        <div class="login-card-sub">Ingresa tus credenciales para continuar</div>
         """, unsafe_allow_html=True)
 
         usuario = st.text_input("Usuario", placeholder="Usuario").strip().upper()
         password = st.text_input("Contraseña", type="password", placeholder="Contraseña").strip()
+
+        st.markdown('<div class="forgot-row">¿Olvidaste tu contraseña?</div>', unsafe_allow_html=True)
 
         if st.button("Ingresar  ➜", use_container_width=True):
             with st.spinner("Validando acceso..."):
