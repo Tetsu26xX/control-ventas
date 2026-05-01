@@ -1000,10 +1000,10 @@ if st.session_state.get("login_ok", False):
         st.sidebar.success(f"👑 {vendedor_txt} · VENDEDOR ADMIN")
     else:
         st.sidebar.success(f"👤 {vendedor_txt} · VENDEDOR")
-   if st.sidebar.button("Cerrar sesión"):
+    if  st.sidebar.button("Cerrar sesión"):
 
-    st.markdown("""
-    <div style="
+        st.markdown("""
+        <div style="
         position: fixed;
         inset: 0;
         z-index: 999999;
@@ -1024,9 +1024,9 @@ if st.session_state.get("login_ok", False):
     for key in list(st.session_state.keys()):
         del st.session_state[key]
 
-    st.session_state["login_ok"] = False
+        st.session_state["login_ok"] = False
 
-    st.rerun()
+        st.rerun()
 
 st.sidebar.markdown("### 📲 Menú")
 
