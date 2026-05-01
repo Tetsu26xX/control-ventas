@@ -6,22 +6,6 @@ import streamlit.components.v1 as components
 import base64
 from supabase import create_client
 
-st.set_page_config(layout="wide")
-
-st.markdown("""
-<style>
-[data-testid="stDataFrame"] td {
-    font-size: 24px;
-}
-
-[data-testid="stDataFrame"] td:nth-child(11) {
-    font-size: 26px !important;
-    font-weight: 800;
-    text-align: center;
-}
-</style>
-""", unsafe_allow_html=True)
-
 st.set_page_config(page_title="Sistema Ventas", layout="wide")
 
 # =========================
