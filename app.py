@@ -273,7 +273,7 @@ def login():
 
     with col_login:
         st.markdown("""
-        <div class="login-logo">Control<span>Ventas</span>Plaza Vea-HYO</span></div>
+        <div class="login-logo">Control<span>Ventas</span></div>
         <div class="google-btn">🔐 Acceso autorizado</div>
         <div class="login-divider">O</div>
         """, unsafe_allow_html=True)
@@ -1448,7 +1448,49 @@ elif menu == "📦 Inventario":
             ]
 
         mostrar_cols = ["marca", "sku", "modelo", "color", "tipo", "stock_actual"]
-        st.dataframe(stock_vista[mostrar_cols].astype(str), use_container_width=True)
+        stock_tabla = stock_vista[mostrar_cols].copy()
+        stock_tabla["stock_actual"] = pd.to_numeric(stock_tabla["stock_actual"], errors="coerce").fillna(0).astype(int)
+
+        def estilo_fila_marca(row):
+            marca = str(row.get("marca", "")).strip().upper()
+            colores_marca_pastel = {
+                "APPLE": "#F5F5F5",      # blanco humo
+                "SAMSUNG": "#CDEEFF",    # celeste pastel
+                "XIAOMI": "#FFD8A8",     # naranja pastel
+                "HONOR": "#FFB3B3",      # rojo pastel
+                "MOTOROLA": "#D9B3FF",   # morado pastel
+                "ZTE": "#D3D3D3",        # plomo pastel
+                "VIVO": "#FFF4A3",       # amarillo pastel
+                "OPPO": "#B9F6CA"        # verde pastel
+            }
+            color = colores_marca_pastel.get(marca, "")
+            if color:
+                return [f"background-color: {color}; color: #111111; font-weight: 650;"] * len(row)
+            return [""] * len(row)
+
+        def estilo_stock_actual(val):
+            try:
+                numero = int(val)
+                if numero <= 1:
+                    return "background-color: #FF4D4D; color: white; font-weight: 900;"
+                elif numero == 2:
+                    return "background-color: #FFD54F; color: #111111; font-weight: 900;"
+                else:
+                    return "background-color: #4CAF50; color: white; font-weight: 900;"
+            except Exception:
+                return ""
+
+        stock_estilizado = (
+            stock_tabla.style
+            .apply(estilo_fila_marca, axis=1)
+            .applymap(estilo_stock_actual, subset=["stock_actual"])
+        )
+
+        st.dataframe(
+            stock_estilizado,
+            use_container_width=True,
+            height=650
+        )
 
     elif opcion_inv == "➕ Ingresar Stock":
     
@@ -1702,27 +1744,38 @@ elif menu == "🧾 Registrar Orden":
 
     if st.button("Guardar Orden", key=f"guardar_{version}"):
         orden_limpia = orden.strip()
+        orden_limpia_norm = orden_limpia.upper()
+        imei_limpio = imei.strip().upper()
+        chip_limpio = chip.strip()
+
+        ordenes_existentes = ventas["orden"].astype(str).str.strip().str.upper().values
+        imeis_existentes = ventas["imei"].astype(str).str.strip().str.upper().values
+        chips_existentes = ventas["chip"].astype(str).str.strip().values
 
         if orden_limpia == "":
             st.error("Debes ingresar el número de orden.")
-        elif orden_limpia in ventas["orden"].astype(str).str.strip().values:
+        elif orden_limpia_norm in ordenes_existentes:
             st.error("Esa orden ya está registrada. No se puede duplicar.")
         elif not incluye_chip and not incluye_equipo and not incluye_accesorio:
             st.error("Debes seleccionar al menos Chip, Equipo o Accesorio.")
         elif incluye_equipo and sku == "":
             st.error("No se seleccionó equipo válido.")
-        elif incluye_equipo and imei.strip() == "":
+        elif incluye_equipo and imei_limpio == "":
             st.error("Debes ingresar el IMEI del equipo.")
-        elif incluye_chip and chip.strip() == "":
+        elif incluye_equipo and imei_limpio in imeis_existentes:
+            st.error("Ese IMEI ya está registrado en otra venta. Revisa antes de guardar.")
+        elif incluye_chip and chip_limpio == "":
             st.error("Debes ingresar el número de chip.")
+        elif incluye_chip and chip_limpio in chips_existentes:
+            st.error("Ese chip ya está registrado en otra venta. Revisa antes de guardar.")
         else:
             nueva_venta = pd.DataFrame([{
                 "fecha": fecha.strftime("%Y-%m-%d"),
                 "vendedor": vendedor,
                 "orden": orden_limpia,
-                "chip": chip.strip(),
+                "chip": chip_limpio,
                 "tipo_chip": tipo_chip,
-                "imei": imei.strip(),
+                "imei": imei_limpio,
                 "sku": sku,
                 "marca": marca,
                 "modelo": modelo,
@@ -1769,12 +1822,20 @@ elif menu == "📋 Ventas Registradas":
         ventas_para_borrar = ventas.copy()
         ventas_para_borrar["orden"] = ventas_para_borrar["orden"].astype(str)
 
+        # Seguridad: los vendedores solo pueden eliminar sus propias órdenes.
+        # El admin puede ver y eliminar todas.
+        if st.session_state.get("rol") != "admin":
+            vendedor_actual = str(st.session_state.get("vendedor", "")).strip().upper()
+            ventas_para_borrar = ventas_para_borrar[
+                ventas_para_borrar["vendedor"].astype(str).str.strip().str.upper() == vendedor_actual
+            ]
+
         ordenes_disponibles = sorted(
             [o for o in ventas_para_borrar["orden"].dropna().unique() if o.strip() != ""]
         )
 
         if not ordenes_disponibles:
-            st.info("No hay órdenes disponibles para eliminar.")
+            st.info("No tienes órdenes disponibles para eliminar.")
         else:
             orden_eliminar = st.selectbox(
                 "Selecciona la orden que quieres eliminar",
@@ -1794,15 +1855,23 @@ elif menu == "📋 Ventas Registradas":
             if st.button("Eliminar venta"):
                 if not confirmar:
                     st.error("Primero marca la confirmación para evitar borrar por error.")
+                elif venta_seleccionada.empty:
+                    st.error("No se encontró la venta seleccionada.")
                 else:
-                    if "id" in venta_seleccionada.columns and str(venta_seleccionada.iloc[0].get("id", "")).strip() != "":
-                        venta_id = venta_seleccionada.iloc[0]["id"]
-                        eliminar_registro("ventas", venta_id)
-                    else:
-                        supabase.table("ventas").delete().eq("orden", orden_eliminar).execute()
+                    venta_vendedor = str(venta_seleccionada.iloc[0].get("vendedor", "")).strip().upper()
+                    vendedor_actual = str(st.session_state.get("vendedor", "")).strip().upper()
 
-                    st.success("Venta eliminada correctamente ✅")
-                    st.rerun()
+                    if st.session_state.get("rol") != "admin" and venta_vendedor != vendedor_actual:
+                        st.error("No puedes eliminar órdenes de otros vendedores.")
+                    else:
+                        if "id" in venta_seleccionada.columns and str(venta_seleccionada.iloc[0].get("id", "")).strip() != "":
+                            venta_id = venta_seleccionada.iloc[0]["id"]
+                            eliminar_registro("ventas", venta_id)
+                        else:
+                            supabase.table("ventas").delete().eq("orden", orden_eliminar).execute()
+
+                        st.success("Venta eliminada correctamente ✅")
+                        st.rerun()
 
 elif menu == "📱 Buscar IMEI":
     st.title("📱 Buscar IMEI por Marca y Fecha")
@@ -1885,98 +1954,128 @@ elif menu == "✏️ Editar Venta":
     if ventas.empty or ventas["orden"].fillna("").eq("").all():
         st.info("No hay ventas para editar.")
     else:
-        ordenes = ventas["orden"].astype(str).dropna().unique()
-        orden_editar = st.selectbox("Selecciona la orden", sorted(ordenes))
+        ventas_editables = ventas.copy()
 
-        idx = ventas[ventas["orden"].astype(str) == str(orden_editar)].index[0]
-        venta = ventas.loc[idx].copy()
+        # Seguridad: los vendedores solo pueden editar sus propias órdenes.
+        # El admin puede ver y editar todas.
+        if st.session_state.get("rol") != "admin":
+            vendedor_actual = str(st.session_state.get("vendedor", "")).strip().upper()
+            ventas_editables = ventas_editables[
+                ventas_editables["vendedor"].astype(str).str.strip().str.upper() == vendedor_actual
+            ]
 
-        st.subheader("Datos actuales")
-        st.dataframe(pd.DataFrame([venta]).astype(str), use_container_width=True)
+        if ventas_editables.empty or ventas_editables["orden"].fillna("").eq("").all():
+            st.info("No tienes ventas propias para editar.")
+        else:
+            ordenes = ventas_editables["orden"].astype(str).dropna().unique()
+            orden_editar = st.selectbox("Selecciona la orden", sorted(ordenes))
 
-        st.subheader("Editar datos permitidos")
+            idx = ventas_editables[ventas_editables["orden"].astype(str) == str(orden_editar)].index[0]
+            venta = ventas.loc[idx].copy()
 
-        nueva_orden = st.text_input("Orden", value=str(venta.get("orden", "")))
-        nuevo_chip = st.text_input("Chip", value=str(venta.get("chip", "")))
+            st.subheader("Datos actuales")
+            st.dataframe(pd.DataFrame([venta]).astype(str), use_container_width=True)
 
-        tipo_chip_actual = str(venta.get("tipo_chip", ""))
-        opciones_chip = ["", "PREPAGO", "POSPAGO"]
-        if tipo_chip_actual not in opciones_chip:
-            tipo_chip_actual = ""
-        nuevo_tipo_chip = st.selectbox(
-            "Tipo de chip",
-            opciones_chip,
-            index=opciones_chip.index(tipo_chip_actual)
-        )
+            st.subheader("Editar datos permitidos")
 
-        nuevo_imei = st.text_input("IMEI", value=str(venta.get("imei", "")))
+            nueva_orden = st.text_input("Orden", value=str(venta.get("orden", "")))
+            nuevo_chip = st.text_input("Chip", value=str(venta.get("chip", "")))
 
-        tiene_equipo = str(venta.get("marca", "")) != ""
-
-        nueva_marca = str(venta.get("marca", ""))
-        nuevo_modelo = str(venta.get("modelo", ""))
-        nuevo_color = str(venta.get("color", ""))
-        nuevo_tipo = str(venta.get("tipo", ""))
-        nuevo_sku = str(venta.get("sku", ""))
-
-        if tiene_equipo:
-            st.subheader("Editar equipo con selectores seguros")
-            producto, producto_df = seleccionar_producto(
-                productos,
-                prefijo=f"editar_{idx}",
-                default_marca=nueva_marca,
-                default_modelo=nuevo_modelo,
-                default_color=nuevo_color,
-                default_tipo=nuevo_tipo
+            tipo_chip_actual = str(venta.get("tipo_chip", ""))
+            opciones_chip = ["", "PREPAGO", "POSPAGO"]
+            if tipo_chip_actual not in opciones_chip:
+                tipo_chip_actual = ""
+            nuevo_tipo_chip = st.selectbox(
+                "Tipo de chip",
+                opciones_chip,
+                index=opciones_chip.index(tipo_chip_actual)
             )
-            nuevo_sku = producto["sku"]
-            nueva_marca = producto["marca"]
-            nuevo_modelo = producto["modelo"]
-            nuevo_color = producto["color"]
-            nuevo_tipo = producto["tipo"]
 
-            st.write("Nuevo producto seleccionado:")
-            st.dataframe(producto_df.astype(str), use_container_width=True)
+            nuevo_imei = st.text_input("IMEI", value=str(venta.get("imei", "")))
 
-        if st.button("Guardar edición"):
-            nueva_orden_limpia = nueva_orden.strip()
-            ordenes_existentes = ventas.drop(index=idx)["orden"].astype(str).str.strip().values
+            tiene_equipo = str(venta.get("marca", "")) != ""
 
-            if nueva_orden_limpia == "":
-                st.error("La orden no puede quedar vacía.")
-            elif nueva_orden_limpia in ordenes_existentes:
-                st.error("Esa orden ya existe en otra venta.")
-            else:
-                ventas.loc[idx, "orden"] = nueva_orden_limpia
-                ventas.loc[idx, "chip"] = nuevo_chip.strip()
-                ventas.loc[idx, "tipo_chip"] = nuevo_tipo_chip
-                ventas.loc[idx, "imei"] = nuevo_imei.strip()
+            nueva_marca = str(venta.get("marca", ""))
+            nuevo_modelo = str(venta.get("modelo", ""))
+            nuevo_color = str(venta.get("color", ""))
+            nuevo_tipo = str(venta.get("tipo", ""))
+            nuevo_sku = str(venta.get("sku", ""))
 
-                if tiene_equipo:
-                    ventas.loc[idx, "sku"] = nuevo_sku
-                    ventas.loc[idx, "marca"] = nueva_marca
-                    ventas.loc[idx, "modelo"] = nuevo_modelo
-                    ventas.loc[idx, "color"] = nuevo_color
-                    ventas.loc[idx, "tipo"] = nuevo_tipo
+            if tiene_equipo:
+                st.subheader("Editar equipo con selectores seguros")
+                producto, producto_df = seleccionar_producto(
+                    productos,
+                    prefijo=f"editar_{idx}",
+                    default_marca=nueva_marca,
+                    default_modelo=nuevo_modelo,
+                    default_color=nuevo_color,
+                    default_tipo=nuevo_tipo
+                )
+                nuevo_sku = producto["sku"]
+                nueva_marca = producto["marca"]
+                nuevo_modelo = producto["modelo"]
+                nuevo_color = producto["color"]
+                nuevo_tipo = producto["tipo"]
 
-                venta_id = ventas.loc[idx, "id"]
-                cambios = {
-                    "orden": nueva_orden_limpia,
-                    "chip": nuevo_chip.strip(),
-                    "tipo_chip": nuevo_tipo_chip,
-                    "imei": nuevo_imei.strip(),
-                }
-                if tiene_equipo:
-                    cambios.update({
-                        "sku": nuevo_sku,
-                        "marca": nueva_marca,
-                        "modelo": nuevo_modelo,
-                        "color": nuevo_color,
-                        "tipo": nuevo_tipo,
-                    })
-                actualizar_registro("ventas", venta_id, cambios)
-                st.success("Venta editada correctamente ✅")
-                st.rerun()
+                st.write("Nuevo producto seleccionado:")
+                st.dataframe(producto_df.astype(str), use_container_width=True)
+
+            if st.button("Guardar edición"):
+                nueva_orden_limpia = nueva_orden.strip()
+                nueva_orden_norm = nueva_orden_limpia.upper()
+                nuevo_imei_limpio = nuevo_imei.strip().upper()
+                nuevo_chip_limpio = nuevo_chip.strip()
+
+                ordenes_existentes = ventas.drop(index=idx)["orden"].astype(str).str.strip().str.upper().values
+                imeis_existentes = ventas.drop(index=idx)["imei"].astype(str).str.strip().str.upper().values
+                chips_existentes = ventas.drop(index=idx)["chip"].astype(str).str.strip().values
+
+                venta_vendedor = str(venta.get("vendedor", "")).strip().upper()
+                vendedor_actual = str(st.session_state.get("vendedor", "")).strip().upper()
+
+                if st.session_state.get("rol") != "admin" and venta_vendedor != vendedor_actual:
+                    st.error("No puedes editar órdenes de otros vendedores.")
+                elif nueva_orden_limpia == "":
+                    st.error("La orden no puede quedar vacía.")
+                elif nueva_orden_norm in ordenes_existentes:
+                    st.error("Esa orden ya existe en otra venta.")
+                elif tiene_equipo and nuevo_imei_limpio == "":
+                    st.error("El IMEI no puede quedar vacío.")
+                elif tiene_equipo and nuevo_imei_limpio in imeis_existentes:
+                    st.error("Ese IMEI ya está registrado en otra venta.")
+                elif nuevo_chip_limpio != "" and nuevo_chip_limpio in chips_existentes:
+                    st.error("Ese chip ya está registrado en otra venta.")
+                else:
+                    ventas.loc[idx, "orden"] = nueva_orden_limpia
+                    ventas.loc[idx, "chip"] = nuevo_chip_limpio
+                    ventas.loc[idx, "tipo_chip"] = nuevo_tipo_chip
+                    ventas.loc[idx, "imei"] = nuevo_imei_limpio
+
+                    if tiene_equipo:
+                        ventas.loc[idx, "sku"] = nuevo_sku
+                        ventas.loc[idx, "marca"] = nueva_marca
+                        ventas.loc[idx, "modelo"] = nuevo_modelo
+                        ventas.loc[idx, "color"] = nuevo_color
+                        ventas.loc[idx, "tipo"] = nuevo_tipo
+
+                    venta_id = ventas.loc[idx, "id"]
+                    cambios = {
+                        "orden": nueva_orden_limpia,
+                        "chip": nuevo_chip_limpio,
+                        "tipo_chip": nuevo_tipo_chip,
+                        "imei": nuevo_imei_limpio,
+                    }
+                    if tiene_equipo:
+                        cambios.update({
+                            "sku": nuevo_sku,
+                            "marca": nueva_marca,
+                            "modelo": nuevo_modelo,
+                            "color": nuevo_color,
+                            "tipo": nuevo_tipo,
+                        })
+                    actualizar_registro("ventas", venta_id, cambios)
+                    st.success("Venta editada correctamente ✅")
+                    st.rerun()
 
 # =========================
 # BUSCAR
