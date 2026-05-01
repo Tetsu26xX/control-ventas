@@ -1405,18 +1405,22 @@ elif menu == "📦 Inventario":
     </div>
     """, unsafe_allow_html=True)
 
+    opciones_inv = ["📊 Ver Stock Actual"]
+
+    if st.session_state.get("rol") == "admin":
+        opciones_inv.append("➕ Ingresar Stock")
+    
+    opciones_inv.extend([
+        "📥 Ingreso Mercadería",
+        "📤 Salida Traslado",
+        "📋 Historial Movimientos"
+    ])
+    
     opcion_inv = st.radio(
         "Elige una opción",
-        [
-            "📊 Ver Stock Actual",
-            "➕ Ingresar Stock",
-            "📥 Ingreso Mercadería",
-            "📤 Salida Traslado",
-            "📋 Historial Movimientos"
-        ],
+        opciones_inv,
         horizontal=True
     )
-
     if opcion_inv == "📊 Ver Stock Actual":
         st.subheader("📊 Stock Actual")
 
@@ -1447,6 +1451,11 @@ elif menu == "📦 Inventario":
         st.dataframe(stock_vista[mostrar_cols].astype(str), use_container_width=True)
 
     elif opcion_inv == "➕ Ingresar Stock":
+    
+        if st.session_state.get("rol") != "admin":
+            st.error("No tienes permisos para esta acción.")
+            st.stop()
+    
         st.info("Usa esta opción para cargar tu stock inicial por primera vez.")
         registrar_movimiento_stock("STOCK INICIAL", requiere_jefe=False)
 
