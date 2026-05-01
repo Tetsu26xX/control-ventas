@@ -1469,20 +1469,7 @@ elif menu == "📦 Inventario":
             return [""] * len(row)
 
         def estilo_stock_actual(val):
-            try:
-                val = int(val)
-        
-                estilo_base = "font-size: 43px; font-weight: 800; text-align: center;"
-        
-                if val <= 1:
-                    return estilo_base + "background-color: #FFB3B3; color: #111111;"
-                elif val == 2:
-                    return estilo_base + "background-color: #FFF9C4; color: #111111;"
-                else:
-                    return estilo_base + "background-color: #C8E6C9; color: #111111;"
-            except:
-                return ""
-
+           
         stock_estilizado = (
             stock_tabla.style
             .map(estilo_stock_actual, subset=["stock_actual"])
