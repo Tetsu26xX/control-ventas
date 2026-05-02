@@ -5,6 +5,9 @@ import matplotlib.pyplot as plt
 import streamlit.components.v1 as components
 import base64
 from supabase import create_client
+import time
+import hmac
+import hashlib
 
 st.set_page_config(page_title="Sistema Ventas", layout="wide")
 
@@ -25,6 +28,52 @@ def get_base64_image(path):
 url = st.secrets["SUPABASE_URL"]
 key = st.secrets["SUPABASE_KEY"]
 supabase = create_client(url, key)
+# =========================
+# LOGIN PERSISTENTE
+# =========================
+
+SESSION_SECRET = st.secrets.get("SESSION_SECRET", "control_ventas_secret")
+SESSION_DURATION = 8 * 60 * 60  # 8 horas
+
+def crear_token_sesion(usuario, rol, vendedor):
+    expira = int(time.time()) + SESSION_DURATION
+    payload = f"{usuario}|{rol}|{vendedor}|{expira}"
+
+    firma = hmac.new(
+        SESSION_SECRET.encode(),
+        payload.encode(),
+        hashlib.sha256
+    ).hexdigest()
+
+    return f"{payload}|{firma}"
+
+
+def validar_token_sesion(token):
+    try:
+        usuario, rol, vendedor, expira, firma = token.split("|")
+        payload = f"{usuario}|{rol}|{vendedor}|{expira}"
+
+        firma_valida = hmac.new(
+            SESSION_SECRET.encode(),
+            payload.encode(),
+            hashlib.sha256
+        ).hexdigest()
+
+        if not hmac.compare_digest(firma, firma_valida):
+            return False
+
+        if int(expira) < int(time.time()):
+            return False
+
+        st.session_state["login_ok"] = True
+        st.session_state["usuario"] = usuario
+        st.session_state["rol"] = rol
+        st.session_state["vendedor"] = vendedor
+
+        return True
+
+    except:
+        return False
 
 # =========================
 # LOGIN
@@ -305,6 +354,15 @@ def login():
                         st.session_state["usuario"] = user.get("usuario", "")
                         st.session_state["rol"] = user.get("rol", "")
                         st.session_state["vendedor"] = user.get("vendedor", "")
+                        
+                        token = crear_token_sesion(
+                            st.session_state["usuario"],
+                            st.session_state["rol"],
+                            st.session_state["vendedor"]
+                        )
+                        
+                        st.query_params["session"] = token
+                        
                         st.rerun()
                     else:
                         st.error("Contraseña incorrecta o usuario inactivo.")
@@ -330,6 +388,12 @@ def login():
         """, unsafe_allow_html=True)
 
 if not st.session_state["login_ok"]:
+
+    token_url = st.query_params.get("session", None)
+
+    if token_url and validar_token_sesion(token_url):
+        st.rerun()
+
     login()
     st.stop()
 
@@ -1017,6 +1081,8 @@ if st.session_state.get("login_ok", False):
     else:
         st.sidebar.success(f"👤 {vendedor_txt} · VENDEDOR")
     if st.sidebar.button("Cerrar sesión"):
+        
+        st.query_params.clear()
 
         st.markdown("""
         <div style="
