@@ -1001,13 +1001,16 @@ def registrar_movimiento_stock(tipo_movimiento, requiere_jefe=False):
         }
 
         insertar_registro("movimientos_stock", nuevo_mov)
-
+        
+        st.session_state["mensaje_toast"] = "📦 Movimiento de stock guardado"
+        
         st.session_state["stock_guardado_ok"] = (
             f"{tipo_movimiento.title()} guardado correctamente ✅ Ya puedes registrar otro movimiento."
         )
+        
         st.session_state["stock_form_version"] = version + 1
         st.rerun()
-
+        
 # =========================
 # COLORES Y MESES
 # =========================
@@ -1877,6 +1880,7 @@ elif menu == "🧾 Registrar Orden":
             insertar_registro("ventas", registro)
 
             st.session_state["guardado_ok"] = True
+            st.session_state["mensaje_toast"] = "🧾 Venta registrada correctamente"
             st.session_state["form_version"] += 1
             st.rerun()
 
@@ -2158,7 +2162,9 @@ elif menu == "✏️ Editar Venta":
                             "tipo": nuevo_tipo,
                         })
                     actualizar_registro("ventas", venta_id, cambios)
+                    st.session_state["mensaje_toast"] = "✏️ Venta editada correctamente"
                     st.success("Venta editada correctamente ✅")
+                    st.rerun()
                     st.rerun()
 
 # =========================
