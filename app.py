@@ -1270,6 +1270,120 @@ elif menu == "📊 Dashboard":
 
         ventas_validas_fecha = ventas_dash.dropna(subset=["fecha"])
 
+        # =========================
+        # ESTILOS DASHBOARD PRO
+        # =========================
+        st.markdown("""
+        <style>
+        .dash-card {
+            background: linear-gradient(135deg, rgba(255,255,255,0.095), rgba(255,255,255,0.035));
+            border: 1px solid rgba(210,245,62,0.15);
+            border-radius: 24px;
+            padding: 20px;
+            margin-bottom: 18px;
+            box-shadow: 0 14px 30px rgba(0,0,0,.28);
+            transition: all .25s ease;
+        }
+
+        .dash-card:hover {
+            transform: translateY(-3px);
+            border-color: rgba(210,245,62,0.55);
+            box-shadow:
+                0 0 0 1px rgba(210,245,62,0.12),
+                0 0 24px rgba(210,245,62,0.24),
+                0 18px 38px rgba(0,0,0,.36);
+        }
+
+        .dash-title {
+            color: #F8FAFC;
+            font-weight: 1000;
+            font-size: 24px;
+            margin-bottom: 14px;
+            letter-spacing: -0.2px;
+        }
+
+        .kpi-card {
+            background: linear-gradient(135deg, rgba(255,255,255,0.11), rgba(255,255,255,0.035));
+            border: 1px solid rgba(210,245,62,0.18);
+            border-radius: 24px;
+            padding: 19px 18px;
+            box-shadow: 0 16px 34px rgba(0,0,0,.30), 0 0 20px rgba(210,245,62,.06);
+            backdrop-filter: blur(18px);
+            transition: all .25s ease;
+            min-height: 150px;
+        }
+
+        .kpi-card:hover {
+            transform: translateY(-4px);
+            border-color: rgba(210,245,62,.65);
+            box-shadow:
+                0 0 0 1px rgba(210,245,62,.18),
+                0 0 26px rgba(210,245,62,.32),
+                0 20px 42px rgba(0,0,0,.38);
+        }
+
+        .kpi-icon {
+            font-size: 28px;
+            width: 50px;
+            height: 50px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 17px;
+            background: rgba(210,245,62,.15);
+            box-shadow: 0 0 18px rgba(210,245,62,.15);
+            margin-bottom: 12px;
+        }
+
+        .kpi-label {
+            color: rgba(255,255,255,.80);
+            font-size: 15px;
+            font-weight: 900;
+        }
+
+        .kpi-value {
+            color: #F8FAFC;
+            font-size: 37px;
+            font-weight: 1000;
+            line-height: 1.05;
+            margin-top: 5px;
+        }
+
+        .kpi-sub {
+            color: #d7f54a;
+            font-size: 13px;
+            font-weight: 850;
+            margin-top: 7px;
+        }
+
+        .alert-stock {
+            background: linear-gradient(135deg, rgba(255,100,100,.16), rgba(255,255,255,.04));
+            border: 1px solid rgba(255,120,120,.35);
+            border-radius: 18px;
+            padding: 14px 16px;
+            color: #fff;
+            margin: 8px 0 16px 0;
+            box-shadow: 0 0 18px rgba(255,80,80,.08);
+            font-size: 15px;
+            font-weight: 800;
+            transition: all .25s ease;
+        }
+
+        .alert-stock:hover {
+            border-color: rgba(255,170,170,.65);
+            box-shadow: 0 0 22px rgba(255,80,80,.20);
+            transform: translateY(-2px);
+        }
+
+        .alert-stock b {
+            color: #ffb3b3;
+        }
+        </style>
+        """, unsafe_allow_html=True)
+
+        # =========================
+        # FILTROS
+        # =========================
         st.markdown("### 🎛️ Filtros")
 
         col_f1, col_f2, col_f3, col_f4, col_f5 = st.columns(5)
@@ -1332,6 +1446,9 @@ elif menu == "📊 Dashboard":
             (ventas_filtradas["cantidad"] > 0)
         ]
 
+        # =========================
+        # STOCK BAJO
+        # =========================
         stock_dash = stock_actual_df.copy()
         stock_dash["stock_actual"] = pd.to_numeric(
             stock_dash["stock_actual"], errors="coerce"
@@ -1344,6 +1461,9 @@ elif menu == "📊 Dashboard":
 
         total_stock_bajo = len(stock_bajo)
 
+        # =========================
+        # KPIS
+        # =========================
         total_ordenes = ventas_filtradas["orden"].nunique()
         total_equipos = int(ventas_equipos["cantidad"].sum()) if not ventas_equipos.empty else 0
         total_accesorios = int(ventas_filtradas["cantidad_accesorio"].sum())
@@ -1366,96 +1486,9 @@ elif menu == "📊 Dashboard":
                 .index[0]
             )
 
-        st.markdown("""
-        <style>
-        .kpi-grid {
-            display: grid;
-            grid-template-columns: repeat(4, 1fr);
-            gap: 14px;
-            margin: 18px 0 18px 0;
-        }
+        col_k1, col_k2, col_k3, col_k4 = st.columns(4)
 
-        .kpi-card {
-            background: linear-gradient(135deg, rgba(255,255,255,0.105), rgba(255,255,255,0.035));
-            border: 1px solid rgba(210,245,62,0.18);
-            border-radius: 22px;
-            padding: 18px 18px;
-            box-shadow: 0 16px 34px rgba(0,0,0,.28), 0 0 20px rgba(210,245,62,.06);
-            backdrop-filter: blur(18px);
-        }
-
-        .kpi-icon {
-            font-size: 28px;
-            width: 48px;
-            height: 48px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            border-radius: 16px;
-            background: rgba(210,245,62,.14);
-            box-shadow: 0 0 18px rgba(210,245,62,.13);
-            margin-bottom: 12px;
-        }
-
-        .kpi-label {
-            color: rgba(255,255,255,.78);
-            font-size: 15px;
-            font-weight: 900;
-        }
-
-        .kpi-value {
-            color: #F8FAFC;
-            font-size: 36px;
-            font-weight: 1000;
-            line-height: 1.1;
-            margin-top: 5px;
-        }
-
-        .kpi-sub {
-            color: #d7f54a;
-            font-size: 13px;
-            font-weight: 850;
-            margin-top: 6px;
-        }
-
-        .dash-card {
-            background: linear-gradient(135deg, rgba(255,255,255,0.095), rgba(255,255,255,0.035));
-            border: 1px solid rgba(210,245,62,0.14);
-            border-radius: 22px;
-            padding: 18px;
-            margin-bottom: 16px;
-            box-shadow: 0 14px 30px rgba(0,0,0,.26);
-        }
-
-        .dash-title {
-            color: #F8FAFC;
-            font-weight: 1000;
-            font-size: 24px;
-            margin-bottom: 14px;
-            letter-spacing: -0.2px;
-        }
-
-        .alert-stock {
-            background: linear-gradient(135deg, rgba(255,100,100,.16), rgba(255,255,255,.04));
-            border: 1px solid rgba(255,120,120,.35);
-            border-radius: 18px;
-            padding: 14px 16px;
-            color: #fff;
-            margin: 8px 0 16px 0;
-            box-shadow: 0 0 18px rgba(255,80,80,.08);
-            font-size: 15px;
-            font-weight: 800;
-        }
-
-        .alert-stock b {
-            color: #ffb3b3;
-        }
-        </style>
-        """, unsafe_allow_html=True)
-
-        col1, col2, col3, col4 = st.columns(4)
-        
-        with col1:
+        with col_k1:
             st.markdown(f"""
             <div class="kpi-card">
                 <div class="kpi-icon">🧾</div>
@@ -1464,8 +1497,8 @@ elif menu == "📊 Dashboard":
                 <div class="kpi-sub">según filtro actual</div>
             </div>
             """, unsafe_allow_html=True)
-        
-        with col2:
+
+        with col_k2:
             st.markdown(f"""
             <div class="kpi-card">
                 <div class="kpi-icon">📱</div>
@@ -1474,8 +1507,8 @@ elif menu == "📊 Dashboard":
                 <div class="kpi-sub">marca líder: {marca_lider}</div>
             </div>
             """, unsafe_allow_html=True)
-        
-        with col3:
+
+        with col_k3:
             st.markdown(f"""
             <div class="kpi-card">
                 <div class="kpi-icon">🎧</div>
@@ -1484,8 +1517,8 @@ elif menu == "📊 Dashboard":
                 <div class="kpi-sub">incluye ventas registradas</div>
             </div>
             """, unsafe_allow_html=True)
-        
-        with col4:
+
+        with col_k4:
             st.markdown(f"""
             <div class="kpi-card">
                 <div class="kpi-icon">⚠️</div>
@@ -1502,6 +1535,9 @@ elif menu == "📊 Dashboard":
             </div>
             """, unsafe_allow_html=True)
 
+        # =========================
+        # RANKING MARCAS + DONUT
+        # =========================
         col_marca, col_participacion = st.columns([0.58, 0.42])
 
         with col_marca:
@@ -1526,7 +1562,7 @@ elif menu == "📊 Dashboard":
                 fig, ax = plt.subplots(figsize=(8, 4.2), facecolor="#15171d")
                 ax.set_facecolor("#15171d")
 
-                ax.barh(
+                bars = ax.barh(
                     ranking_marca["marca"],
                     ranking_marca["Total"],
                     color=colores,
@@ -1575,8 +1611,17 @@ elif menu == "📊 Dashboard":
                     for marca in pie_data.index
                 ]
 
-                fig, ax = plt.subplots(figsize=(6.5, 4.9), facecolor="#15171d")
+                fig, ax = plt.subplots(figsize=(6.6, 5.0), facecolor="#15171d")
                 ax.set_facecolor("#15171d")
+
+                # Glow externo suave
+                ax.pie(
+                    pie_data.values,
+                    radius=1.08,
+                    colors=["#d7f54a"] * len(pie_data),
+                    startangle=90,
+                    wedgeprops={"width": 0.035, "edgecolor": "none", "alpha": 0.18}
+                )
 
                 wedges, texts, autotexts = ax.pie(
                     pie_data.values,
@@ -1621,6 +1666,9 @@ elif menu == "📊 Dashboard":
 
             st.markdown('</div>', unsafe_allow_html=True)
 
+        # =========================
+        # TOP VENDEDORES + MODELOS
+        # =========================
         col_top, col_modelos = st.columns([0.58, 0.42])
 
         with col_top:
@@ -1704,6 +1752,9 @@ elif menu == "📊 Dashboard":
 
             st.markdown('</div>', unsafe_allow_html=True)
 
+        # =========================
+        # VENTAS POR DÍA + ÓRDENES
+        # =========================
         col_dia, col_ordenes = st.columns([0.48, 0.52])
 
         with col_dia:
