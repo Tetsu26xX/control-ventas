@@ -411,7 +411,7 @@ if "inicio_instrucciones_ok" not in st.session_state:
     <style>
     #noti-custom {
         position: fixed;
-        top: 15%;
+        top: 10%;
         left: 50%;
         transform: translate(-50%, -50%);
         background: linear-gradient(135deg, #d7f54a, #7CFF6B);
