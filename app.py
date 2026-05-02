@@ -1453,37 +1453,47 @@ elif menu == "📊 Dashboard":
         </style>
         """, unsafe_allow_html=True)
 
-        st.markdown(f"""
-        <div class="kpi-grid">
+        col1, col2, col3, col4 = st.columns(4)
+        
+        with col1:
+            st.markdown(f"""
             <div class="kpi-card">
                 <div class="kpi-icon">🧾</div>
                 <div class="kpi-label">Órdenes</div>
                 <div class="kpi-value">{total_ordenes}</div>
                 <div class="kpi-sub">según filtro actual</div>
             </div>
-
+            """, unsafe_allow_html=True)
+        
+        with col2:
+            st.markdown(f"""
             <div class="kpi-card">
                 <div class="kpi-icon">📱</div>
                 <div class="kpi-label">Equipos vendidos</div>
                 <div class="kpi-value">{total_equipos}</div>
                 <div class="kpi-sub">marca líder: {marca_lider}</div>
             </div>
-
+            """, unsafe_allow_html=True)
+        
+        with col3:
+            st.markdown(f"""
             <div class="kpi-card">
                 <div class="kpi-icon">🎧</div>
                 <div class="kpi-label">Accesorios vendidos</div>
                 <div class="kpi-value">{total_accesorios}</div>
                 <div class="kpi-sub">incluye ventas registradas</div>
             </div>
-
+            """, unsafe_allow_html=True)
+        
+        with col4:
+            st.markdown(f"""
             <div class="kpi-card">
                 <div class="kpi-icon">⚠️</div>
                 <div class="kpi-label">Stock bajo</div>
                 <div class="kpi-value">{total_stock_bajo}</div>
                 <div class="kpi-sub">productos con 1 o 2 unidades</div>
             </div>
-        </div>
-        """, unsafe_allow_html=True)
+            """, unsafe_allow_html=True)
 
         if total_stock_bajo > 0:
             st.markdown(f"""
