@@ -1118,6 +1118,10 @@ if st.session_state.get("login_ok", False):
     
         st.rerun()
 
+if st.sidebar.button("🔄 Actualizar datos", use_container_width=True):
+    limpiar_cache_datos()
+    st.toast("Datos actualizados correctamente", icon="🔄")
+    st.rerun()
 st.sidebar.markdown("### 📲 Menú")
 
 if "menu_actual" not in st.session_state:
