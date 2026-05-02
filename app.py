@@ -1376,7 +1376,7 @@ elif menu == "📊 Dashboard":
         }
 
         .ticker-box {
-            height: 210px;
+            height: 190px;
             margin-top: 14px;
             padding: 18px;
             border-radius: 20px;
