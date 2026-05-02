@@ -1729,7 +1729,6 @@ elif menu == "📊 Dashboard":
                     <div class="ticker-text">
                             {ticker_html} &nbsp;&nbsp;&nbsp; • &nbsp;&nbsp;&nbsp; {ticker_html}
                         </div>
-                    </div>
                 """, unsafe_allow_html=True)
 
             st.markdown('</div>', unsafe_allow_html=True)
