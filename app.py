@@ -411,10 +411,10 @@ if "inicio_instrucciones_ok" not in st.session_state:
     <style>
     #noti-custom {
         position: fixed;
-        top: 50%;
+        top: 15%;
         left: 50%;
         transform: translate(-50%, -50%);
-        background: linear-gradient(135deg, #d7f54a, #9acb31);
+        background: linear-gradient(135deg, #d7f54a, #7CFF6B);
         color: #111;
         padding: 18px 28px;
         border-radius: 14px;
@@ -422,7 +422,7 @@ if "inicio_instrucciones_ok" not in st.session_state:
         font-size: 16px;
         z-index: 999999;
         box-shadow: 0 0 25px rgba(210,245,62,0.6), 0 20px 40px rgba(0,0,0,0.4);
-        animation: fadeInOut 4s ease forwards;
+        animation: fadeInOut 6s ease forwards;
     }
     
     @keyframes fadeInOut {
