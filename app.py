@@ -1270,9 +1270,6 @@ elif menu == "📊 Dashboard":
 
         ventas_validas_fecha = ventas_dash.dropna(subset=["fecha"])
 
-        # =========================
-        # FILTROS
-        # =========================
         st.markdown("### 🎛️ Filtros")
 
         col_f1, col_f2, col_f3, col_f4, col_f5 = st.columns(5)
@@ -1335,9 +1332,6 @@ elif menu == "📊 Dashboard":
             (ventas_filtradas["cantidad"] > 0)
         ]
 
-        # =========================
-        # DATOS STOCK BAJO
-        # =========================
         stock_dash = stock_actual_df.copy()
         stock_dash["stock_actual"] = pd.to_numeric(
             stock_dash["stock_actual"], errors="coerce"
@@ -1350,9 +1344,6 @@ elif menu == "📊 Dashboard":
 
         total_stock_bajo = len(stock_bajo)
 
-        # =========================
-        # KPIS VISUALES
-        # =========================
         total_ordenes = ventas_filtradas["orden"].nunique()
         total_equipos = int(ventas_equipos["cantidad"].sum()) if not ventas_equipos.empty else 0
         total_accesorios = int(ventas_filtradas["cantidad_accesorio"].sum())
@@ -1394,9 +1385,9 @@ elif menu == "📊 Dashboard":
         }
 
         .kpi-icon {
-            font-size: 26px;
-            width: 46px;
-            height: 46px;
+            font-size: 28px;
+            width: 48px;
+            height: 48px;
             display: flex;
             align-items: center;
             justify-content: center;
@@ -1407,14 +1398,14 @@ elif menu == "📊 Dashboard":
         }
 
         .kpi-label {
-            color: rgba(255,255,255,.72);
-            font-size: 13px;
-            font-weight: 800;
+            color: rgba(255,255,255,.78);
+            font-size: 15px;
+            font-weight: 900;
         }
 
         .kpi-value {
             color: #F8FAFC;
-            font-size: 32px;
+            font-size: 36px;
             font-weight: 1000;
             line-height: 1.1;
             margin-top: 5px;
@@ -1422,8 +1413,8 @@ elif menu == "📊 Dashboard":
 
         .kpi-sub {
             color: #d7f54a;
-            font-size: 12px;
-            font-weight: 800;
+            font-size: 13px;
+            font-weight: 850;
             margin-top: 6px;
         }
 
@@ -1438,9 +1429,10 @@ elif menu == "📊 Dashboard":
 
         .dash-title {
             color: #F8FAFC;
-            font-weight: 950;
-            font-size: 18px;
-            margin-bottom: 10px;
+            font-weight: 1000;
+            font-size: 24px;
+            margin-bottom: 14px;
+            letter-spacing: -0.2px;
         }
 
         .alert-stock {
@@ -1451,6 +1443,8 @@ elif menu == "📊 Dashboard":
             color: #fff;
             margin: 8px 0 16px 0;
             box-shadow: 0 0 18px rgba(255,80,80,.08);
+            font-size: 15px;
+            font-weight: 800;
         }
 
         .alert-stock b {
@@ -1498,9 +1492,6 @@ elif menu == "📊 Dashboard":
             </div>
             """, unsafe_allow_html=True)
 
-        # =========================
-        # RANKING MARCAS + PARTICIPACIÓN
-        # =========================
         col_marca, col_participacion = st.columns([0.58, 0.42])
 
         with col_marca:
@@ -1533,11 +1524,19 @@ elif menu == "📊 Dashboard":
                 )
 
                 ax.invert_yaxis()
-                ax.tick_params(colors="white", labelsize=9)
-                ax.set_xlabel("Unidades vendidas", color="white", fontsize=9)
+                ax.tick_params(colors="white", labelsize=10)
+                ax.set_xlabel("Unidades vendidas", color="white", fontsize=10)
 
                 for i, v in enumerate(ranking_marca["Total"]):
-                    ax.text(v + 0.3, i, str(int(v)), color="white", va="center", fontsize=9, fontweight="bold")
+                    ax.text(
+                        v + 0.3,
+                        i,
+                        str(int(v)),
+                        color="white",
+                        va="center",
+                        fontsize=10,
+                        fontweight="bold"
+                    )
 
                 ax.grid(axis="x", alpha=0.12)
                 for spine in ax.spines.values():
@@ -1560,12 +1559,13 @@ elif menu == "📊 Dashboard":
                 st.info("No hay datos para participación.")
             else:
                 pie_data = ventas_equipos.groupby("marca")["cantidad"].sum().sort_values(ascending=False)
+
                 colores = [
                     COLORES_MARCA.get(str(marca).upper(), "#95A5A6")
                     for marca in pie_data.index
                 ]
 
-                fig, ax = plt.subplots(figsize=(6.3, 4.8), facecolor="#15171d")
+                fig, ax = plt.subplots(figsize=(6.5, 4.9), facecolor="#15171d")
                 ax.set_facecolor("#15171d")
 
                 wedges, texts, autotexts = ax.pie(
@@ -1576,16 +1576,17 @@ elif menu == "📊 Dashboard":
                     colors=colores,
                     pctdistance=0.78,
                     wedgeprops={"width": 0.42, "edgecolor": "#15171d", "linewidth": 2},
-                    textprops={"color": "white", "fontsize": 9, "fontweight": "bold"}
+                    textprops={"color": "white", "fontsize": 10, "fontweight": "bold"}
                 )
 
                 ax.text(
-                    0, 0,
+                    0,
+                    0,
                     f"{int(pie_data.sum())}\nTotal",
                     ha="center",
                     va="center",
                     color="white",
-                    fontsize=16,
+                    fontsize=17,
                     fontweight="bold"
                 )
 
@@ -1594,14 +1595,15 @@ elif menu == "📊 Dashboard":
                     f"{marca} - {valor / total_pie * 100:.1f}%"
                     for marca, valor in pie_data.items()
                 ]
+
                 ax.legend(
                     wedges,
-                    pie_data.index,
+                    leyenda,
                     loc="center left",
                     bbox_to_anchor=(1, 0.5),
                     frameon=False,
                     labelcolor="white",
-                    fontsize=9
+                    fontsize=10
                 )
 
                 ax.axis("equal")
@@ -1609,9 +1611,6 @@ elif menu == "📊 Dashboard":
 
             st.markdown('</div>', unsafe_allow_html=True)
 
-        # =========================
-        # TOP VENDEDORES + MODELOS
-        # =========================
         col_top, col_modelos = st.columns([0.58, 0.42])
 
         with col_top:
@@ -1695,9 +1694,6 @@ elif menu == "📊 Dashboard":
 
             st.markdown('</div>', unsafe_allow_html=True)
 
-        # =========================
-        # VENTAS POR DÍA + ÚLTIMAS ÓRDENES
-        # =========================
         col_dia, col_ordenes = st.columns([0.48, 0.52])
 
         with col_dia:
@@ -1761,7 +1757,6 @@ elif menu == "📊 Dashboard":
             )
 
             st.markdown('</div>', unsafe_allow_html=True)
-
 # =========================
 # INVENTARIO
 # =========================
