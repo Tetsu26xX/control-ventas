@@ -1236,12 +1236,25 @@ if menu == "📌 Instrucciones":
     """, unsafe_allow_html=True)
 
 elif menu == "📊 Dashboard":
-    st.title("📊 Dashboard de Ventas")
 
+    # =========================
+    # TÍTULO PRO
+    # =========================
     st.markdown("""
-    <div class="glass-primary">
-        <h3>🚀 Panel comercial en tiempo real</h3>
-        <p>Resumen de ventas, rankings, participación por marca y control de stock crítico.</p>
+    <div style="
+        padding: 18px 20px;
+        border-radius: 22px;
+        background: linear-gradient(135deg, rgba(255,255,255,0.10), rgba(255,255,255,0.035));
+        border: 1px solid rgba(210,245,62,0.22);
+        box-shadow: 0 16px 34px rgba(0,0,0,.30), 0 0 22px rgba(210,245,62,.08);
+        margin-bottom: 16px;
+    ">
+        <div style="font-size: 30px; font-weight: 1000; color: #F8FAFC;">
+            📊 Dashboard de Ventas
+        </div>
+        <div style="font-size: 14px; color: #d7f54a; font-weight: 800; margin-top: 4px;">
+            Panel comercial · rankings · participación · stock crítico
+        </div>
     </div>
     """, unsafe_allow_html=True)
 
@@ -1378,6 +1391,54 @@ elif menu == "📊 Dashboard":
         .alert-stock b {
             color: #ffb3b3;
         }
+
+        .ticker {
+            overflow: hidden;
+            white-space: nowrap;
+            margin-top: 10px;
+            padding: 10px 0;
+            border-top: 1px solid rgba(210,245,62,0.16);
+            border-bottom: 1px solid rgba(210,245,62,0.10);
+        }
+
+        .ticker span {
+            display: inline-block;
+            padding-left: 100%;
+            animation: scrollNews 22s linear infinite;
+            font-size: 14px;
+            font-weight: 850;
+            color: #F8FAFC;
+        }
+
+        .ticker:hover span {
+            animation-play-state: paused;
+        }
+
+        @keyframes scrollNews {
+            0% { transform: translateX(0); }
+            100% { transform: translateX(-100%); }
+        }
+
+        .tabla-modelos-pro {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 13px;
+        }
+
+        .tabla-modelos-pro th {
+            text-align: left;
+            padding: 8px 6px;
+            color: rgba(255,255,255,.65);
+            font-weight: 900;
+            border-bottom: 1px solid rgba(255,255,255,.10);
+        }
+
+        .tabla-modelos-pro td {
+            padding: 8px 6px;
+            color: white;
+            border-bottom: 1px solid rgba(255,255,255,.06);
+            font-weight: 750;
+        }
         </style>
         """, unsafe_allow_html=True)
 
@@ -1468,6 +1529,14 @@ elif menu == "📊 Dashboard":
         total_equipos = int(ventas_equipos["cantidad"].sum()) if not ventas_equipos.empty else 0
         total_accesorios = int(ventas_filtradas["cantidad_accesorio"].sum())
 
+        chips_vendidos = ventas_filtradas[
+            ventas_filtradas["chip"].fillna("").astype(str).str.strip() != ""
+        ]["chip"].nunique()
+
+        prepago_vendidos = ventas_filtradas[
+            ventas_filtradas["tipo_chip"].fillna("").astype(str).str.upper().str.contains("PREPAGO", na=False)
+        ]["chip"].nunique()
+
         if ventas_equipos.empty:
             marca_lider = "Sin datos"
             top_vendedor_nombre = "Sin datos"
@@ -1528,6 +1597,19 @@ elif menu == "📊 Dashboard":
             </div>
             """, unsafe_allow_html=True)
 
+        hora_actual = pd.Timestamp.now().strftime("%H:%M:%S")
+        st.markdown(f"""
+        <div style="
+            margin-top: 4px;
+            margin-bottom: 12px;
+            font-size: 12px;
+            color: rgba(255,255,255,.55);
+            font-weight: 800;
+        ">
+            🟢 Actualizado a las {hora_actual}
+        </div>
+        """, unsafe_allow_html=True)
+
         if total_stock_bajo > 0:
             st.markdown(f"""
             <div class="alert-stock">
@@ -1562,7 +1644,7 @@ elif menu == "📊 Dashboard":
                 fig, ax = plt.subplots(figsize=(8, 4.2), facecolor="#15171d")
                 ax.set_facecolor("#15171d")
 
-                bars = ax.barh(
+                ax.barh(
                     ranking_marca["marca"],
                     ranking_marca["Total"],
                     color=colores,
@@ -1614,7 +1696,6 @@ elif menu == "📊 Dashboard":
                 fig, ax = plt.subplots(figsize=(6.6, 5.0), facecolor="#15171d")
                 ax.set_facecolor("#15171d")
 
-                # Glow externo suave
                 ax.pie(
                     pie_data.values,
                     radius=1.08,
@@ -1663,6 +1744,45 @@ elif menu == "📊 Dashboard":
 
                 ax.axis("equal")
                 st.pyplot(fig)
+
+                # =========================
+                # TICKER NOTICIAS PRO
+                # =========================
+                ranking_news = pie_data.sort_values(ascending=False)
+
+                marca_1 = ranking_news.index[0]
+                valor_1 = int(ranking_news.iloc[0])
+                porcentaje_1 = (valor_1 / total_pie) * 100 if total_pie > 0 else 0
+                color_1 = COLORES_MARCA.get(str(marca_1).upper(), "#d7f54a")
+
+                if len(ranking_news) > 1:
+                    marca_2 = ranking_news.index[1]
+                    valor_2 = int(ranking_news.iloc[1])
+                    color_2 = COLORES_MARCA.get(str(marca_2).upper(), "#ffffff")
+                    segunda_noticia = f"""<span style="color:{color_2}; font-weight:1000;">{marca_2}</span> sigue con {valor_2} equipos"""
+                else:
+                    marca_2 = ""
+                    valor_2 = 0
+                    segunda_noticia = "Sin segunda marca en este filtro"
+
+                noticia_chips = f"{chips_vendidos} chips vendidos"
+                if prepago_vendidos > 0:
+                    noticia_chips += f" · {prepago_vendidos} prepago"
+
+                ticker_html = f"""
+                📰 <span style="color:{color_1}; font-weight:1000;">{marca_1}</span>
+                lidera con {porcentaje_1:.1f}% ({valor_1} equipos) •
+                {segunda_noticia} •
+                {noticia_chips} •
+                {total_ordenes} órdenes registradas •
+                {total_stock_bajo} productos con stock bajo
+                """
+
+                st.markdown(f"""
+                <div class="ticker">
+                    <span>{ticker_html}</span>
+                </div>
+                """, unsafe_allow_html=True)
 
             st.markdown('</div>', unsafe_allow_html=True)
 
@@ -1744,11 +1864,40 @@ elif menu == "📊 Dashboard":
                 )
                 ranking_modelo.columns = ["modelo", "marca", "Cantidad"]
 
-                st.dataframe(
-                    ranking_modelo.astype(str),
-                    use_container_width=True,
-                    height=330
-                )
+                max_val = ranking_modelo["Cantidad"].max()
+
+                def barra_modelo(valor):
+                    porcentaje = valor / max_val if max_val > 0 else 0
+                    ancho = int(porcentaje * 100)
+                    return f"""
+                    <div style="background: rgba(255,255,255,0.06); border-radius: 8px; height: 10px; width:100%;">
+                        <div style="
+                            width: {ancho}%;
+                            height: 10px;
+                            border-radius: 8px;
+                            background: linear-gradient(90deg, #d7f54a, #9acb31);
+                            box-shadow: 0 0 10px rgba(210,245,62,0.45);
+                        "></div>
+                    </div>
+                    """
+
+                tabla_html = "<table class='tabla-modelos-pro'>"
+                tabla_html += "<tr><th>Modelo</th><th>Marca</th><th>Unid.</th><th>Rendimiento</th></tr>"
+
+                for _, row in ranking_modelo.iterrows():
+                    color_m = COLORES_MARCA.get(str(row["marca"]).upper(), "#d7f54a")
+                    tabla_html += f"""
+                    <tr>
+                        <td>{row["modelo"]}</td>
+                        <td><span style="color:{color_m}; font-weight:1000;">{row["marca"]}</span></td>
+                        <td>{int(row["Cantidad"])}</td>
+                        <td>{barra_modelo(row["Cantidad"])}</td>
+                    </tr>
+                    """
+
+                tabla_html += "</table>"
+
+                st.markdown(tabla_html, unsafe_allow_html=True)
 
             st.markdown('</div>', unsafe_allow_html=True)
 
