@@ -1589,6 +1589,11 @@ elif menu == "📊 Dashboard":
                     fontweight="bold"
                 )
 
+                total_pie = pie_data.sum()
+                leyenda = [
+                    f"{marca} - {valor / total_pie * 100:.1f}%"
+                    for marca, valor in pie_data.items()
+                ]
                 ax.legend(
                     wedges,
                     pie_data.index,
