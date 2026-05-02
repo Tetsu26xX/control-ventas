@@ -1284,7 +1284,7 @@ elif menu == "📊 Dashboard":
         ventas_validas_fecha = ventas_dash.dropna(subset=["fecha"])
 
         # =========================
-        # ESTILOS DASHBOARD PRO
+        # CSS SEGURO
         # =========================
         st.markdown("""
         <style>
@@ -1297,44 +1297,31 @@ elif menu == "📊 Dashboard":
             box-shadow: 0 14px 30px rgba(0,0,0,.28);
             transition: all .25s ease;
         }
-
         .dash-card:hover {
             transform: translateY(-3px);
             border-color: rgba(210,245,62,0.55);
-            box-shadow:
-                0 0 0 1px rgba(210,245,62,0.12),
-                0 0 24px rgba(210,245,62,0.24),
-                0 18px 38px rgba(0,0,0,.36);
+            box-shadow: 0 0 24px rgba(210,245,62,0.24), 0 18px 38px rgba(0,0,0,.36);
         }
-
         .dash-title {
             color: #F8FAFC;
             font-weight: 1000;
             font-size: 24px;
             margin-bottom: 14px;
-            letter-spacing: -0.2px;
         }
-
         .kpi-card {
             background: linear-gradient(135deg, rgba(255,255,255,0.11), rgba(255,255,255,0.035));
             border: 1px solid rgba(210,245,62,0.18);
             border-radius: 24px;
             padding: 19px 18px;
             box-shadow: 0 16px 34px rgba(0,0,0,.30), 0 0 20px rgba(210,245,62,.06);
-            backdrop-filter: blur(18px);
             transition: all .25s ease;
             min-height: 150px;
         }
-
         .kpi-card:hover {
             transform: translateY(-4px);
             border-color: rgba(210,245,62,.65);
-            box-shadow:
-                0 0 0 1px rgba(210,245,62,.18),
-                0 0 26px rgba(210,245,62,.32),
-                0 20px 42px rgba(0,0,0,.38);
+            box-shadow: 0 0 26px rgba(210,245,62,.32), 0 20px 42px rgba(0,0,0,.38);
         }
-
         .kpi-icon {
             font-size: 28px;
             width: 50px;
@@ -1347,13 +1334,11 @@ elif menu == "📊 Dashboard":
             box-shadow: 0 0 18px rgba(210,245,62,.15);
             margin-bottom: 12px;
         }
-
         .kpi-label {
             color: rgba(255,255,255,.80);
             font-size: 15px;
             font-weight: 900;
         }
-
         .kpi-value {
             color: #F8FAFC;
             font-size: 37px;
@@ -1361,14 +1346,12 @@ elif menu == "📊 Dashboard":
             line-height: 1.05;
             margin-top: 5px;
         }
-
         .kpi-sub {
             color: #d7f54a;
             font-size: 13px;
             font-weight: 850;
             margin-top: 7px;
         }
-
         .alert-stock {
             background: linear-gradient(135deg, rgba(255,100,100,.16), rgba(255,255,255,.04));
             border: 1px solid rgba(255,120,120,.35);
@@ -1379,93 +1362,41 @@ elif menu == "📊 Dashboard":
             box-shadow: 0 0 18px rgba(255,80,80,.08);
             font-size: 15px;
             font-weight: 800;
-            transition: all .25s ease;
-        }
-
-        .alert-stock:hover {
-            border-color: rgba(255,170,170,.65);
-            box-shadow: 0 0 22px rgba(255,80,80,.20);
-            transform: translateY(-2px);
-        }
-
-        .alert-stock b {
-            color: #ffb3b3;
         }
         .ticker-box {
-            min-height: 150px;
+            min-height: 135px;
             margin-top: 14px;
             padding: 18px;
-            border-radius: 22px;
-            background: linear-gradient(135deg, rgba(255,255,255,0.08), rgba(255,255,255,0.03));
+            border-radius: 20px;
+            background: linear-gradient(135deg, rgba(255,255,255,0.075), rgba(255,255,255,0.025));
             border: 1px solid rgba(210,245,62,0.18);
             box-shadow: 0 0 18px rgba(210,245,62,0.08);
         }
-        
         .ticker-title {
             color: #F8FAFC;
             font-weight: 1000;
-            font-size: 20px;
+            font-size: 18px;
             margin-bottom: 14px;
         }
-        
-        .ticker-line {
+        .ticker {
             overflow: hidden;
             white-space: nowrap;
             padding: 8px 0;
-            border-top: 1px solid rgba(210,245,62,0.10);
         }
-        
-        .ticker-line span {
+        .ticker span {
             display: inline-block;
             padding-left: 100%;
-            animation: scrollNews 15s linear infinite;
+            animation: scrollNews 22s linear infinite;
             font-size: 15px;
             font-weight: 900;
             color: #F8FAFC;
         }
-        
-        .ticker-line-2 span {
-            animation-duration: 19s;
-            color: #d7f54a;
-        }
-        
-        .ticker-line:hover span {
-            animation-play-state: paused;
-        }
-        
-        @keyframes scrollNews {
-            0% { transform: translateX(0); }
-            100% { transform: translateX(-100%); }
-        }
-
         .ticker:hover span {
             animation-play-state: paused;
         }
-
         @keyframes scrollNews {
             0% { transform: translateX(0); }
             100% { transform: translateX(-100%); }
-        }
-
-        .tabla-modelos-pro {
-            width: 100%;
-            border-collapse: collapse;
-            font-size: 13px;
-        }
-
-        .tabla-modelos-pro th {
-            text-align: left;
-            padding: 8px 6px;
-            color: rgba(255,255,255,.65);
-            font-weight: 900;
-            border-bottom: 1px solid rgba(255,255,255,.10);
-        }
-
-        .tabla-modelos-pro td {
-            padding: 8px 6px;
-            color: white;
-            border-bottom: 1px solid rgba(255,255,255,.06);
-            font-weight: 750;
         }
         </style>
         """, unsafe_allow_html=True)
@@ -1536,7 +1467,7 @@ elif menu == "📊 Dashboard":
         ]
 
         # =========================
-        # STOCK BAJO
+        # STOCK BAJO + KPIS
         # =========================
         stock_dash = stock_actual_df.copy()
         stock_dash["stock_actual"] = pd.to_numeric(
@@ -1550,9 +1481,6 @@ elif menu == "📊 Dashboard":
 
         total_stock_bajo = len(stock_bajo)
 
-        # =========================
-        # KPIS
-        # =========================
         total_ordenes = ventas_filtradas["orden"].nunique()
         total_equipos = int(ventas_equipos["cantidad"].sum()) if not ventas_equipos.empty else 0
         total_accesorios = int(ventas_filtradas["cantidad_accesorio"].sum())
@@ -1567,17 +1495,9 @@ elif menu == "📊 Dashboard":
 
         if ventas_equipos.empty:
             marca_lider = "Sin datos"
-            top_vendedor_nombre = "Sin datos"
         else:
             marca_lider = (
                 ventas_equipos.groupby("marca")["cantidad"]
-                .sum()
-                .sort_values(ascending=False)
-                .index[0]
-            )
-
-            top_vendedor_nombre = (
-                ventas_equipos.groupby("vendedor")["cantidad"]
                 .sum()
                 .sort_values(ascending=False)
                 .index[0]
@@ -1625,16 +1545,15 @@ elif menu == "📊 Dashboard":
             </div>
             """, unsafe_allow_html=True)
 
-        hora_actual = pd.Timestamp.now().strftime("%H:%M:%S")
         st.markdown(f"""
         <div style="
-            margin-top: 4px;
+            margin-top: 6px;
             margin-bottom: 12px;
             font-size: 12px;
             color: rgba(255,255,255,.55);
             font-weight: 800;
         ">
-            🟢 Actualizado a las {hora_actual}
+            🟢 Actualizado a las {pd.Timestamp.now().strftime("%H:%M:%S")}
         </div>
         """, unsafe_allow_html=True)
 
@@ -1684,15 +1603,7 @@ elif menu == "📊 Dashboard":
                 ax.set_xlabel("Unidades vendidas", color="white", fontsize=10)
 
                 for i, v in enumerate(ranking_marca["Total"]):
-                    ax.text(
-                        v + 0.3,
-                        i,
-                        str(int(v)),
-                        color="white",
-                        va="center",
-                        fontsize=10,
-                        fontweight="bold"
-                    )
+                    ax.text(v + 0.3, i, str(int(v)), color="white", va="center", fontsize=10, fontweight="bold")
 
                 ax.grid(axis="x", alpha=0.12)
                 for spine in ax.spines.values():
@@ -1715,6 +1626,7 @@ elif menu == "📊 Dashboard":
                 st.info("No hay datos para participación.")
             else:
                 pie_data = ventas_equipos.groupby("marca")["cantidad"].sum().sort_values(ascending=False)
+                total_pie = pie_data.sum()
 
                 colores = [
                     COLORES_MARCA.get(str(marca).upper(), "#95A5A6")
@@ -1744,9 +1656,8 @@ elif menu == "📊 Dashboard":
                 )
 
                 ax.text(
-                    0,
-                    0,
-                    f"{int(pie_data.sum())}\nTotal",
+                    0, 0,
+                    f"{int(total_pie)}\nTotal",
                     ha="center",
                     va="center",
                     color="white",
@@ -1754,7 +1665,6 @@ elif menu == "📊 Dashboard":
                     fontweight="bold"
                 )
 
-                total_pie = pie_data.sum()
                 leyenda = [
                     f"{marca} - {valor / total_pie * 100:.1f}%"
                     for marca, valor in pie_data.items()
@@ -1773,9 +1683,6 @@ elif menu == "📊 Dashboard":
                 ax.axis("equal")
                 st.pyplot(fig)
 
-                # =========================
-                # TICKER NOTICIAS PRO
-                # =========================
                 ranking_news = pie_data.sort_values(ascending=False)
 
                 marca_1 = ranking_news.index[0]
@@ -1795,32 +1702,23 @@ elif menu == "📊 Dashboard":
                 if prepago_vendidos > 0:
                     noticia_chips += f" · {prepago_vendidos} prepago"
 
-            noticia_1 = f"""
-            <span style="color:{color_1}; font-weight:1000;">{marca_1}</span>
-            lidera con {porcentaje_1:.1f}% ({valor_1} equipos)
-            """
-            
-            noticia_2 = f"""
-            {segunda_noticia} • {total_ordenes} órdenes registradas
-            """
-            
-            noticia_3 = f"""
-            {noticia_chips} • {total_stock_bajo} productos con stock bajo
-            """
-            
-            st.markdown(f"""
-            <div class="ticker-box">
-                <div class="ticker-title">📰 Noticias del filtro</div>
-            
-                <div class="ticker-line">
-                    <span>📰 {noticia_1}</span>
+                ticker_html = f"""
+                📰 <span style="color:{color_1}; font-weight:1000;">{marca_1}</span>
+                lidera con {porcentaje_1:.1f}% ({valor_1} equipos) •
+                {segunda_noticia} •
+                {noticia_chips} •
+                {total_ordenes} órdenes registradas •
+                {total_stock_bajo} productos con stock bajo
+                """
+
+                st.markdown(f"""
+                <div class="ticker-box">
+                    <div class="ticker-title">📰 Noticias del filtro</div>
+                    <div class="ticker">
+                        <span>{ticker_html}</span>
+                    </div>
                 </div>
-            
-                <div class="ticker-line ticker-line-2">
-                    <span>📌 {noticia_2} • {noticia_3}</span>
-                </div>
-            </div>
-            """, unsafe_allow_html=True)
+                """, unsafe_allow_html=True)
 
             st.markdown('</div>', unsafe_allow_html=True)
 
@@ -1871,150 +1769,6 @@ elif menu == "📊 Dashboard":
                 )
 
                 tabla_top = tabla_top.merge(totales_marca, on="MARCAS", how="left")
-                tabla_top = tabla_top.sort_values("TOTAL", ascending=False)
-
-                columnas_top = [
-                    "MARCAS", "🥇 VENDEDOR TOP 1", "🥈 VENDEDOR TOP 2",
-                    "🥉 VENDEDOR TOP 3", "🏅 VENDEDOR TOP 4", "TOTAL"
-                ]
-                tabla_top = tabla_top[columnas_top].fillna("")
-
-                st.dataframe(
-                    tabla_top.astype(str),
-                    use_container_width=True,
-                    height=330
-                )
-
-            st.markdown('</div>', unsafe_allow_html=True)
-
-        with col_modelos:
-            st.markdown('<div class="dash-card"><div class="dash-title">📱 Ranking de modelos</div>', unsafe_allow_html=True)
-
-            if ventas_equipos.empty:
-                st.info("No hay modelos vendidos para este filtro.")
-            else:
-                ranking_modelo = (
-                    ventas_equipos.groupby(["modelo", "marca"])["cantidad"]
-                    .sum()
-                    .sort_values(ascending=False)
-                    .reset_index()
-                    .head(10)
-                )
-                ranking_modelo.columns = ["modelo", "marca", "Cantidad"]
-
-                max_val = ranking_modelo["Cantidad"].max()
-
-                def barra_modelo(valor):
-                    porcentaje = valor / max_val if max_val > 0 else 0
-                    ancho = int(porcentaje * 100)
-                    return f"""
-                    <div style="background: rgba(255,255,255,0.06); border-radius: 8px; height: 10px; width:100%;">
-                        <div style="
-                            width: {ancho}%;
-                            height: 10px;
-                            border-radius: 8px;
-                            background: linear-gradient(90deg, #d7f54a, #9acb31);
-                            box-shadow: 0 0 10px rgba(210,245,62,0.45);
-                        "></div>
-                    </div>
-                    """
-
-                tabla_html = "<table class='tabla-modelos-pro'>"
-                tabla_html += "<tr><th>Modelo</th><th>Marca</th><th>Unid.</th><th>Rendimiento</th></tr>"
-
-                for _, row in ranking_modelo.iterrows():
-                    color_m = COLORES_MARCA.get(str(row["marca"]).upper(), "#d7f54a")
-                    tabla_html += f"""
-                    <tr>
-                        <td>{row["modelo"]}</td>
-                        <td><span style="color:{color_m}; font-weight:1000;">{row["marca"]}</span></td>
-                        <td>{int(row["Cantidad"])}</td>
-                        <td>{barra_modelo(row["Cantidad"])}</td>
-                    </tr>
-                    """
-
-                tabla_html += "</table>"
-
-                components.html(f"""
-                <div style="
-                    background: linear-gradient(135deg, rgba(255,255,255,0.075), rgba(255,255,255,0.025));
-                    border: 1px solid rgba(210,245,62,0.16);
-                    border-radius: 18px;
-                    padding: 16px;
-                    box-shadow: inset 0 1px 0 rgba(255,255,255,0.08), 0 0 18px rgba(210,245,62,0.06);
-                ">
-                    {tabla_html}
-                </div>
-                """, height=300, scrolling=False)
-
-            st.markdown('</div>', unsafe_allow_html=True)
-
-        # =========================
-        # VENTAS POR DÍA + ÓRDENES
-        # =========================
-        col_dia, col_ordenes = st.columns([0.48, 0.52])
-
-        with col_dia:
-            st.markdown('<div class="dash-card"><div class="dash-title">📈 Ventas por día</div>', unsafe_allow_html=True)
-
-            if ventas_equipos.empty:
-                st.info("No hay ventas por día para este filtro.")
-            else:
-                ventas_dia = (
-                    ventas_equipos.groupby(ventas_equipos["fecha"].dt.date)["cantidad"]
-                    .sum()
-                    .reset_index()
-                )
-                ventas_dia.columns = ["Fecha", "Ventas"]
-
-                fig, ax = plt.subplots(figsize=(7, 3.6), facecolor="#15171d")
-                ax.set_facecolor("#15171d")
-
-                ax.plot(
-                    ventas_dia["Fecha"],
-                    ventas_dia["Ventas"],
-                    marker="o",
-                    linewidth=2.5,
-                    color="#d7f54a"
-                )
-
-                ax.fill_between(
-                    ventas_dia["Fecha"],
-                    ventas_dia["Ventas"],
-                    alpha=0.18,
-                    color="#d7f54a"
-                )
-
-                ax.tick_params(colors="white", labelsize=8)
-                ax.set_ylabel("Equipos", color="white", fontsize=9)
-                ax.grid(alpha=0.13)
-
-                for spine in ax.spines.values():
-                    spine.set_visible(False)
-
-                plt.xticks(rotation=30)
-                st.pyplot(fig)
-
-            st.markdown('</div>', unsafe_allow_html=True)
-
-        with col_ordenes:
-            st.markdown('<div class="dash-card"><div class="dash-title">🧾 Últimas órdenes</div>', unsafe_allow_html=True)
-
-            ultimas_ordenes = ventas_filtradas.drop(columns=["semana_mes"], errors="ignore").tail(15).copy()
-            ultimas_ordenes = preparar_fecha_hora(ultimas_ordenes)
-            ultimas_ordenes = ordenar_columnas_existentes(
-                ultimas_ordenes,
-                ["fecha", "hora", "vendedor", "orden", "imei", "chip", "marca", "modelo", "color", "tipo"]
-            )
-            ultimas_ordenes = ultimas_ordenes.replace({"None": "", "nan": "", "NaN": ""})
-
-            st.dataframe(
-                ultimas_ordenes.astype(str),
-                use_container_width=True,
-                height=330
-            )
-
-            st.markdown('</div>', unsafe_allow_html=True)
 # =========================
 # INVENTARIO
 # =========================
