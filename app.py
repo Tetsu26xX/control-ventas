@@ -1653,6 +1653,9 @@ elif menu == "➕ Nuevo Equipo":
             st.success("Nuevo equipo agregado correctamente ✅")
             mostrar_confeti()
             st.info("Ahora ve a Inventario → Ingresar Stock para cargar unidades.")
+            
+            st.session_state["mensaje_toast"] = "📱 Nuevo equipo agregado correctamente"
+            
             st.rerun()
 
 elif menu == "➕ Nuevo Accesorio":
@@ -1684,6 +1687,7 @@ elif menu == "➕ Nuevo Accesorio":
             accesorios_actualizados.to_csv("data/catalogo_accesorios.csv", sep="\t", index=False)
             st.success("Nuevo accesorio agregado correctamente ✅")
             mostrar_confeti()
+            st.session_state["mensaje_toast"] = "🎧 Nuevo accesorio agregado correctamente"
 
 elif menu == "🧑‍💼 Vendedores":
     st.title("🧑‍💼 Vendedores")
@@ -1729,6 +1733,7 @@ elif menu == "🧑‍💼 Vendedores":
                         })
 
                         st.success("Vendedor / usuario creado correctamente ✅")
+                        st.session_state["mensaje_toast"] = "👤 Vendedor / usuario creado correctamente"
                         st.rerun()
     else:
         st.warning("Solo el administrador puede ver y crear vendedores.")
@@ -1959,6 +1964,7 @@ elif menu == "📋 Ventas Registradas":
                             supabase.table("ventas").delete().eq("orden", orden_eliminar).execute()
 
                         st.success("Venta eliminada correctamente ✅")
+                        st.session_state["mensaje_toast"] = "🗑️ Venta eliminada correctamente"
                         st.rerun()
 
 elif menu == "📱 Buscar IMEI":
