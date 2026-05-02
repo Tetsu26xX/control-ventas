@@ -1395,21 +1395,33 @@ elif menu == "📊 Dashboard":
             margin-bottom: 18px;
         }
 
-        .ticker-text {
+        .ticker {
+            overflow: hidden;
+            white-space: nowrap;
+            width: 100%;
+        }
+
+        .ticker-track {
+            display: inline-block;
+            animation: scrollNews 38s linear infinite;
             font-size: 16px;
             font-weight: 900;
             color: #F8FAFC;
-            line-height: 1.7;
-            animation: suaveEntrada 0.8s ease;
         }
-        
+
+        .ticker:hover .ticker-track {
+            animation-play-state: paused;
+        }
+
         .marca-news {
             display: inline !important;
+            animation: none !important;
+            padding-left: 0 !important;
         }
-        
-        @keyframes suaveEntrada {
-            0% { opacity: 0; transform: translateY(8px); }
-            100% { opacity: 1; transform: translateY(0); }
+
+        @keyframes scrollNews {
+            0% { transform: translateX(100%); }
+            100% { transform: translateX(-100%); }
         }
         </style>
         """, unsafe_allow_html=True)
@@ -1726,9 +1738,9 @@ elif menu == "📊 Dashboard":
                 st.markdown(f"""
                 <div class="ticker-box">
                     <div class="ticker-title">📰 Noticias del filtro</div>
-                    <div class="ticker-text">
+                    <div class="ticker">
+                        <div class="ticker-track">
                             {ticker_html} &nbsp;&nbsp;&nbsp; • &nbsp;&nbsp;&nbsp; {ticker_html}
-                        </div>
                 """, unsafe_allow_html=True)
 
             st.markdown('</div>', unsafe_allow_html=True)
