@@ -772,6 +772,38 @@ def mostrar_confeti():
         height=150,
     )
 
+def notificacion_flotante(mensaje):
+    st.markdown(f"""
+    <div id="noti-custom">
+        {mensaje}
+    </div>
+
+    <style>
+    #noti-custom {{
+        position: fixed;
+        top: 10%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        background: linear-gradient(135deg, #d7f54a, #7CFF6B);
+        color: #111;
+        padding: 18px 28px;
+        border-radius: 14px;
+        font-weight: 900;
+        font-size: 16px;
+        z-index: 999999;
+        box-shadow: 0 0 25px rgba(210,245,62,0.6), 0 20px 40px rgba(0,0,0,0.4);
+        animation: fadeInOut 6s ease forwards;
+    }}
+
+    @keyframes fadeInOut {{
+        0% {{ opacity: 0; transform: translate(-50%, -60%); }}
+        10% {{ opacity: 1; transform: translate(-50%, -50%); }}
+        80% {{ opacity: 1; }}
+        100% {{ opacity: 0; transform: translate(-50%, -40%); }}
+    }}
+    </style>
+    """, unsafe_allow_html=True)
+
 def texto_top_vendedor(row):
     if pd.isna(row["vendedor"]) or row["vendedor"] == "":
         return ""
@@ -791,18 +823,20 @@ def oscurecer_color(hex_color, factor=0.55):
 
 def seleccionar_producto(df_productos, prefijo="", default_marca=None, default_modelo=None, default_color=None, default_tipo=None):
     marcas = sorted(df_productos["marca"].dropna().unique())
+    es_edicion = any([default_marca, default_modelo, default_color, default_tipo])
 
-    if default_marca in marcas:
-        marca_index = marcas.index(default_marca)
-    else:
-        marca_index = 0
-
+    marca_index = marcas.index(default_marca) if default_marca in marcas else (0 if es_edicion and marcas else None)
     marca = st.selectbox(
         "Marca",
         marcas,
         index=marca_index,
+        placeholder="Ingresar marca",
         key=f"{prefijo}_marca"
     )
+
+    if marca is None:
+        st.info("Selecciona una marca para continuar.")
+        st.stop()
 
     color_marca = COLORES_MARCA.get(str(marca).upper(), "#95A5A6")
     st.markdown(
@@ -812,34 +846,36 @@ def seleccionar_producto(df_productos, prefijo="", default_marca=None, default_m
     )
 
     modelos = sorted(df_productos[df_productos["marca"] == marca]["modelo"].dropna().unique())
-    if default_modelo in modelos:
-        modelo_index = modelos.index(default_modelo)
-    else:
-        modelo_index = 0
-
+    modelo_index = modelos.index(default_modelo) if default_modelo in modelos else (0 if es_edicion and modelos else None)
     modelo = st.selectbox(
         "Modelo",
         modelos,
         index=modelo_index,
+        placeholder="Ingresar modelo",
         key=f"{prefijo}_modelo"
     )
+
+    if modelo is None:
+        st.info("Selecciona un modelo para continuar.")
+        st.stop()
 
     colores = sorted(df_productos[
         (df_productos["marca"] == marca) &
         (df_productos["modelo"] == modelo)
     ]["color"].dropna().unique())
 
-    if default_color in colores:
-        color_index = colores.index(default_color)
-    else:
-        color_index = 0
-
+    color_index = colores.index(default_color) if default_color in colores else (0 if es_edicion and colores else None)
     color = st.selectbox(
         "Color",
         colores,
         index=color_index,
+        placeholder="Ingresar color",
         key=f"{prefijo}_color"
     )
+
+    if color is None:
+        st.info("Selecciona un color para continuar.")
+        st.stop()
 
     tipos = sorted(df_productos[
         (df_productos["marca"] == marca) &
@@ -847,17 +883,18 @@ def seleccionar_producto(df_productos, prefijo="", default_marca=None, default_m
         (df_productos["color"] == color)
     ]["tipo"].dropna().unique())
 
-    if default_tipo in tipos:
-        tipo_index = tipos.index(default_tipo)
-    else:
-        tipo_index = 0
-
+    tipo_index = tipos.index(default_tipo) if default_tipo in tipos else (0 if es_edicion and tipos else None)
     tipo = st.selectbox(
         "Tipo",
         tipos,
         index=tipo_index,
+        placeholder="Ingresar tipo",
         key=f"{prefijo}_tipo"
     )
+
+    if tipo is None:
+        st.info("Selecciona un tipo para continuar.")
+        st.stop()
 
     resultado = df_productos[
         (df_productos["marca"] == marca) &
@@ -1004,7 +1041,7 @@ def registrar_movimiento_stock(tipo_movimiento, requiere_jefe=False):
 
         insertar_registro("movimientos_stock", nuevo_mov)
         
-        st.session_state["mensaje_toast"] = "📦 Movimiento de stock guardado"
+        st.session_state["notificacion_flotante"] = f"📦 {tipo_movimiento.title()} guardado correctamente ✅ Ya puedes registrar otro movimiento."
         
         st.session_state["stock_guardado_ok"] = (
             f"{tipo_movimiento.title()} guardado correctamente ✅ Ya puedes registrar otro movimiento."
@@ -1163,6 +1200,10 @@ with st.sidebar.expander("👥 Equipo", expanded=False):
     boton_menu("🧑‍💼 Vendedores")
 
 menu = st.session_state["menu_actual"]
+
+if "notificacion_flotante" in st.session_state:
+    notificacion_flotante(st.session_state["notificacion_flotante"])
+    del st.session_state["notificacion_flotante"]
 
 # =========================
 # DASHBOARD
@@ -2042,7 +2083,7 @@ elif menu == "➕ Nuevo Equipo":
             mostrar_confeti()
             st.info("Ahora ve a Inventario → Ingresar Stock para cargar unidades.")
             
-            st.session_state["mensaje_toast"] = "📱 Nuevo equipo agregado correctamente"
+            st.session_state["notificacion_flotante"] = "📱 Nuevo equipo agregado correctamente ✅"
             
             st.rerun()
 
@@ -2075,7 +2116,7 @@ elif menu == "➕ Nuevo Accesorio":
             accesorios_actualizados.to_csv("data/catalogo_accesorios.csv", sep="\t", index=False)
             st.success("Nuevo accesorio agregado correctamente ✅")
             mostrar_confeti()
-            st.session_state["mensaje_toast"] = "🎧 Nuevo accesorio agregado correctamente"
+            st.session_state["notificacion_flotante"] = "🎧 Nuevo accesorio agregado correctamente ✅"
 
 elif menu == "🧑‍💼 Vendedores":
     st.title("🧑‍💼 Vendedores")
@@ -2121,7 +2162,7 @@ elif menu == "🧑‍💼 Vendedores":
                         })
 
                         st.success("Vendedor / usuario creado correctamente ✅")
-                        st.session_state["mensaje_toast"] = "👤 Vendedor / usuario creado correctamente"
+                        st.session_state["notificacion_flotante"] = "👤 Vendedor / usuario creado correctamente ✅"
                         st.rerun()
     else:
         st.warning("Solo el administrador puede ver y crear vendedores.")
@@ -2203,14 +2244,31 @@ elif menu == "🧾 Registrar Orden":
     if incluye_accesorio:
         st.subheader("🎧 Datos del Accesorio")
 
-        marca_acc = st.selectbox("Marca accesorio", sorted(accesorios["marca"].dropna().unique()), key=f"marca_acc_{version}")
+        marca_acc = st.selectbox(
+            "Marca accesorio",
+            sorted(accesorios["marca"].dropna().unique()),
+            index=None,
+            placeholder="Ingresar marca accesorio",
+            key=f"marca_acc_{version}"
+        )
+
+        if marca_acc is None:
+            st.info("Selecciona una marca de accesorio para continuar.")
+            st.stop()
+
         accesorios_filtrados = accesorios[accesorios["marca"] == marca_acc]
 
         accesorio_desc = st.selectbox(
             "Accesorio",
             sorted(accesorios_filtrados["descripcion"].dropna().unique()),
+            index=None,
+            placeholder="Ingresar accesorio",
             key=f"accesorio_{version}"
         )
+
+        if accesorio_desc is None:
+            st.info("Selecciona un accesorio para continuar.")
+            st.stop()
 
         acc_resultado = accesorios_filtrados[
             accesorios_filtrados["descripcion"] == accesorio_desc
@@ -2273,7 +2331,7 @@ elif menu == "🧾 Registrar Orden":
             insertar_registro("ventas", registro)
 
             st.session_state["guardado_ok"] = True
-            st.session_state["mensaje_toast"] = "🧾 Venta registrada correctamente"
+            st.session_state["notificacion_flotante"] = "🧾 Venta registrada correctamente ✅ Ya puedes registrar otra."
             st.session_state["form_version"] += 1
             st.rerun()
 
