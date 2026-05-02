@@ -403,7 +403,36 @@ if not st.session_state["login_ok"]:
 if "inicio_instrucciones_ok" not in st.session_state:
     st.session_state["inicio_instrucciones_ok"] = True
     st.session_state["menu_actual"] = "📌 Instrucciones"
-    st.toast("📘 Revisa las instrucciones antes de registrar ventas o movimientos.", icon="📘")
+    st.markdown("""
+    <div id="noti-custom">
+        📘 Revisa las instrucciones antes de registrar ventas o movimientos.
+    </div>
+    
+    <style>
+    #noti-custom {
+        position: fixed;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        background: linear-gradient(135deg, #d7f54a, #9acb31);
+        color: #111;
+        padding: 18px 28px;
+        border-radius: 14px;
+        font-weight: 900;
+        font-size: 16px;
+        z-index: 999999;
+        box-shadow: 0 0 25px rgba(210,245,62,0.6), 0 20px 40px rgba(0,0,0,0.4);
+        animation: fadeInOut 4s ease forwards;
+    }
+    
+    @keyframes fadeInOut {
+        0% { opacity: 0; transform: translate(-50%, -60%); }
+        10% { opacity: 1; transform: translate(-50%, -50%); }
+        80% { opacity: 1; }
+        100% { opacity: 0; transform: translate(-50%, -40%); }
+    }
+    </style>
+    """, unsafe_allow_html=True)
 
 @st.cache_data(ttl=30, show_spinner=False)
 def cargar_tabla(nombre, columnas=None):
