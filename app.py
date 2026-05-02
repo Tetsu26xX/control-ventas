@@ -377,7 +377,7 @@ def login():
                 <div class="hero-kicker">Bienvenido a</div>
                 <h1 class="hero-title">Control<br><span>Ventas</span></h1>
                 <div class="hero-sub">Sistema para registrar ventas, controlar stock,.</div>
-                <div class="hero-sub">revisar rankings y consultar IMEI por marca y fecha.</div>
+                <div class="hero-sub">revisar rankings.</div>
                 <div class="hero-sub">y consultar IMEI por marca y fecha.</div>
             </div>
             {mascota_html}
