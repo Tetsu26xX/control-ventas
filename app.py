@@ -1237,18 +1237,23 @@ if menu == "📌 Instrucciones":
 
 elif menu == "📊 Dashboard":
     st.title("📊 Dashboard de Ventas")
+
     st.markdown("""
     <div class="glass-primary">
-        <h3>🚀 Control en tiempo real</h3>
-        <p>Ventas, rankings, stock y seguimiento en un solo panel.</p>
+        <h3>🚀 Panel comercial en tiempo real</h3>
+        <p>Resumen de ventas, rankings, participación por marca y control de stock crítico.</p>
     </div>
     """, unsafe_allow_html=True)
+
+    if "mensaje_toast" in st.session_state:
+        st.toast(st.session_state["mensaje_toast"], icon="✅")
+        del st.session_state["mensaje_toast"]
 
     mascota_dashboard = get_base64_image("assets/mascota_dashboard.png")
     if mascota_dashboard:
         st.markdown(f"""
         <div style="position: fixed; bottom: 14px; right: 24px; z-index: 999;">
-            <img src="data:image/png;base64,{mascota_dashboard}" width="170">
+            <img src="data:image/png;base64,{mascota_dashboard}" width="155">
         </div>
         """, unsafe_allow_html=True)
 
@@ -1265,7 +1270,11 @@ elif menu == "📊 Dashboard":
 
         ventas_validas_fecha = ventas_dash.dropna(subset=["fecha"])
 
-        st.subheader("Filtros")
+        # =========================
+        # FILTROS
+        # =========================
+        st.markdown("### 🎛️ Filtros")
+
         col_f1, col_f2, col_f3, col_f4, col_f5 = st.columns(5)
 
         años = sorted(ventas_validas_fecha["fecha"].dt.year.unique(), reverse=True)
@@ -1306,7 +1315,7 @@ elif menu == "📊 Dashboard":
 
         marcas_disponibles = sorted(ventas_dash["marca"].dropna().replace("", pd.NA).dropna().unique())
         with col_f5:
-            marca_filtro = st.selectbox("marca", ["TODAS"] + marcas_disponibles)
+            marca_filtro = st.selectbox("Marca", ["TODAS"] + marcas_disponibles)
 
         ventas_filtradas = ventas_dash.copy()
 
@@ -1326,19 +1335,177 @@ elif menu == "📊 Dashboard":
             (ventas_filtradas["cantidad"] > 0)
         ]
 
-        st.divider()
+        # =========================
+        # DATOS STOCK BAJO
+        # =========================
+        stock_dash = stock_actual_df.copy()
+        stock_dash["stock_actual"] = pd.to_numeric(
+            stock_dash["stock_actual"], errors="coerce"
+        ).fillna(0).astype(int)
 
-        c1, c2, c3 = st.columns(3)
-        c1.metric("Órdenes", ventas_filtradas["orden"].nunique())
-        c2.metric("Equipos vendidos", int(ventas_equipos["cantidad"].sum()))
-        c3.metric("Accesorios vendidos", int(ventas_filtradas["cantidad_accesorio"].sum()))
+        stock_bajo = stock_dash[
+            (stock_dash["stock_actual"] > 0) &
+            (stock_dash["stock_actual"] <= 2)
+        ].copy()
 
-        st.divider()
+        total_stock_bajo = len(stock_bajo)
 
-        col1, col2 = st.columns(2)
+        # =========================
+        # KPIS VISUALES
+        # =========================
+        total_ordenes = ventas_filtradas["orden"].nunique()
+        total_equipos = int(ventas_equipos["cantidad"].sum()) if not ventas_equipos.empty else 0
+        total_accesorios = int(ventas_filtradas["cantidad_accesorio"].sum())
 
-        with col1:
-            st.subheader("🏆 Ranking de Marcas")
+        if ventas_equipos.empty:
+            marca_lider = "Sin datos"
+            top_vendedor_nombre = "Sin datos"
+        else:
+            marca_lider = (
+                ventas_equipos.groupby("marca")["cantidad"]
+                .sum()
+                .sort_values(ascending=False)
+                .index[0]
+            )
+
+            top_vendedor_nombre = (
+                ventas_equipos.groupby("vendedor")["cantidad"]
+                .sum()
+                .sort_values(ascending=False)
+                .index[0]
+            )
+
+        st.markdown("""
+        <style>
+        .kpi-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 14px;
+            margin: 18px 0 18px 0;
+        }
+
+        .kpi-card {
+            background: linear-gradient(135deg, rgba(255,255,255,0.105), rgba(255,255,255,0.035));
+            border: 1px solid rgba(210,245,62,0.18);
+            border-radius: 22px;
+            padding: 18px 18px;
+            box-shadow: 0 16px 34px rgba(0,0,0,.28), 0 0 20px rgba(210,245,62,.06);
+            backdrop-filter: blur(18px);
+        }
+
+        .kpi-icon {
+            font-size: 26px;
+            width: 46px;
+            height: 46px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 16px;
+            background: rgba(210,245,62,.14);
+            box-shadow: 0 0 18px rgba(210,245,62,.13);
+            margin-bottom: 12px;
+        }
+
+        .kpi-label {
+            color: rgba(255,255,255,.72);
+            font-size: 13px;
+            font-weight: 800;
+        }
+
+        .kpi-value {
+            color: #F8FAFC;
+            font-size: 32px;
+            font-weight: 1000;
+            line-height: 1.1;
+            margin-top: 5px;
+        }
+
+        .kpi-sub {
+            color: #d7f54a;
+            font-size: 12px;
+            font-weight: 800;
+            margin-top: 6px;
+        }
+
+        .dash-card {
+            background: linear-gradient(135deg, rgba(255,255,255,0.095), rgba(255,255,255,0.035));
+            border: 1px solid rgba(210,245,62,0.14);
+            border-radius: 22px;
+            padding: 18px;
+            margin-bottom: 16px;
+            box-shadow: 0 14px 30px rgba(0,0,0,.26);
+        }
+
+        .dash-title {
+            color: #F8FAFC;
+            font-weight: 950;
+            font-size: 18px;
+            margin-bottom: 10px;
+        }
+
+        .alert-stock {
+            background: linear-gradient(135deg, rgba(255,100,100,.16), rgba(255,255,255,.04));
+            border: 1px solid rgba(255,120,120,.35);
+            border-radius: 18px;
+            padding: 14px 16px;
+            color: #fff;
+            margin: 8px 0 16px 0;
+            box-shadow: 0 0 18px rgba(255,80,80,.08);
+        }
+
+        .alert-stock b {
+            color: #ffb3b3;
+        }
+        </style>
+        """, unsafe_allow_html=True)
+
+        st.markdown(f"""
+        <div class="kpi-grid">
+            <div class="kpi-card">
+                <div class="kpi-icon">🧾</div>
+                <div class="kpi-label">Órdenes</div>
+                <div class="kpi-value">{total_ordenes}</div>
+                <div class="kpi-sub">según filtro actual</div>
+            </div>
+
+            <div class="kpi-card">
+                <div class="kpi-icon">📱</div>
+                <div class="kpi-label">Equipos vendidos</div>
+                <div class="kpi-value">{total_equipos}</div>
+                <div class="kpi-sub">marca líder: {marca_lider}</div>
+            </div>
+
+            <div class="kpi-card">
+                <div class="kpi-icon">🎧</div>
+                <div class="kpi-label">Accesorios vendidos</div>
+                <div class="kpi-value">{total_accesorios}</div>
+                <div class="kpi-sub">incluye ventas registradas</div>
+            </div>
+
+            <div class="kpi-card">
+                <div class="kpi-icon">⚠️</div>
+                <div class="kpi-label">Stock bajo</div>
+                <div class="kpi-value">{total_stock_bajo}</div>
+                <div class="kpi-sub">productos con 1 o 2 unidades</div>
+            </div>
+        </div>
+        """, unsafe_allow_html=True)
+
+        if total_stock_bajo > 0:
+            st.markdown(f"""
+            <div class="alert-stock">
+                ⚠️ Tienes <b>{total_stock_bajo}</b> productos con stock bajo. Revisa inventario para evitar quedarte sin unidades.
+            </div>
+            """, unsafe_allow_html=True)
+
+        # =========================
+        # RANKING MARCAS + PARTICIPACIÓN
+        # =========================
+        col_marca, col_participacion = st.columns([0.58, 0.42])
+
+        with col_marca:
+            st.markdown('<div class="dash-card"><div class="dash-title">📊 Ranking de marcas</div>', unsafe_allow_html=True)
+
             if ventas_equipos.empty:
                 st.info("No hay ventas de equipos para este filtro.")
             else:
@@ -1349,124 +1516,188 @@ elif menu == "📊 Dashboard":
                     .reset_index()
                 )
                 ranking_marca.columns = ["marca", "Total"]
-                st.dataframe(ranking_marca.astype(str), use_container_width=True)
-                st.bar_chart(ranking_marca.set_index("marca"))
 
-        with col2:
-            st.subheader("🥧 Participación de Marcas")
+                colores = [
+                    COLORES_MARCA.get(str(m).upper(), "#95A5A6")
+                    for m in ranking_marca["marca"]
+                ]
+
+                fig, ax = plt.subplots(figsize=(8, 4.2), facecolor="#15171d")
+                ax.set_facecolor("#15171d")
+
+                ax.barh(
+                    ranking_marca["marca"],
+                    ranking_marca["Total"],
+                    color=colores,
+                    edgecolor="#222222"
+                )
+
+                ax.invert_yaxis()
+                ax.tick_params(colors="white", labelsize=9)
+                ax.set_xlabel("Unidades vendidas", color="white", fontsize=9)
+
+                for i, v in enumerate(ranking_marca["Total"]):
+                    ax.text(v + 0.3, i, str(int(v)), color="white", va="center", fontsize=9, fontweight="bold")
+
+                ax.grid(axis="x", alpha=0.12)
+                for spine in ax.spines.values():
+                    spine.set_visible(False)
+
+                st.pyplot(fig)
+
+                st.dataframe(
+                    ranking_marca.astype(str),
+                    use_container_width=True,
+                    height=180
+                )
+
+            st.markdown('</div>', unsafe_allow_html=True)
+
+        with col_participacion:
+            st.markdown('<div class="dash-card"><div class="dash-title">🥧 Participación por marca</div>', unsafe_allow_html=True)
+
             if ventas_equipos.empty:
                 st.info("No hay datos para participación.")
             else:
                 pie_data = ventas_equipos.groupby("marca")["cantidad"].sum().sort_values(ascending=False)
-                colores = [COLORES_MARCA.get(str(marca).upper(), "#95A5A6") for marca in pie_data.index]
-                colores_sombra = [oscurecer_color(c, 0.50) for c in colores]
+                colores = [
+                    COLORES_MARCA.get(str(marca).upper(), "#95A5A6")
+                    for marca in pie_data.index
+                ]
 
-                fig, ax = plt.subplots(figsize=(7, 4), facecolor="#0E1117")
-                ax.set_facecolor("#0E1117")
+                fig, ax = plt.subplots(figsize=(6.3, 4.8), facecolor="#15171d")
+                ax.set_facecolor("#15171d")
 
-                for i in range(10, 0, -1):
-                    ax.pie(
-                        pie_data.values,
-                        radius=1.0,
-                        colors=colores_sombra,
-                        startangle=90,
-                        center=(0, -0.025 * i),
-                        wedgeprops={"linewidth": 0, "edgecolor": "none"}
-                    )
-
-                ax.pie(
+                wedges, texts, autotexts = ax.pie(
                     pie_data.values,
-                    labels=pie_data.index,
+                    labels=None,
                     autopct="%1.1f%%",
                     startangle=90,
                     colors=colores,
-                    shadow=True,
-                    explode=[0.03] * len(pie_data),
-                    pctdistance=0.72,
-                    labeldistance=1.15,
-                    center=(0, 0),
-                    textprops={"color": "white", "fontsize": 9, "fontweight": "bold"},
-                    wedgeprops={"linewidth": 0.8, "edgecolor": "#222222"}
+                    pctdistance=0.78,
+                    wedgeprops={"width": 0.42, "edgecolor": "#15171d", "linewidth": 2},
+                    textprops={"color": "white", "fontsize": 9, "fontweight": "bold"}
                 )
 
-                ax.set_aspect(0.55)
-                ax.set_xlim(-1.55, 1.55)
-                ax.set_ylim(-1.05, 1.20)
-                ax.axis("off")
+                ax.text(
+                    0, 0,
+                    f"{int(pie_data.sum())}\nTotal",
+                    ha="center",
+                    va="center",
+                    color="white",
+                    fontsize=16,
+                    fontweight="bold"
+                )
+
+                ax.legend(
+                    wedges,
+                    pie_data.index,
+                    loc="center left",
+                    bbox_to_anchor=(1, 0.5),
+                    frameon=False,
+                    labelcolor="white",
+                    fontsize=9
+                )
+
+                ax.axis("equal")
                 st.pyplot(fig)
 
-        st.divider()
+            st.markdown('</div>', unsafe_allow_html=True)
 
-        st.subheader("🏅 Top vendedores por marca")
-        if ventas_equipos.empty:
-            st.info("No hay datos suficientes.")
-        else:
-            top_base = (
-                ventas_equipos.groupby(["marca", "vendedor"])["cantidad"]
-                .sum()
-                .reset_index()
-                .sort_values(["marca", "cantidad"], ascending=[True, False])
-            )
+        # =========================
+        # TOP VENDEDORES + MODELOS
+        # =========================
+        col_top, col_modelos = st.columns([0.58, 0.42])
 
-            top_base["puesto"] = (
-                top_base.groupby("marca")["cantidad"]
-                .rank(method="first", ascending=False)
-                .astype(int)
-            )
-            top_base["texto"] = top_base.apply(texto_top_vendedor, axis=1)
-            top_filtrado = top_base[top_base["puesto"] <= 4]
+        with col_top:
+            st.markdown('<div class="dash-card"><div class="dash-title">🏆 Top vendedores por marca</div>', unsafe_allow_html=True)
 
-            tabla_top = top_filtrado.pivot(index="marca", columns="puesto", values="texto").reset_index()
-            for n in range(1, 5):
-                if n not in tabla_top.columns:
-                    tabla_top[n] = ""
+            if ventas_equipos.empty:
+                st.info("No hay datos suficientes.")
+            else:
+                top_base = (
+                    ventas_equipos.groupby(["marca", "vendedor"])["cantidad"]
+                    .sum()
+                    .reset_index()
+                    .sort_values(["marca", "cantidad"], ascending=[True, False])
+                )
 
-            tabla_top = tabla_top.rename(columns={
-                "marca": "MARCAS",
-                1: "🥇 VENDEDOR TOP 1",
-                2: "🥈 VENDEDOR TOP 2",
-                3: "🥉 VENDEDOR TOP 3",
-                4: "🏅 VENDEDOR TOP 4",
-            })
+                top_base["puesto"] = (
+                    top_base.groupby("marca")["cantidad"]
+                    .rank(method="first", ascending=False)
+                    .astype(int)
+                )
+                top_base["texto"] = top_base.apply(texto_top_vendedor, axis=1)
+                top_filtrado = top_base[top_base["puesto"] <= 4]
 
-            totales_marca = (
-                ventas_equipos.groupby("marca")["cantidad"]
-                .sum()
-                .reset_index()
-                .rename(columns={"marca": "MARCAS", "cantidad": "TOTAL"})
-            )
+                tabla_top = top_filtrado.pivot(index="marca", columns="puesto", values="texto").reset_index()
+                for n in range(1, 5):
+                    if n not in tabla_top.columns:
+                        tabla_top[n] = ""
 
-            tabla_top = tabla_top.merge(totales_marca, on="MARCAS", how="left")
-            tabla_top = tabla_top.sort_values("TOTAL", ascending=False)
+                tabla_top = tabla_top.rename(columns={
+                    "marca": "MARCAS",
+                    1: "🥇 VENDEDOR TOP 1",
+                    2: "🥈 VENDEDOR TOP 2",
+                    3: "🥉 VENDEDOR TOP 3",
+                    4: "🏅 VENDEDOR TOP 4",
+                })
 
-            columnas_top = [
-                "MARCAS", "🥇 VENDEDOR TOP 1", "🥈 VENDEDOR TOP 2",
-                "🥉 VENDEDOR TOP 3", "🏅 VENDEDOR TOP 4", "TOTAL"
-            ]
-            tabla_top = tabla_top[columnas_top].fillna("")
-            st.dataframe(tabla_top.astype(str), use_container_width=True)
+                totales_marca = (
+                    ventas_equipos.groupby("marca")["cantidad"]
+                    .sum()
+                    .reset_index()
+                    .rename(columns={"marca": "MARCAS", "cantidad": "TOTAL"})
+                )
 
-        st.divider()
+                tabla_top = tabla_top.merge(totales_marca, on="MARCAS", how="left")
+                tabla_top = tabla_top.sort_values("TOTAL", ascending=False)
 
-        col3, col4 = st.columns(2)
+                columnas_top = [
+                    "MARCAS", "🥇 VENDEDOR TOP 1", "🥈 VENDEDOR TOP 2",
+                    "🥉 VENDEDOR TOP 3", "🏅 VENDEDOR TOP 4", "TOTAL"
+                ]
+                tabla_top = tabla_top[columnas_top].fillna("")
 
-        with col3:
-            st.subheader("📱 Ranking de Modelos")
+                st.dataframe(
+                    tabla_top.astype(str),
+                    use_container_width=True,
+                    height=330
+                )
+
+            st.markdown('</div>', unsafe_allow_html=True)
+
+        with col_modelos:
+            st.markdown('<div class="dash-card"><div class="dash-title">📱 Ranking de modelos</div>', unsafe_allow_html=True)
+
             if ventas_equipos.empty:
                 st.info("No hay modelos vendidos para este filtro.")
             else:
                 ranking_modelo = (
-                    ventas_equipos.groupby("modelo")["cantidad"]
+                    ventas_equipos.groupby(["modelo", "marca"])["cantidad"]
                     .sum()
                     .sort_values(ascending=False)
                     .reset_index()
+                    .head(10)
                 )
-                ranking_modelo.columns = ["modelo", "Cantidad"]
-                st.dataframe(ranking_modelo.astype(str), use_container_width=True)
-                st.bar_chart(ranking_modelo.set_index("modelo"))
+                ranking_modelo.columns = ["modelo", "marca", "Cantidad"]
 
-        with col4:
-            st.subheader("📅 Ventas por Día")
+                st.dataframe(
+                    ranking_modelo.astype(str),
+                    use_container_width=True,
+                    height=330
+                )
+
+            st.markdown('</div>', unsafe_allow_html=True)
+
+        # =========================
+        # VENTAS POR DÍA + ÚLTIMAS ÓRDENES
+        # =========================
+        col_dia, col_ordenes = st.columns([0.48, 0.52])
+
+        with col_dia:
+            st.markdown('<div class="dash-card"><div class="dash-title">📈 Ventas por día</div>', unsafe_allow_html=True)
+
             if ventas_equipos.empty:
                 st.info("No hay ventas por día para este filtro.")
             else:
@@ -1476,19 +1707,55 @@ elif menu == "📊 Dashboard":
                     .reset_index()
                 )
                 ventas_dia.columns = ["Fecha", "Ventas"]
-                st.dataframe(ventas_dia.astype(str), use_container_width=True)
-                st.line_chart(ventas_dia.set_index("Fecha"))
 
-        st.divider()
-        st.subheader("Últimas órdenes del filtro")
-        ultimas_ordenes = ventas_filtradas.drop(columns=["semana_mes"], errors="ignore").tail(30).copy()
-        ultimas_ordenes = preparar_fecha_hora(ultimas_ordenes)
-        ultimas_ordenes = ordenar_columnas_existentes(
-            ultimas_ordenes,
-            ["fecha", "hora", "vendedor", "orden", "imei", "chip", "marca", "modelo", "color", "tipo"]
-        )
-        ultimas_ordenes = ultimas_ordenes.replace({"None": "", "nan": "", "NaN": ""})
-        st.dataframe(ultimas_ordenes.astype(str), use_container_width=True)
+                fig, ax = plt.subplots(figsize=(7, 3.6), facecolor="#15171d")
+                ax.set_facecolor("#15171d")
+
+                ax.plot(
+                    ventas_dia["Fecha"],
+                    ventas_dia["Ventas"],
+                    marker="o",
+                    linewidth=2.5,
+                    color="#d7f54a"
+                )
+
+                ax.fill_between(
+                    ventas_dia["Fecha"],
+                    ventas_dia["Ventas"],
+                    alpha=0.18,
+                    color="#d7f54a"
+                )
+
+                ax.tick_params(colors="white", labelsize=8)
+                ax.set_ylabel("Equipos", color="white", fontsize=9)
+                ax.grid(alpha=0.13)
+
+                for spine in ax.spines.values():
+                    spine.set_visible(False)
+
+                plt.xticks(rotation=30)
+                st.pyplot(fig)
+
+            st.markdown('</div>', unsafe_allow_html=True)
+
+        with col_ordenes:
+            st.markdown('<div class="dash-card"><div class="dash-title">🧾 Últimas órdenes</div>', unsafe_allow_html=True)
+
+            ultimas_ordenes = ventas_filtradas.drop(columns=["semana_mes"], errors="ignore").tail(15).copy()
+            ultimas_ordenes = preparar_fecha_hora(ultimas_ordenes)
+            ultimas_ordenes = ordenar_columnas_existentes(
+                ultimas_ordenes,
+                ["fecha", "hora", "vendedor", "orden", "imei", "chip", "marca", "modelo", "color", "tipo"]
+            )
+            ultimas_ordenes = ultimas_ordenes.replace({"None": "", "nan": "", "NaN": ""})
+
+            st.dataframe(
+                ultimas_ordenes.astype(str),
+                use_container_width=True,
+                height=330
+            )
+
+            st.markdown('</div>', unsafe_allow_html=True)
 
 # =========================
 # INVENTARIO
