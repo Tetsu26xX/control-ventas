@@ -1769,6 +1769,91 @@ elif menu == "📊 Dashboard":
                 )
 
                 tabla_top = tabla_top.merge(totales_marca, on="MARCAS", how="left")
+                tabla_top = tabla_top.sort_values("TOTAL", ascending=False)
+
+                columnas_top = [
+                    "MARCAS", "🥇 VENDEDOR TOP 1", "🥈 VENDEDOR TOP 2",
+                    "🥉 VENDEDOR TOP 3", "🏅 VENDEDOR TOP 4", "TOTAL"
+                ]
+                tabla_top = tabla_top[columnas_top].fillna("")
+
+                st.dataframe(tabla_top.astype(str), use_container_width=True, height=330)
+
+            st.markdown('</div>', unsafe_allow_html=True)
+
+        with col_modelos:
+            st.markdown('<div class="dash-card"><div class="dash-title">📱 Ranking de modelos</div>', unsafe_allow_html=True)
+
+            if ventas_equipos.empty:
+                st.info("No hay modelos vendidos para este filtro.")
+            else:
+                ranking_modelo = (
+                    ventas_equipos.groupby(["modelo", "marca"])["cantidad"]
+                    .sum()
+                    .sort_values(ascending=False)
+                    .reset_index()
+                    .head(10)
+                )
+                ranking_modelo.columns = ["modelo", "marca", "Cantidad"]
+
+                st.dataframe(
+                    ranking_modelo.astype(str),
+                    use_container_width=True,
+                    height=330
+                )
+
+            st.markdown('</div>', unsafe_allow_html=True)
+
+        # =========================
+        # VENTAS POR DÍA + ÓRDENES
+        # =========================
+        col_dia, col_ordenes = st.columns([0.48, 0.52])
+
+        with col_dia:
+            st.markdown('<div class="dash-card"><div class="dash-title">📈 Ventas por día</div>', unsafe_allow_html=True)
+
+            if ventas_equipos.empty:
+                st.info("No hay ventas por día para este filtro.")
+            else:
+                ventas_dia = (
+                    ventas_equipos.groupby(ventas_equipos["fecha"].dt.date)["cantidad"]
+                    .sum()
+                    .reset_index()
+                )
+                ventas_dia.columns = ["Fecha", "Ventas"]
+
+                fig, ax = plt.subplots(figsize=(7, 3.6), facecolor="#15171d")
+                ax.set_facecolor("#15171d")
+
+                ax.plot(ventas_dia["Fecha"], ventas_dia["Ventas"], marker="o", linewidth=2.5, color="#d7f54a")
+                ax.fill_between(ventas_dia["Fecha"], ventas_dia["Ventas"], alpha=0.18, color="#d7f54a")
+
+                ax.tick_params(colors="white", labelsize=8)
+                ax.set_ylabel("Equipos", color="white", fontsize=9)
+                ax.grid(alpha=0.13)
+
+                for spine in ax.spines.values():
+                    spine.set_visible(False)
+
+                plt.xticks(rotation=30)
+                st.pyplot(fig)
+
+            st.markdown('</div>', unsafe_allow_html=True)
+
+        with col_ordenes:
+            st.markdown('<div class="dash-card"><div class="dash-title">🧾 Últimas órdenes</div>', unsafe_allow_html=True)
+
+            ultimas_ordenes = ventas_filtradas.drop(columns=["semana_mes"], errors="ignore").tail(15).copy()
+            ultimas_ordenes = preparar_fecha_hora(ultimas_ordenes)
+            ultimas_ordenes = ordenar_columnas_existentes(
+                ultimas_ordenes,
+                ["fecha", "hora", "vendedor", "orden", "imei", "chip", "marca", "modelo", "color", "tipo"]
+            )
+            ultimas_ordenes = ultimas_ordenes.replace({"None": "", "nan": "", "NaN": ""})
+
+            st.dataframe(ultimas_ordenes.astype(str), use_container_width=True, height=330)
+
+            st.markdown('</div>', unsafe_allow_html=True)
 # =========================
 # INVENTARIO
 # =========================
