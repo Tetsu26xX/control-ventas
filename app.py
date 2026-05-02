@@ -362,8 +362,6 @@ def login():
                         )
                         
                         st.query_params["session"] = token
-
-                        st.toast("📘 Revisa las instrucciones", icon="📘")
                         
                         st.rerun()
                     else:
@@ -405,7 +403,7 @@ if not st.session_state["login_ok"]:
 if "inicio_instrucciones_ok" not in st.session_state:
     st.session_state["inicio_instrucciones_ok"] = True
     st.session_state["menu_actual"] = "📌 Instrucciones"
-
+    st.toast("📘 Revisa las instrucciones antes de registrar ventas o movimientos.", icon="📘")
 
 @st.cache_data(ttl=30, show_spinner=False)
 def cargar_tabla(nombre, columnas=None):
