@@ -1286,7 +1286,7 @@ elif menu == "📊 Dashboard":
         ventas_validas_fecha = ventas_dash.dropna(subset=["fecha"])
 
         # =========================
-        # CSS SEGURO
+        # CSS DASHBOARD
         # =========================
         st.markdown("""
         <style>
@@ -1299,17 +1299,20 @@ elif menu == "📊 Dashboard":
             box-shadow: 0 14px 30px rgba(0,0,0,.28);
             transition: all .25s ease;
         }
+
         .dash-card:hover {
             transform: translateY(-3px);
             border-color: rgba(210,245,62,0.55);
             box-shadow: 0 0 24px rgba(210,245,62,0.24), 0 18px 38px rgba(0,0,0,.36);
         }
+
         .dash-title {
             color: #F8FAFC;
             font-weight: 1000;
             font-size: 24px;
             margin-bottom: 14px;
         }
+
         .kpi-card {
             background: linear-gradient(135deg, rgba(255,255,255,0.11), rgba(255,255,255,0.035));
             border: 1px solid rgba(210,245,62,0.18);
@@ -1319,11 +1322,13 @@ elif menu == "📊 Dashboard":
             transition: all .25s ease;
             min-height: 150px;
         }
+
         .kpi-card:hover {
             transform: translateY(-4px);
             border-color: rgba(210,245,62,.65);
             box-shadow: 0 0 26px rgba(210,245,62,.32), 0 20px 42px rgba(0,0,0,.38);
         }
+
         .kpi-icon {
             font-size: 28px;
             width: 50px;
@@ -1336,11 +1341,13 @@ elif menu == "📊 Dashboard":
             box-shadow: 0 0 18px rgba(210,245,62,.15);
             margin-bottom: 12px;
         }
+
         .kpi-label {
             color: rgba(255,255,255,.80);
             font-size: 15px;
             font-weight: 900;
         }
+
         .kpi-value {
             color: #F8FAFC;
             font-size: 37px;
@@ -1348,12 +1355,14 @@ elif menu == "📊 Dashboard":
             line-height: 1.05;
             margin-top: 5px;
         }
+
         .kpi-sub {
             color: #d7f54a;
             font-size: 13px;
             font-weight: 850;
             margin-top: 7px;
         }
+
         .alert-stock {
             background: linear-gradient(135deg, rgba(255,100,100,.16), rgba(255,255,255,.04));
             border: 1px solid rgba(255,120,120,.35);
@@ -1365,39 +1374,53 @@ elif menu == "📊 Dashboard":
             font-size: 15px;
             font-weight: 800;
         }
+
         .ticker-box {
-            min-height: 135px;
+            height: 210px;
             margin-top: 14px;
             padding: 18px;
             border-radius: 20px;
             background: linear-gradient(135deg, rgba(255,255,255,0.075), rgba(255,255,255,0.025));
             border: 1px solid rgba(210,245,62,0.18);
             box-shadow: 0 0 18px rgba(210,245,62,0.08);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
         }
+
         .ticker-title {
             color: #F8FAFC;
             font-weight: 1000;
-            font-size: 18px;
-            margin-bottom: 14px;
+            font-size: 20px;
+            margin-bottom: 18px;
         }
+
         .ticker {
             overflow: hidden;
             white-space: nowrap;
-            padding: 8px 0;
+            width: 100%;
         }
-        .ticker span {
+
+        .ticker-track {
             display: inline-block;
-            padding-left: 100%;
-            animation: scrollNews 22s linear infinite;
-            font-size: 15px;
+            animation: scrollNews 38s linear infinite;
+            font-size: 16px;
             font-weight: 900;
             color: #F8FAFC;
         }
-        .ticker:hover span {
+
+        .ticker:hover .ticker-track {
             animation-play-state: paused;
         }
+
+        .marca-news {
+            display: inline !important;
+            animation: none !important;
+            padding-left: 0 !important;
+        }
+
         @keyframes scrollNews {
-            0% { transform: translateX(0); }
+            0% { transform: translateX(100%); }
             100% { transform: translateX(-100%); }
         }
         </style>
@@ -1469,7 +1492,7 @@ elif menu == "📊 Dashboard":
         ]
 
         # =========================
-        # STOCK BAJO + KPIS
+        # KPIS
         # =========================
         stock_dash = stock_actual_df.copy()
         stock_dash["stock_actual"] = pd.to_numeric(
@@ -1482,7 +1505,6 @@ elif menu == "📊 Dashboard":
         ].copy()
 
         total_stock_bajo = len(stock_bajo)
-
         total_ordenes = ventas_filtradas["orden"].nunique()
         total_equipos = int(ventas_equipos["cantidad"].sum()) if not ventas_equipos.empty else 0
         total_accesorios = int(ventas_filtradas["cantidad_accesorio"].sum())
@@ -1696,7 +1718,7 @@ elif menu == "📊 Dashboard":
                     marca_2 = ranking_news.index[1]
                     valor_2 = int(ranking_news.iloc[1])
                     color_2 = COLORES_MARCA.get(str(marca_2).upper(), "#ffffff")
-                    segunda_noticia = f'<span style="color:{color_2}; font-weight:1000;">{marca_2}</span> sigue con {valor_2} equipos'
+                    segunda_noticia = f'<span class="marca-news" style="color:{color_2}; font-weight:1000;">{marca_2}</span> sigue con {valor_2} equipos'
                 else:
                     segunda_noticia = "Sin segunda marca en este filtro"
 
@@ -1705,7 +1727,7 @@ elif menu == "📊 Dashboard":
                     noticia_chips += f" · {prepago_vendidos} prepago"
 
                 ticker_html = f"""
-                📰 <span style="color:{color_1}; font-weight:1000;">{marca_1}</span>
+                📰 <span class="marca-news" style="color:{color_1}; font-weight:1000;">{marca_1}</span>
                 lidera con {porcentaje_1:.1f}% ({valor_1} equipos) •
                 {segunda_noticia} •
                 {noticia_chips} •
@@ -1717,7 +1739,9 @@ elif menu == "📊 Dashboard":
                 <div class="ticker-box">
                     <div class="ticker-title">📰 Noticias del filtro</div>
                     <div class="ticker">
-                        <span>{ticker_html}</span>
+                        <div class="ticker-track">
+                            {ticker_html} &nbsp;&nbsp;&nbsp; • &nbsp;&nbsp;&nbsp; {ticker_html}
+                        </div>
                     </div>
                 </div>
                 """, unsafe_allow_html=True)
@@ -1856,6 +1880,7 @@ elif menu == "📊 Dashboard":
             st.dataframe(ultimas_ordenes.astype(str), use_container_width=True, height=330)
 
             st.markdown('</div>', unsafe_allow_html=True)
+            
 # =========================
 # INVENTARIO
 # =========================
