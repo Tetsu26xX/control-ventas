@@ -1392,16 +1392,13 @@ elif menu == "📊 Dashboard":
             color: #ffb3b3;
         }
         .ticker-box {
-            min-height: 180px;
+            min-height: 150px;
             margin-top: 14px;
             padding: 18px;
             border-radius: 22px;
             background: linear-gradient(135deg, rgba(255,255,255,0.08), rgba(255,255,255,0.03));
             border: 1px solid rgba(210,245,62,0.18);
             box-shadow: 0 0 18px rgba(210,245,62,0.08);
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
         }
         
         .ticker-title {
@@ -1410,23 +1407,35 @@ elif menu == "📊 Dashboard":
             font-size: 20px;
             margin-bottom: 14px;
         }
-        .ticker {
+        
+        .ticker-line {
             overflow: hidden;
             white-space: nowrap;
-            margin-top: 10px;
-            padding: 10px 0;
-            border-top: 1px solid rgba(210,245,62,0.16);
-            border-bottom: 1px solid rgba(210,245,62,0.10);
+            padding: 8px 0;
+            border-top: 1px solid rgba(210,245,62,0.10);
         }
-
-        .ticker span {
+        
+        .ticker-line span {
             display: inline-block;
             padding-left: 100%;
-            animation: scrollNews 22s linear infinite;
+            animation: scrollNews 15s linear infinite;
             font-size: 15px;
             font-weight: 900;
             color: #F8FAFC;
-            letter-spacing: 0.3px;
+        }
+        
+        .ticker-line-2 span {
+            animation-duration: 19s;
+            color: #d7f54a;
+        }
+        
+        .ticker-line:hover span {
+            animation-play-state: paused;
+        }
+        
+        @keyframes scrollNews {
+            0% { transform: translateX(0); }
+            100% { transform: translateX(-100%); }
         }
 
         .ticker:hover span {
@@ -1786,23 +1795,32 @@ elif menu == "📊 Dashboard":
                 if prepago_vendidos > 0:
                     noticia_chips += f" · {prepago_vendidos} prepago"
 
-                ticker_html = f"""
-                📰 <span style="color:{color_1}; font-weight:1000;">{marca_1}</span>
-                lidera con {porcentaje_1:.1f}% ({valor_1} equipos) •
-                {segunda_noticia} •
-                {noticia_chips} •
-                {total_ordenes} órdenes registradas •
-                {total_stock_bajo} productos con stock bajo
-                """
-
-                st.markdown(f"""
-                <div class="ticker-box">
-                    <div class="ticker-title">📰 Noticias del filtro</div>
-                    <div class="ticker">
-                        <span>{ticker_html}</span>
-                    </div>
+            noticia_1 = f"""
+            <span style="color:{color_1}; font-weight:1000;">{marca_1}</span>
+            lidera con {porcentaje_1:.1f}% ({valor_1} equipos)
+            """
+            
+            noticia_2 = f"""
+            {segunda_noticia} • {total_ordenes} órdenes registradas
+            """
+            
+            noticia_3 = f"""
+            {noticia_chips} • {total_stock_bajo} productos con stock bajo
+            """
+            
+            st.markdown(f"""
+            <div class="ticker-box">
+                <div class="ticker-title">📰 Noticias del filtro</div>
+            
+                <div class="ticker-line">
+                    <span>📰 {noticia_1}</span>
                 </div>
-                """, unsafe_allow_html=True)
+            
+                <div class="ticker-line ticker-line-2">
+                    <span>📌 {noticia_2} • {noticia_3}</span>
+                </div>
+            </div>
+            """, unsafe_allow_html=True)
 
             st.markdown('</div>', unsafe_allow_html=True)
 
@@ -1919,14 +1937,15 @@ elif menu == "📊 Dashboard":
 
                 components.html(f"""
                 <div style="
-                    width: 100%;
-                    background: transparent;
-                    color: white;
-                    font-family: sans-serif;
+                    background: linear-gradient(135deg, rgba(255,255,255,0.075), rgba(255,255,255,0.025));
+                    border: 1px solid rgba(210,245,62,0.16);
+                    border-radius: 18px;
+                    padding: 16px;
+                    box-shadow: inset 0 1px 0 rgba(255,255,255,0.08), 0 0 18px rgba(210,245,62,0.06);
                 ">
                     {tabla_html}
                 </div>
-                """, height=320, scrolling=False)
+                """, height=300, scrolling=False)
 
             st.markdown('</div>', unsafe_allow_html=True)
 
