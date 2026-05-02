@@ -1377,7 +1377,7 @@ elif menu == "📊 Dashboard":
 
         .ticker-box {
             height: 180px;
-            margin-top: 14px;
+            margin-top: 18px;
             padding: 18px;
             border-radius: 20px;
             background: linear-gradient(135deg, rgba(255,255,255,0.075), rgba(255,255,255,0.025));
