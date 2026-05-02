@@ -362,29 +362,45 @@ if not st.session_state["aviso_instrucciones_visto"]:
     st.stop()
 
 
+@st.cache_data(ttl=30, show_spinner=False)
 def cargar_tabla(nombre, columnas=None):
     try:
         data = supabase.table(nombre).select("*").execute().data
         df = pd.DataFrame(data)
+
         if columnas:
             for col in columnas:
                 if col not in df.columns:
                     df[col] = ""
             df = df[columnas]
+
         return df
+
     except Exception as e:
         st.error(f"Error cargando tabla {nombre}: {e}")
         return pd.DataFrame(columns=columnas or [])
 
+
+def limpiar_cache_datos():
+    st.cache_data.clear()
+
+
 def insertar_registro(tabla, registro):
-    return supabase.table(tabla).insert(registro).execute()
+    resultado = supabase.table(tabla).insert(registro).execute()
+    limpiar_cache_datos()
+    return resultado
+
 
 def actualizar_registro(tabla, registro_id, cambios):
-    return supabase.table(tabla).update(cambios).eq("id", registro_id).execute()
+    resultado = supabase.table(tabla).update(cambios).eq("id", registro_id).execute()
+    limpiar_cache_datos()
+    return resultado
+
 
 def eliminar_registro(tabla, registro_id):
-    return supabase.table(tabla).delete().eq("id", registro_id).execute()
-
+    resultado = supabase.table(tabla).delete().eq("id", registro_id).execute()
+    limpiar_cache_datos()
+    return resultado
 
 
 # =========================
