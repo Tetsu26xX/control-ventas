@@ -1391,7 +1391,25 @@ elif menu == "📊 Dashboard":
         .alert-stock b {
             color: #ffb3b3;
         }
-
+        .ticker-box {
+            min-height: 180px;
+            margin-top: 14px;
+            padding: 18px;
+            border-radius: 22px;
+            background: linear-gradient(135deg, rgba(255,255,255,0.08), rgba(255,255,255,0.03));
+            border: 1px solid rgba(210,245,62,0.18);
+            box-shadow: 0 0 18px rgba(210,245,62,0.08);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+        
+        .ticker-title {
+            color: #F8FAFC;
+            font-weight: 1000;
+            font-size: 20px;
+            margin-bottom: 14px;
+        }
         .ticker {
             overflow: hidden;
             white-space: nowrap;
@@ -1405,9 +1423,10 @@ elif menu == "📊 Dashboard":
             display: inline-block;
             padding-left: 100%;
             animation: scrollNews 22s linear infinite;
-            font-size: 14px;
-            font-weight: 850;
+            font-size: 15px;
+            font-weight: 900;
             color: #F8FAFC;
+            letter-spacing: 0.3px;
         }
 
         .ticker:hover span {
@@ -1759,10 +1778,8 @@ elif menu == "📊 Dashboard":
                     marca_2 = ranking_news.index[1]
                     valor_2 = int(ranking_news.iloc[1])
                     color_2 = COLORES_MARCA.get(str(marca_2).upper(), "#ffffff")
-                    segunda_noticia = f"""<span style="color:{color_2}; font-weight:1000;">{marca_2}</span> sigue con {valor_2} equipos"""
+                    segunda_noticia = f'<span style="color:{color_2}; font-weight:1000;">{marca_2}</span> sigue con {valor_2} equipos'
                 else:
-                    marca_2 = ""
-                    valor_2 = 0
                     segunda_noticia = "Sin segunda marca en este filtro"
 
                 noticia_chips = f"{chips_vendidos} chips vendidos"
@@ -1779,8 +1796,11 @@ elif menu == "📊 Dashboard":
                 """
 
                 st.markdown(f"""
-                <div class="ticker">
-                    <span>{ticker_html}</span>
+                <div class="ticker-box">
+                    <div class="ticker-title">📰 Noticias del filtro</div>
+                    <div class="ticker">
+                        <span>{ticker_html}</span>
+                    </div>
                 </div>
                 """, unsafe_allow_html=True)
 
@@ -1897,7 +1917,16 @@ elif menu == "📊 Dashboard":
 
                 tabla_html += "</table>"
 
-                st.markdown(tabla_html, unsafe_allow_html=True)
+                components.html(f"""
+                <div style="
+                    width: 100%;
+                    background: transparent;
+                    color: white;
+                    font-family: sans-serif;
+                ">
+                    {tabla_html}
+                </div>
+                """, height=320, scrolling=False)
 
             st.markdown('</div>', unsafe_allow_html=True)
 
