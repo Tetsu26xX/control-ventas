@@ -2488,8 +2488,6 @@ elif menu == "📱 Buscar IMEI":
 # =========================
 # EDITAR VENTA
 # =========================
-
-
 elif menu == "✏️ Editar Venta":
     st.title("✏️ Editar Venta")
 
@@ -2507,11 +2505,89 @@ elif menu == "✏️ Editar Venta":
         if ventas_editables.empty or ventas_editables["orden"].fillna("").eq("").all():
             st.info("No tienes ventas propias para editar.")
         else:
-            ordenes = ventas_editables["orden"].astype(str).dropna().unique()
-            orden_editar = st.selectbox("Selecciona la orden", sorted(ordenes))
 
-            idx = ventas_editables[ventas_editables["orden"].astype(str) == str(orden_editar)].index[0]
+            # =========================
+            # LISTA POR FECHA
+            # =========================
+            if "orden_editar" not in st.session_state:
+
+                st.subheader("📅 Filtrar ventas por fecha")
+
+                ventas_filtradas = ventas_editables.copy()
+                ventas_filtradas["fecha"] = pd.to_datetime(
+                    ventas_filtradas["fecha"], errors="coerce"
+                )
+
+                fechas_disponibles = sorted(
+                    ventas_filtradas["fecha"].dropna().dt.date.unique(),
+                    reverse=True
+                )
+
+                if not fechas_disponibles:
+                    st.warning("No hay fechas válidas para filtrar.")
+                    st.stop()
+
+                fecha_filtro = st.date_input(
+                    "Selecciona fecha",
+                    value=fechas_disponibles[0]
+                )
+
+                ventas_filtradas = ventas_filtradas[
+                    ventas_filtradas["fecha"].dt.date == fecha_filtro
+                ]
+
+                if ventas_filtradas.empty:
+                    st.warning("No hay ventas en esa fecha.")
+                    st.stop()
+
+                st.subheader("Ventas del día")
+
+                for i, row in ventas_filtradas.iterrows():
+                    col1, col2 = st.columns([0.78, 0.22])
+
+                    equipo_txt = ""
+                    if str(row.get("marca", "")).strip() != "":
+                        equipo_txt = f"📱 {row.get('marca', '')} {row.get('modelo', '')}"
+
+                    accesorio_txt = ""
+                    if str(row.get("accesorio", "")).strip() != "":
+                        accesorio_txt = f"🎧 {row.get('accesorio', '')}"
+
+                    with col1:
+                        st.markdown(f"""
+                        **Orden:** {row.get('orden', '')}  
+                        👤 {row.get('vendedor', '')}  
+                        {equipo_txt}  
+                        {accesorio_txt}
+                        """)
+
+                    with col2:
+                        if st.button("✏️ Editar", key=f"editar_venta_{i}"):
+                            st.session_state["orden_editar"] = str(row.get("orden", ""))
+                            st.rerun()
+
+                st.stop()
+
+            # =========================
+            # FORMULARIO DE EDICIÓN
+            # =========================
+            orden_editar = st.session_state.get("orden_editar", "")
+
+            venta_match = ventas_editables[
+                ventas_editables["orden"].astype(str) == str(orden_editar)
+            ]
+
+            if venta_match.empty:
+                st.error("No se encontró la orden seleccionada.")
+                st.session_state.pop("orden_editar", None)
+                st.stop()
+
+            idx = venta_match.index[0]
             venta = ventas.loc[idx].copy()
+
+            if st.button("🔙 Volver a ventas del día"):
+                st.session_state.pop("orden_editar", None)
+                st.rerun()
 
             st.subheader("Datos actuales")
             st.dataframe(pd.DataFrame([venta]).astype(str), use_container_width=True)
@@ -2603,9 +2679,9 @@ elif menu == "✏️ Editar Venta":
                     opciones_acc = accesorios_lista["texto_acc"].tolist()
 
                     index_acc = 0
-                    for i, opcion in enumerate(opciones_acc):
+                    for j, opcion in enumerate(opciones_acc):
                         if accesorio_actual != "" and accesorio_actual in opcion:
-                            index_acc = i
+                            index_acc = j
                             break
 
                     accesorio_sel = st.selectbox(
@@ -2615,7 +2691,9 @@ elif menu == "✏️ Editar Venta":
                         key=f"editar_acc_{idx}"
                     )
 
-                    acc_row = accesorios_lista[accesorios_lista["texto_acc"] == accesorio_sel].iloc[0]
+                    acc_row = accesorios_lista[
+                        accesorios_lista["texto_acc"] == accesorio_sel
+                    ].iloc[0]
 
                     nuevo_accesorio_sku = acc_row["sku"]
                     nuevo_accesorio = acc_row["descripcion"]
@@ -2684,9 +2762,8 @@ elif menu == "✏️ Editar Venta":
                     actualizar_registro("ventas", venta_id, cambios)
 
                     st.session_state["notificacion_flotante"] = "✏️ Venta editada correctamente ✅"
-                    st.success("Venta editada correctamente ✅")
-                    st.rerun()
-# =========================
+                    st.session_state.pop("orden_editar", None)
+                    st.rerun()# =========================
 # BUSCAR
 # =========================
 elif menu == "🔍 Buscar":
