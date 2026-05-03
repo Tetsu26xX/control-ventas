@@ -2553,12 +2553,17 @@ elif menu == "✏️ Editar Venta":
                     if str(row.get("accesorio", "")).strip() != "":
                         accesorio_txt = f"🎧 {row.get('accesorio', '')}"
 
+                    chip_txt = ""
+                    if str(row.get("chip", "")).strip() != "":
+                        chip_txt = f"📶 {row.get('tipo_chip', '')} - {row.get('chip', '')}"
+
                     with col1:
                         st.markdown(f"""
                         **Orden:** {row.get('orden', '')}  
                         👤 {row.get('vendedor', '')}  
                         {equipo_txt}  
-                        {accesorio_txt}
+                        {accesorio_txt}  
+                        {chip_txt}
                         """)
 
                     with col2:
