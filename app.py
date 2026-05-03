@@ -948,11 +948,9 @@ def preparar_fecha_hora(df):
     if "fecha" in df.columns:
         df["fecha"] = pd.to_datetime(df["fecha"], errors="coerce").dt.strftime("%Y-%m-%d").fillna("")
     if "creado_en" in df.columns:
-        dt = pd.to_datetime(df["creado_en"], errors="coerce")
-        # Mostrar fecha/hora local aproximada restando 5 horas de UTC (Perú/Colombia)
-        dt = dt - pd.Timedelta(hours=5)
+        dt = pd.to_datetime(df["creado_en"], errors="coerce", utc=True)
+        dt = dt.dt.tz_convert("America/Lima")
         df["hora"] = dt.dt.strftime("%H:%M:%S").fillna("")
-        df = df.drop(columns=["creado_en"], errors="ignore")
     return df
 
 def ordenar_columnas_existentes(df, columnas):
