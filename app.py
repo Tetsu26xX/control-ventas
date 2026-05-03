@@ -2531,10 +2531,18 @@ elif menu == "✏️ Editar Venta":
                     "Selecciona fecha",
                     value=fechas_disponibles[0]
                 )
+                buscar_orden = st.text_input(
+                    "🔎 Buscar por orden",
+                    placeholder="Escribe el número de orden"
+                ).strip()
 
                 ventas_filtradas = ventas_filtradas[
                     ventas_filtradas["fecha"].dt.date == fecha_filtro
                 ]
+                if buscar_orden:
+                    ventas_filtradas = ventas_filtradas[
+                        ventas_filtradas["orden"].astype(str).str.contains(buscar_orden, case=False, na=False)
+                    ]
 
                 if ventas_filtradas.empty:
                     st.warning("No hay ventas en esa fecha.")
