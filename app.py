@@ -373,7 +373,7 @@ def login():
             opacity:0.5;
             margin-top:10px;
         ">
-            Sistema desarrollado por KeevinP.
+            Sistema desarrollado por Keevin P.
         </div>
         """, unsafe_allow_html=True)
 
@@ -1694,7 +1694,7 @@ elif menu == "📊 Dashboard":
             opacity:0.4;
             margin-bottom:10px;
         ">
-            desarrollado por TuNombre
+            desarrollado por KeevinP.
         </div>
         """, unsafe_allow_html=True)
 
