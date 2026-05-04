@@ -1225,48 +1225,77 @@ if "notificacion_flotante" in st.session_state:
 # DASHBOARD
 # =========================
 if menu == "📌 Instrucciones":
-    st.title("📌 Guía de uso del sistema")
+    st.title("📌 Instrucciones rápidas")
 
     st.markdown("""
     <div class="glass-primary">
-        <h3>⚠️ Uso correcto obligatorio</h3>
-        <p>Este sistema controla ventas e inventario en tiempo real. Un error afecta todo el stock.</p>
+        <h3>⚠️ Leer antes de registrar</h3>
+        <p>Registra con calma. Si te equivocas, avisa o usa Editar Venta.</p>
     </div>
     """, unsafe_allow_html=True)
 
     st.markdown("""
     <div class="glass-card">
-    <h4>🧾 Registro de ventas</h4>
+    <h4>🧾 Registrar una venta</h4>
     <ul>
-        <li>Selecciona correctamente si la orden incluye: Chip, Equipo o Accesorio.</li>
-        <li>Si hay equipo, ingresa el IMEI correctamente.</li>
-        <li>Verifica marca, modelo, color y tipo antes de guardar.</li>
-        <li>No repitas órdenes ya registradas.</li>
-        <li>Presiona <b>Guardar una sola vez</b> y espera la confirmación.</li>
+        <li>Entra a <b>Registrar Orden</b>.</li>
+        <li>Escribe la orden correctamente.</li>
+        <li>Si vendiste equipo, selecciona marca, modelo, color y tipo.</li>
+        <li>Si vendiste chip, escribe el número y elige PREPAGO o POSPAGO.</li>
+        <li>Si vendiste accesorio, selecciónalo y coloca la cantidad.</li>
+        <li>Presiona <b>Guardar una sola vez</b>.</li>
     </ul>
     </div>
     """, unsafe_allow_html=True)
 
     st.markdown("""
     <div class="glass-card">
-    <h4>📦 Ingreso de mercadería</h4>
+    <h4>📦 Ver stock</h4>
     <ul>
-        <li>Usa esta opción solo cuando ingresen equipos nuevos.</li>
-        <li>Elige bien marca, modelo, color y tipo.</li>
-        <li>Verifica la cantidad antes de guardar.</li>
-        <li>Presiona guardar una sola vez y espera confirmación.</li>
+        <li>Entra a <b>Inventario</b>.</li>
+        <li>Usa <b>Ver Stock Actual</b>.</li>
+        <li>Puedes filtrar por marca.</li>
+        <li>También puedes buscar por modelo, SKU o color.</li>
+        <li>Revisa la cantidad antes de vender o mover mercadería.</li>
     </ul>
     </div>
     """, unsafe_allow_html=True)
 
     st.markdown("""
     <div class="glass-card">
-    <h4>🔁 Traslados y salidas</h4>
+    <h4>📥 Ingreso de mercadería</h4>
     <ul>
-        <li>Usa traslado solo cuando el equipo se mueve de ubicación o responsable.</li>
-        <li>Usa salida cuando el equipo debe descontarse del stock.</li>
-        <li>No registres cantidades mayores al stock disponible.</li>
-        <li>Revisa siempre el producto antes de guardar.</li>
+        <li>Usa <b>INGRESO</b> cuando llegó mercadería nueva.</li>
+        <li>Usa <b>TRASLADO INGRESO</b> cuando recibiste mercadería de otra tienda o persona.</li>
+        <li>Selecciona producto y cantidad.</li>
+        <li>Si es traslado, coloca quién lo pidió o quién lo envió en el campo que corresponde.</li>
+        <li>Esto <b>suma stock</b>.</li>
+    </ul>
+    </div>
+    """, unsafe_allow_html=True)
+
+    st.markdown("""
+    <div class="glass-card">
+    <h4>📤 Salida o traslado</h4>
+    <ul>
+        <li>Usa <b>TRASLADO SALIDA</b> cuando mandas mercadería a otra tienda o persona.</li>
+        <li>Usa <b>SALIDA</b> cuando el producto sale del stock por otro motivo.</li>
+        <li>Selecciona producto y cantidad.</li>
+        <li>Coloca quién lo pidió o el motivo en detalle.</li>
+        <li>Esto <b>resta stock</b>.</li>
+    </ul>
+    </div>
+    """, unsafe_allow_html=True)
+
+    st.markdown("""
+    <div class="glass-card">
+    <h4>✏️ Editar venta</h4>
+    <ul>
+        <li>Entra a <b>Editar Venta</b>.</li>
+        <li>Filtra por fecha o busca la orden.</li>
+        <li>Presiona <b>Editar</b>.</li>
+        <li>Cambia solo lo que está mal.</li>
+        <li>Guarda la edición.</li>
     </ul>
     </div>
     """, unsafe_allow_html=True)
@@ -1275,21 +1304,10 @@ if menu == "📌 Instrucciones":
     <div class="glass-card">
     <h4>🚫 Reglas importantes</h4>
     <ul>
-        <li>No tocar vendedores sin autorización.</li>
-        <li>No editar ni eliminar órdenes de otros vendedores.</li>
-        <li>No registrar información incompleta.</li>
-        <li>Todo cambio afecta ventas, reportes e inventario.</li>
-    </ul>
-    </div>
-    """, unsafe_allow_html=True)
-
-    st.markdown("""
-    <div class="glass-card">
-    <h4>✅ Recomendación final</h4>
-    <ul>
-        <li>Revisa todo antes de guardar.</li>
-        <li>Registra con calma.</li>
-        <li>Ante cualquier duda, consulta antes de ingresar datos.</li>
+        <li>No registres dos veces la misma orden.</li>
+        <li>No inventes IMEI, chip ni cantidades.</li>
+        <li>Si no estás segura, pregunta antes de guardar.</li>
+        <li>Todo lo que guardas afecta ventas, stock y reportes.</li>
     </ul>
     </div>
     """, unsafe_allow_html=True)
