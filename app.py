@@ -366,6 +366,16 @@ def login():
             Al iniciar sesión, aceptas el uso autorizado del sistema <b>Control Ventas</b>.
         </div>
         """, unsafe_allow_html=True)
+        st.markdown("""
+        <div style="
+            text-align:center;
+            font-size:11px;
+            opacity:0.5;
+            margin-top:10px;
+        ">
+            Sistema desarrollado por KeevinP.
+        </div>
+        """, unsafe_allow_html=True)
 
         if submitted:
             if not usuario or not password:
@@ -1675,6 +1685,16 @@ elif menu == "📊 Dashboard":
             font-weight: 800;
         ">
             🟢 Actualizado a las {ahora_local().strftime("%H:%M:%S")}
+        </div>
+        """, unsafe_allow_html=True)
+        st.markdown("""
+        <div style="
+            text-align:right;
+            font-size:11px;
+            opacity:0.4;
+            margin-bottom:10px;
+        ">
+            desarrollado por TuNombre
         </div>
         """, unsafe_allow_html=True)
 
