@@ -373,7 +373,7 @@ def login():
             opacity:0.5;
             margin-top:10px;
         ">
-            Sistema desarrollado por Keevin P.
+            Control Ventas v1.0 · desarrollado por TuNombre
         </div>
         """, unsafe_allow_html=True)
 
@@ -1687,14 +1687,16 @@ elif menu == "📊 Dashboard":
             🟢 Actualizado a las {ahora_local().strftime("%H:%M:%S")}
         </div>
         """, unsafe_allow_html=True)
-        st.markdown("""
+        st.markdown(f"""
         <div style="
-            text-align:right;
+            display:flex;
+            justify-content:space-between;
             font-size:11px;
             opacity:0.4;
-            margin-bottom:10px;
+            margin-top:10px;
         ">
-            desarrollado por KeevinP.
+            <span>Control Ventas v1.0</span>
+            <span>© {ahora_local().year} TuNombre</span>
         </div>
         """, unsafe_allow_html=True)
 
