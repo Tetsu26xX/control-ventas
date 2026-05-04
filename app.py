@@ -8,6 +8,19 @@ from supabase import create_client
 import time
 import hmac
 import hashlib
+from datetime import datetime
+from zoneinfo import ZoneInfo
+
+ZONA_LOCAL = ZoneInfo("America/Lima")
+
+def ahora_local():
+    return datetime.now(ZONA_LOCAL)
+
+def fecha_hoy_local():
+    return ahora_local().date()
+
+def timestamp_hoy_local():
+    return pd.Timestamp(ahora_local())
 
 st.set_page_config(page_title="Sistema Ventas", layout="wide")
 st.markdown("""
@@ -960,11 +973,20 @@ def calcular_stock(productos, movimientos_stock, ventas):
 def preparar_fecha_hora(df):
     df = df.copy()
 
+    # IMPORTANTE:
+    # "fecha" es la fecha de venta/movimiento elegida en el formulario.
+    # "creado_en" es la fecha y hora real en que se registró en Supabase.
+    # No debemos reemplazar "fecha" usando "creado_en", porque eso rompe filtros del dashboard.
+    if "fecha" in df.columns:
+        df["fecha"] = pd.to_datetime(
+            df["fecha"], errors="coerce"
+        ).dt.strftime("%Y-%m-%d").fillna("")
+
     if "creado_en" in df.columns:
         dt = pd.to_datetime(df["creado_en"], errors="coerce", utc=True)
         dt_local = dt.dt.tz_convert("America/Lima")
 
-        df["fecha"] = dt_local.dt.strftime("%Y-%m-%d").fillna("")
+        df["fecha_registro"] = dt_local.dt.strftime("%Y-%m-%d").fillna("")
         df["hora"] = dt_local.dt.strftime("%H:%M:%S").fillna("")
 
         df = df.drop(columns=["creado_en"], errors="ignore")
@@ -987,7 +1009,7 @@ def registrar_movimiento_stock(tipo_movimiento, requiere_jefe=False):
     version = st.session_state.get("stock_form_version", 0)
     prefijo = f"stock_{tipo_movimiento}_{version}"
 
-    fecha = st.date_input("Fecha", key=f"{prefijo}_fecha")
+    fecha = st.date_input("Fecha", value=fecha_hoy_local(), key=f"{prefijo}_fecha")
 
     # Para INGRESO y STOCK INICIAL se muestran todos los productos.
     # Para SALIDA/TRASLADO SALIDA se muestran solo productos con stock disponible.
@@ -1652,7 +1674,7 @@ elif menu == "📊 Dashboard":
             color: rgba(255,255,255,.55);
             font-weight: 800;
         ">
-            🟢 Actualizado a las {pd.Timestamp.now().strftime("%H:%M:%S")}
+            🟢 Actualizado a las {ahora_local().strftime("%H:%M:%S")}
         </div>
         """, unsafe_allow_html=True)
 
@@ -2083,7 +2105,7 @@ elif menu == "📦 Inventario":
         with col_f1:
             fecha_mov = st.date_input(
                 "Filtrar por fecha",
-                value=fechas_mov[0] if fechas_mov else pd.Timestamp.today().date()
+                value=fechas_mov[0] if fechas_mov else fecha_hoy_local()
             )
     
         with col_f2:
@@ -2263,7 +2285,7 @@ elif menu == "🧾 Registrar Orden":
     version = st.session_state["form_version"]
     vendedores_activos = vendedores[vendedores["estado"] == "ACTIVO"]["nombre"]
 
-    fecha = st.date_input("Fecha", key=f"fecha_{version}")
+    fecha = st.date_input("Fecha", value=fecha_hoy_local(), key=f"fecha_{version}")
 
     if st.session_state.get("rol") == "admin":
         vendedor = st.selectbox("Vendedor", vendedores_activos, key=f"vendedor_{version}")
@@ -2511,8 +2533,8 @@ elif menu == "📱 Buscar IMEI":
             fecha_min = fechas_validas.min().date()
             fecha_max = fechas_validas.max().date()
         else:
-            fecha_min = pd.Timestamp.today().date()
-            fecha_max = pd.Timestamp.today().date()
+            fecha_min = fecha_hoy_local()
+            fecha_max = fecha_hoy_local()
 
         c1, c2, c3 = st.columns(3)
         fecha_desde = c1.date_input("Fecha inicio", value=fecha_min)
@@ -2683,7 +2705,7 @@ elif menu == "✏️ Editar Venta":
 
             fecha_actual = pd.to_datetime(venta.get("fecha", ""), errors="coerce")
             if pd.isna(fecha_actual):
-                fecha_actual = pd.Timestamp.today()
+                fecha_actual = timestamp_hoy_local()
 
             nueva_fecha = st.date_input("Fecha de venta", value=fecha_actual.date())
 
@@ -2908,8 +2930,8 @@ elif menu == "🔍 Buscar":
                 fecha_min = fechas_validas.min().date()
                 fecha_max = fechas_validas.max().date()
             else:
-                fecha_min = pd.Timestamp.today().date()
-                fecha_max = pd.Timestamp.today().date()
+                fecha_min = fecha_hoy_local()
+                fecha_max = fecha_hoy_local()
 
             vendedores_lista = sorted([
                 v for v in ventas_rep["vendedor"].astype(str).unique()
