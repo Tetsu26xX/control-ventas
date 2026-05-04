@@ -425,7 +425,7 @@ def login():
             color: white;
             z-index: 9999;
         ">
-            Control Ventas v1.0 · © {datetime.now().year} TuNombre
+            Control Ventas v1.0 · © {datetime.now().year} KeevinPR.
         </div>
         """, unsafe_allow_html=True)
 
