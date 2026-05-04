@@ -373,7 +373,7 @@ def login():
             opacity:0.5;
             margin-top:10px;
         ">
-            Control Ventas v1.0 · desarrollado por TuNombre
+            Control Ventas v1.0 · desarrollado por KeevinPR.
         </div>
         """, unsafe_allow_html=True)
 
@@ -1696,7 +1696,7 @@ elif menu == "📊 Dashboard":
             margin-top:10px;
         ">
             <span>Control Ventas v1.0</span>
-            <span>© {ahora_local().year} TuNombre</span>
+            <span>© {ahora_local().year} KeevinPR.</span>
         </div>
         """, unsafe_allow_html=True)
 
