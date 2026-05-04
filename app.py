@@ -1794,7 +1794,7 @@ elif menu == "📊 Dashboard":
 
                 st.markdown(f"""
                 <div class="ticker-box">
-                    <div class="ticker-title">📰 Noticias del filtro</div>
+                    <div class="ticker-title">📰 Noticias de Ultimo Minuto</div>
                     <div class="ticker">
                         <div class="ticker-track">
                             {ticker_html} &nbsp;&nbsp;&nbsp; • &nbsp;&nbsp;&nbsp; {ticker_html}
