@@ -2031,13 +2031,55 @@ elif menu == "📦 Inventario":
 
     elif opcion_inv == "📋 Historial Movimientos":
         st.subheader("📋 Historial de movimientos de stock")
+    
         mov_vista = movimientos_stock.copy()
         mov_vista = preparar_fecha_hora(mov_vista)
+    
+        mov_vista["fecha_dt"] = pd.to_datetime(mov_vista["fecha"], errors="coerce")
+    
+        fechas_mov = sorted(
+            mov_vista["fecha_dt"].dropna().dt.date.unique(),
+            reverse=True
+        )
+    
+        tipos_mov = sorted(
+            mov_vista["tipo_movimiento"].fillna("").astype(str).str.strip().replace("", pd.NA).dropna().unique()
+        )
+    
+        col_f1, col_f2 = st.columns(2)
+    
+        with col_f1:
+            fecha_mov = st.date_input(
+                "Filtrar por fecha",
+                value=fechas_mov[0] if fechas_mov else pd.Timestamp.today().date()
+            )
+    
+        with col_f2:
+            tipo_mov = st.selectbox(
+                "Filtrar por tipo de movimiento",
+                ["TODOS"] + tipos_mov
+            )
+    
+        mov_vista = mov_vista[
+            mov_vista["fecha_dt"].dt.date == fecha_mov
+        ]
+    
+        if tipo_mov != "TODOS":
+            mov_vista = mov_vista[
+                mov_vista["tipo_movimiento"].astype(str).str.strip() == tipo_mov
+            ]
+    
+        mov_vista = mov_vista.drop(columns=["fecha_dt"], errors="ignore")
+    
         mov_vista = ordenar_columnas_existentes(
             mov_vista,
             ["fecha", "hora", "tipo_movimiento", "sku", "cantidad", "jefe_solicita", "vendedor_responsable", "detalle"]
         )
-        st.dataframe(mov_vista.astype(str), use_container_width=True)
+    
+        if mov_vista.empty:
+            st.warning("No hay movimientos con esos filtros.")
+        else:
+            st.dataframe(mov_vista.astype(str), use_container_width=True)
 
 # =========================
 # CATÁLOGOS
