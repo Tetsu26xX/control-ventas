@@ -1143,7 +1143,7 @@ if st.session_state.get("login_ok", False):
     rol_txt = str(st.session_state.get("rol", "")).upper()
     vendedor_txt = str(st.session_state.get("vendedor", "")).upper()
     if rol_txt == "ADMIN":
-        st.sidebar.success(f"👑😎 {vendedor_txt} · VENDEDOR ADMIN")
+        st.sidebar.success(f"👑 {vendedor_txt} · VENDEDOR ADMIN")
     else:
         st.sidebar.success(f"👤 {vendedor_txt} · VENDEDOR")
     if st.sidebar.button("Cerrar sesión"):
@@ -1163,7 +1163,7 @@ if st.session_state.get("login_ok", False):
             color: white;
             font-size: 28px;
             font-weight: 900;
-            text-shadow: 0 0 18px #FFFF00;
+            text-shadow: 0 0 18px #7CFF6B;
         ">
             🔒 Cerrando sesión...
         </div>
