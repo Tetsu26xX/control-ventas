@@ -366,17 +366,7 @@ def login():
             Al iniciar sesión, aceptas el uso autorizado del sistema <b>Control Ventas</b>.
         </div>
         """, unsafe_allow_html=True)
-        st.markdown("""
-        <div style="
-            text-align:center;
-            font-size:11px;
-            opacity:0.5;
-            margin-top:10px;
-        ">
-            Control Ventas v1.0 · desarrollado por KeevinPR.
-        </div>
-        """, unsafe_allow_html=True)
-
+      
         if submitted:
             if not usuario or not password:
                 st.error("Ingresa usuario y contraseña.")
@@ -423,6 +413,19 @@ def login():
                 <div class="feature-card"><div class="feature-icon">📦</div><div class="feature-title">Stock</div><div class="feature-text">Controla ingresos, salidas y traslados.</div></div>
                 <div class="feature-card"><div class="feature-icon">📊</div><div class="feature-title">Reportes</div><div class="feature-text">Rankings y estadísticas rápidas.</div></div>
             </div>
+        </div>
+        """, unsafe_allow_html=True)
+        st.markdown(f"""
+        <div style="
+            position: fixed;
+            bottom: 10px;
+            left: 20px;
+            font-size: 11px;
+            opacity: 0.5;
+            color: white;
+            z-index: 9999;
+        ">
+            Control Ventas v1.0 · © {datetime.now().year} TuNombre
         </div>
         """, unsafe_allow_html=True)
 
