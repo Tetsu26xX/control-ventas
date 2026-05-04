@@ -10,6 +10,20 @@ import hmac
 import hashlib
 
 st.set_page_config(page_title="Sistema Ventas", layout="wide")
+st.markdown("""
+<style>
+
+/* Ocultar barra superior de Streamlit */
+header {visibility: hidden;}
+
+/* Ocultar menú */
+#MainMenu {visibility: hidden;}
+
+/* Ocultar footer */
+footer {visibility: hidden;}
+
+</style>
+""", unsafe_allow_html=True)
 
 # =========================
 # IMÁGENES
