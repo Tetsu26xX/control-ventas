@@ -1393,6 +1393,25 @@ header[data-testid="stHeader"] { background: transparent !important; }
     filter:brightness(1.08) !important;
 }
 
+
+/* FIX FINAL: fuerza botones superiores sin negro y con glow azul */
+.st-key-cv_navbar_clean button[kind="secondary"],
+.st-key-cv_navbar_clean button,
+.st-key-cv_navbar_clean [data-testid="stBaseButton-secondary"] {
+    background: linear-gradient(135deg, rgba(45,123,255,.62), rgba(122,92,255,.56)) !important;
+    color:#F8FBFF !important;
+    border:1px solid rgba(76,201,240,.72) !important;
+    border-radius:14px !important;
+    box-shadow: inset 0 1px 0 rgba(255,255,255,.16), 0 8px 18px rgba(0,0,0,.18) !important;
+}
+.st-key-cv_navbar_clean button[kind="secondary"]:hover,
+.st-key-cv_navbar_clean button:hover,
+.st-key-cv_navbar_clean [data-testid="stBaseButton-secondary"]:hover {
+    border-color:#4CC9F0 !important;
+    box-shadow:0 0 0 1px rgba(76,201,240,.7), 0 0 22px rgba(76,201,240,.42), 0 0 30px rgba(45,123,255,.30) !important;
+    transform:translateY(-1px) !important;
+}
+
 @media(max-width:1100px) {
     .st-key-cv_navbar_clean { overflow-x:auto !important; padding-left:10px !important; padding-right:10px !important; }
     .st-key-cv_navbar_clean [data-testid="stHorizontalBlock"] { min-width:1120px !important; }
@@ -1418,13 +1437,21 @@ def nav_selectbox(grupo, opciones, key_base):
 
 
 def accion_actualizar_nav():
+    # Botón nativo funcional: limpia cache y fuerza recarga inmediata.
     limpiar_cache_datos()
     st.session_state["mensaje_toast"] = "Datos actualizados correctamente 🔄"
+    st.toast("Datos actualizados correctamente", icon="🔄")
+    st.rerun()
 
 def accion_salir_nav():
-    st.query_params.clear()
+    # Botón nativo funcional: limpia URL, sesión y fuerza volver al login.
+    try:
+        st.query_params.clear()
+    except Exception:
+        pass
     st.session_state.clear()
     st.session_state["login_ok"] = False
+    st.rerun()
 
 with st.container(key="cv_navbar_clean"):
     top_left, top_right = st.columns([0.66, 0.34], gap="small")
