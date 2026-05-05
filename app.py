@@ -1177,196 +1177,68 @@ if "stock_guardado_ok" not in st.session_state:
 stock_actual_df = calcular_stock(productos, movimientos_stock, ventas)
 
 # =========================
-# MENÚ SUPERIOR
+# MENÚ
 # =========================
-# Navegación superior tipo sistema PRO.
-# Se reemplaza el sidebar por botones arriba, manteniendo la misma lógica, roles y secciones.
-
-if "menu_actual" not in st.session_state:
-    st.session_state["menu_actual"] = "📊 Dashboard"
-
-rol_txt = str(st.session_state.get("rol", "")).upper()
-vendedor_txt = str(st.session_state.get("vendedor", "")).upper()
-
-if rol_txt == "ADMIN":
-    badge_usuario = f"👑 {vendedor_txt} · ADMIN"
-elif rol_txt == "JEFE":
-    badge_usuario = f"👑 {vendedor_txt} · JEFE"
-else:
-    badge_usuario = f"👤 {vendedor_txt} · VENDEDOR"
-
-st.markdown("""
-<style>
-/* ===== NAV SUPERIOR PRO ===== */
-[data-testid="stSidebar"] {
-    display: none !important;
-}
-
-.block-container {
-    padding-top: 1.2rem !important;
-}
-
-.top-shell {
-    position: sticky;
-    top: 0;
-    z-index: 99999;
-    margin: -6px 0 18px 0;
-    padding: 14px 16px 16px;
-    border-radius: 24px;
-    background:
-        radial-gradient(circle at 10% 0%, rgba(76,201,240,.16), transparent 30%),
-        radial-gradient(circle at 88% 10%, rgba(157,78,221,.18), transparent 32%),
-        linear-gradient(135deg, rgba(12,18,32,.94), rgba(18,24,42,.86));
-    border: 1px solid rgba(255,255,255,.13);
-    box-shadow: 0 18px 50px rgba(0,0,0,.34), 0 0 24px rgba(76,201,240,.07);
-    backdrop-filter: blur(18px);
-    -webkit-backdrop-filter: blur(18px);
-}
-
-.top-head {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    gap: 14px;
-    margin-bottom: 12px;
-}
-
-.brand-title {
-    color: #F7FAFF;
-    font-size: 23px;
-    font-weight: 1000;
-    letter-spacing: -.3px;
-    display: flex;
-    align-items: center;
-    gap: 10px;
-}
-
-.brand-pill {
-    font-size: 11px;
-    font-weight: 900;
-    letter-spacing: .4px;
-    color: #101522;
-    background: linear-gradient(135deg, #4CC9F0, #9D4EDD);
-    padding: 5px 9px;
-    border-radius: 999px;
-    box-shadow: 0 0 18px rgba(76,201,240,.28);
-}
-
-.user-badge {
-    color: #E6EAF2;
-    font-size: 13px;
-    font-weight: 900;
-    padding: 9px 13px;
-    border-radius: 999px;
-    background: linear-gradient(135deg, rgba(255,255,255,.11), rgba(255,255,255,.04));
-    border: 1px solid rgba(255,255,255,.14);
-    box-shadow: inset 0 1px 0 rgba(255,255,255,.14), 0 0 18px rgba(157,78,221,.10);
-}
-
-.nav-label {
-    color: rgba(230,234,242,.58);
-    font-size: 11px;
-    font-weight: 900;
-    text-transform: uppercase;
-    letter-spacing: .8px;
-    margin: 5px 0 7px;
-}
-
-/* Botones del menú superior */
-div[data-testid="stHorizontalBlock"] .stButton > button {
-    min-height: 2.55rem !important;
-    border-radius: 14px !important;
-    background: linear-gradient(135deg, rgba(255,255,255,.09), rgba(255,255,255,.035)) !important;
-    color: #E6EAF2 !important;
-    border: 1px solid rgba(255,255,255,.13) !important;
-    box-shadow: inset 0 1px 0 rgba(255,255,255,.12), 0 10px 22px rgba(0,0,0,.14) !important;
-    font-size: 13px !important;
-    font-weight: 900 !important;
-    white-space: nowrap !important;
-    transition: all .20s ease !important;
-}
-
-div[data-testid="stHorizontalBlock"] .stButton > button:hover {
-    transform: translateY(-2px) !important;
-    border-color: rgba(76,201,240,.65) !important;
-    background: linear-gradient(135deg, rgba(76,201,240,.18), rgba(157,78,221,.11)) !important;
-    box-shadow: 0 0 0 1px rgba(76,201,240,.13), 0 0 22px rgba(76,201,240,.30), 0 14px 28px rgba(0,0,0,.24) !important;
-}
-
-@media (max-width: 900px) {
-    .top-shell { position: relative; border-radius: 18px; padding: 12px; }
-    .top-head { flex-direction: column; align-items: flex-start; }
-    .brand-title { font-size: 20px; }
-    .user-badge { font-size: 12px; }
-}
-</style>
-""", unsafe_allow_html=True)
-
-st.markdown(f"""
-<div class="top-shell">
-    <div class="top-head">
-        <div class="brand-title">⚡ Control Ventas <span class="brand-pill">v1.0</span></div>
-        <div class="user-badge">{badge_usuario}</div>
-    </div>
-</div>
-""", unsafe_allow_html=True)
-
-def cambiar_menu(texto):
-    st.session_state["menu_actual"] = texto
-    st.rerun()
-
-def boton_top(texto):
-    activo = st.session_state.get("menu_actual") == texto
-    etiqueta = f"● {texto}" if activo else texto
-    if st.button(etiqueta, use_container_width=True, key=f"top_btn_{texto}"):
-        cambiar_menu(texto)
-
-# Acciones rápidas de sesión/datos
-col_a1, col_a2, col_a3 = st.columns([0.60, 0.20, 0.20])
-with col_a1:
-    st.markdown("<div class='nav-label'>Navegación principal</div>", unsafe_allow_html=True)
-with col_a2:
-    if st.button("🔄 Actualizar datos", use_container_width=True, key="top_actualizar_datos"):
-        limpiar_cache_datos()
-        st.toast("Datos actualizados correctamente", icon="🔄")
-        st.rerun()
-with col_a3:
-    if st.button("🚪 Cerrar sesión", use_container_width=True, key="top_cerrar_sesion"):
+st.sidebar.title("⚡ Control Ventas")
+if st.session_state.get("login_ok", False):
+    rol_txt = str(st.session_state.get("rol", "")).upper()
+    vendedor_txt = str(st.session_state.get("vendedor", "")).upper()
+    if rol_txt == "ADMIN":
+        st.sidebar.success(f"👑 {vendedor_txt} · ADMIN")
+    elif rol_txt == "JEFE":
+        st.sidebar.success(f"👑 {vendedor_txt} · JEFE")
+    else:
+        st.sidebar.success(f"👤 {vendedor_txt} · VENDEDOR")
+    if st.sidebar.button("Cerrar sesión"):
+        # Logout instantáneo: reduce al máximo el congelamiento/flicker de Streamlit.
+        # No usamos overlay ni time.sleep, porque eso mantiene visible el menú anterior más tiempo.
         st.query_params.clear()
         st.session_state.clear()
         st.session_state["login_ok"] = False
         st.rerun()
 
-# Fila 1: principal
-items_principal = ["📊 Dashboard"]
-if not es_jefe():
-    items_principal.append("🧾 Registrar Orden")
-items_principal.append("📌 Instrucciones")
-cols = st.columns(len(items_principal))
-for col, item in zip(cols, items_principal):
-    with col:
-        boton_top(item)
+if st.sidebar.button("🔄 Actualizar datos", use_container_width=True):
+    limpiar_cache_datos()
+    st.toast("Datos actualizados correctamente", icon="🔄")
+    st.rerun()
+st.sidebar.markdown("### 📲 Menú")
 
-# Fila 2: gestión de ventas
-st.markdown("<div class='nav-label'>Gestión de ventas</div>", unsafe_allow_html=True)
-items_ventas = ["🔍 Buscar"]
-if not es_jefe():
-    items_ventas.append("✏️ Editar Venta")
-items_ventas.extend(["📋 Ventas Registradas", "📱 Buscar IMEI"])
-cols = st.columns(len(items_ventas))
-for col, item in zip(cols, items_ventas):
-    with col:
-        boton_top(item)
+if "menu_actual" not in st.session_state:
+    st.session_state["menu_actual"] = "📊 Dashboard"
 
-# Fila 3: inventario / catálogo / equipo
-st.markdown("<div class='nav-label'>Inventario · Catálogo · Equipo</div>", unsafe_allow_html=True)
-items_extra = ["📦 Inventario", "📱 Catálogo Equipos", "🎧 Catálogo Accesorios"]
+def boton_menu(texto):
+    activo = st.session_state["menu_actual"] == texto
+    etiqueta = f"✅ {texto}" if activo else f"　{texto}"
+    if st.button(etiqueta, use_container_width=True, key=f"btn_{texto}"):
+        st.session_state["menu_actual"] = texto
+        st.rerun()
+
+with st.sidebar.expander("✨ Principal", expanded=True):
+    boton_menu("📊 Dashboard")
+    if not es_jefe():
+        boton_menu("🧾 Registrar Orden")
+    boton_menu("📌 Instrucciones")
+
+with st.sidebar.expander("🛒 Gestión de Venta", expanded=False):
+    boton_menu("🔍 Buscar")
+    if not es_jefe():
+        boton_menu("✏️ Editar Venta")
+    boton_menu("📋 Ventas Registradas")
+    boton_menu("📱 Buscar IMEI")
+
+with st.sidebar.expander("📦 Inventario", expanded=False):
+    boton_menu("📦 Inventario")
+
+with st.sidebar.expander("🧩 Productos", expanded=False):
+    boton_menu("📱 Catálogo Equipos")
+    boton_menu("🎧 Catálogo Accesorios")
+    if not es_jefe():
+        boton_menu("➕ Nuevo Equipo")
+        boton_menu("➕ Nuevo Accesorio")
+
 if not es_jefe():
-    items_extra.extend(["➕ Nuevo Equipo", "➕ Nuevo Accesorio", "🧑‍💼 Vendedores"])
-cols = st.columns(len(items_extra))
-for col, item in zip(cols, items_extra):
-    with col:
-        boton_top(item)
+    with st.sidebar.expander("👥 Equipo", expanded=False):
+        boton_menu("🧑‍💼 Vendedores")
 
 menu = st.session_state["menu_actual"]
 
