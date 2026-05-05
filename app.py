@@ -782,8 +782,8 @@ div[data-baseweb="select"] span {{
 .cv-panel-title {{ color:#f6f9ff;font-size:16px;font-weight:1000;margin-bottom:8px;display:flex;align-items:center;gap:8px; }}
 
 /* Ajuste compacto para barras/paneles de información */
-.cv-panel, .cv-panel-accent { min-height: auto !important; }
-.cv-panel .cv-panel-title, .cv-table-panel .cv-panel-title, .cv-toolbar .cv-panel-title { line-height: 1.15 !important; }
+.cv-panel, .cv-panel-accent {{ min-height: auto !important; }}
+.cv-panel .cv-panel-title, .cv-table-panel .cv-panel-title, .cv-toolbar .cv-panel-title {{ line-height: 1.15 !important; }}
 .cv-small-note {{ color:rgba(238,245,255,.62);font-size:13px;font-weight:700;margin-top:8px; }}
 .cv-sep {{ height:1px;background:rgba(150,170,210,.16);margin:10px 0; }}
 .cv-chip {{
