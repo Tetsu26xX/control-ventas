@@ -663,13 +663,14 @@ div[data-testid="stForm"]:hover {{
 }}
 
 /* =========================
-   EFECTO MÁS GLOBAL (inputs, botones, etc)
+   EFECTO MÁS GLOBAL (CORREGIDO)
 ========================= */
+
+/* SOLO elementos interactivos reales */
 button:hover,
 div[data-baseweb="select"]:hover,
 input:hover,
-textarea:hover,
-label:hover {{
+textarea:hover {{
     box-shadow:
         0 0 0 1px rgba(76,201,240,.60),
         0 0 18px rgba(76,201,240,.35),
@@ -678,47 +679,64 @@ label:hover {{
     transition: all .18s ease !important;
 }}
 
+/* ❌ quitamos label:hover (eso causaba el bug de textos) */
+
+
 /* =========================
-   NEÓN SEGÚN COLOR DEL CUADRO
+   CONTENEDORES STREAMLIT (FIX CLAVE)
 ========================= */
 
-/* 🔴 ROJO (stock bajo / alerta) */
-.cv-card.stock-bajo:hover,
-.cv-card.alerta:hover,
-.dash-card.stock-bajo:hover,
-.dash-card.alerta:hover {{
+/* TARJETAS GENERALES STREAMLIT */
+div[data-testid="stVerticalBlock"] > div {{
+    transition: all .20s ease !important;
+}}
+
+div[data-testid="stVerticalBlock"] > div:hover {{
+    border-radius: 16px !important;
+    box-shadow:
+        0 0 0 1px rgba(76,201,240,.40),
+        0 0 20px rgba(76,201,240,.25),
+        0 0 35px rgba(45,123,255,.20) !important;
+}}
+
+/* GRÁFICOS */
+div[data-testid="stPlotlyChart"]:hover,
+div[data-testid="stChart"]:hover {{
+    border-radius: 16px !important;
+    box-shadow:
+        0 0 0 1px rgba(76,201,240,.50),
+        0 0 25px rgba(76,201,240,.30),
+        0 0 40px rgba(45,123,255,.25) !important;
+}}
+
+/* ALERTAS (la franja roja que dijiste) */
+div[data-testid="stAlert"]:hover {{
+    box-shadow:
+        0 0 0 1px rgba(255,77,109,.70),
+        0 0 24px rgba(255,77,109,.45),
+        0 0 40px rgba(255,77,109,.30) !important;
+    border-radius: 12px !important;
+}}
+
+
+/* =========================
+   NEÓN POR COLOR (MEJORADO)
+========================= */
+
+/* 🔴 ROJO AUTOMÁTICO (alertas y stock bajo) */
+div[data-testid="stAlert"],
+.cv-card.stock-bajo:hover {{
     border-color: #FF4D6D !important;
-    box-shadow:
-        0 0 0 1px rgba(255,77,109,.75),
-        0 0 24px rgba(255,77,109,.48),
-        0 0 42px rgba(255,77,109,.35),
-        0 18px 38px rgba(0,0,0,.32) !important;
 }}
 
-/* 🟢 VERDE (ok / éxito) */
-.cv-card.ok:hover,
-.cv-card.exito:hover,
-.dash-card.ok:hover,
-.dash-card.exito:hover {{
+/* 🟢 VERDE */
+.cv-card.exito:hover {{
     border-color: #2EE59D !important;
-    box-shadow:
-        0 0 0 1px rgba(46,229,157,.75),
-        0 0 24px rgba(46,229,157,.48),
-        0 0 42px rgba(46,229,157,.35),
-        0 18px 38px rgba(0,0,0,.32) !important;
 }}
 
-/* 🟡 AMARILLO (warning / aviso) */
-.cv-card.warning:hover,
-.cv-card.aviso:hover,
-.dash-card.warning:hover,
-.dash-card.aviso:hover {{
+/* 🟡 AMARILLO */
+.cv-card.warning:hover {{
     border-color: #FFD166 !important;
-    box-shadow:
-        0 0 0 1px rgba(255,209,102,.75),
-        0 0 24px rgba(255,209,102,.48),
-        0 0 42px rgba(255,209,102,.35),
-        0 18px 38px rgba(0,0,0,.32) !important;
 }}
 .cv-page-title {{
     display:flex;align-items:center;gap:14px;margin:8px 0 18px 0;
