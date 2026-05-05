@@ -1,4 +1,4 @@
-import streamlit as st
+ import streamlit as st
 import os
 import pandas as pd
 import matplotlib.pyplot as plt
@@ -1468,7 +1468,10 @@ with st.container(key="cv_navbar_clean"):
                 unsafe_allow_html=True
             )
         with refresh_col:
-            st.button("🔄 Actualizar", key="nav_actualizar_clean", help="Actualizar datos", use_container_width=True, on_click=accion_actualizar_nav)
+            if st.button("🔄 Actualizar", key="nav_actualizar_clean", help="Actualizar datos", use_container_width=True):
+                limpiar_cache_datos()
+                st.session_state["mensaje_toast"] = "Datos actualizados correctamente 🔄"
+                st.rerun()
 
     with top_right:
         user_col, logout_col = st.columns([0.66, 0.34], gap="small")
@@ -1482,7 +1485,14 @@ with st.container(key="cv_navbar_clean"):
                 unsafe_allow_html=True
             )
         with logout_col:
-            st.button("🚪 Salir", key="nav_salir_clean", help="Cerrar sesión", use_container_width=True, on_click=accion_salir_nav)
+            if st.button("🚪 Salir", key="nav_salir_clean", help="Cerrar sesión", use_container_width=True):
+                try:
+                    st.query_params.clear()
+                except Exception:
+                    pass
+                st.session_state.clear()
+                st.session_state["login_ok"] = False
+                st.rerun()
 
     st.markdown('<div class="cv-nav-spacer"></div>', unsafe_allow_html=True)
 
