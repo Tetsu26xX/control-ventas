@@ -136,10 +136,10 @@ def login():
     }
     .stApp {
         background:
-            radial-gradient(circle at 18% 12%, rgba(31,143,255,.24), transparent 24%),
-            radial-gradient(circle at 88% 18%, rgba(139,61,255,.20), transparent 28%),
-            radial-gradient(circle at 52% 88%, rgba(37,213,255,.11), transparent 34%),
-            linear-gradient(135deg, #07111f 0%, #0b1830 48%, #070b18 100%) !important;
+            radial-gradient(circle at 18% 12%, rgba(31,143,255,.20), transparent 24%),
+            radial-gradient(circle at 88% 18%, rgba(139,61,255,.18), transparent 28%),
+            radial-gradient(circle at 52% 88%, rgba(37,213,255,.09), transparent 34%),
+            linear-gradient(135deg, #050d19 0%, #081529 48%, #050814 100%) !important;
         background-attachment: fixed !important;
     }
     .stApp::before {
@@ -454,14 +454,18 @@ if "inicio_instrucciones_ok" not in st.session_state:
         top: 10%;
         left: 50%;
         transform: translate(-50%, -50%);
-        background: linear-gradient(135deg, #d7f54a, #7CFF6B);
-        color: #111;
-        padding: 18px 28px;
-        border-radius: 14px;
-        font-weight: 900;
+        background: linear-gradient(135deg, #ff3d8b, #7c3cff);
+        color: #ffffff;
+        padding: 18px 30px;
+        border-radius: 16px;
+        font-weight: 950;
         font-size: 16px;
         z-index: 999999;
-        box-shadow: 0 0 25px rgba(210,245,62,0.6), 0 20px 40px rgba(0,0,0,0.4);
+        border: 1px solid rgba(255,255,255,0.35);
+        box-shadow:
+            0 0 28px rgba(255,61,139,0.55),
+            0 0 34px rgba(124,60,255,0.42),
+            0 22px 44px rgba(0,0,0,0.55);
         animation: fadeInOut 6s ease forwards;
     }
     
@@ -544,10 +548,10 @@ st.markdown(f"""
 
 .stApp {{
     background:
-        radial-gradient(circle at 18% 4%, rgba(22,139,255,.18), transparent 24%),
-        radial-gradient(circle at 88% 18%, rgba(139,61,255,.16), transparent 25%),
-        radial-gradient(circle at 55% 96%, rgba(32,214,255,.08), transparent 35%),
-        linear-gradient(135deg,#040914 0%,#071426 48%,#040812 100%) !important;
+        radial-gradient(circle at 18% 4%, rgba(22,139,255,.16), transparent 24%),
+        radial-gradient(circle at 88% 18%, rgba(139,61,255,.14), transparent 25%),
+        radial-gradient(circle at 55% 96%, rgba(32,214,255,.07), transparent 35%),
+        linear-gradient(135deg,#030711 0%,#061122 48%,#030710 100%) !important;
     background-attachment: fixed !important;
 }}
 
@@ -974,14 +978,18 @@ def notificacion_flotante(mensaje):
         top: 10%;
         left: 50%;
         transform: translate(-50%, -50%);
-        background: linear-gradient(135deg, #d7f54a, #7CFF6B);
-        color: #111;
-        padding: 18px 28px;
-        border-radius: 14px;
-        font-weight: 900;
+        background: linear-gradient(135deg, #ff3d8b, #7c3cff);
+        color: #ffffff;
+        padding: 18px 30px;
+        border-radius: 16px;
+        font-weight: 950;
         font-size: 16px;
         z-index: 999999;
-        box-shadow: 0 0 25px rgba(210,245,62,0.6), 0 20px 40px rgba(0,0,0,0.4);
+        border: 1px solid rgba(255,255,255,0.35);
+        box-shadow:
+            0 0 28px rgba(255,61,139,0.55),
+            0 0 34px rgba(124,60,255,0.42),
+            0 22px 44px rgba(0,0,0,0.55);
         animation: fadeInOut 6s ease forwards;
     }}
 
