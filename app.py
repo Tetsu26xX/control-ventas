@@ -105,96 +105,6 @@ def validar_token_sesion(token):
     except:
         return False
 
-
-def pantalla_loading(texto="Cargando...", subtexto="Preparando sistema"):
-    st.markdown(f"""
-    <div style="
-        position: fixed;
-        inset: 0;
-        z-index: 9999999;
-        background:
-            radial-gradient(circle at 50% 35%, rgba(215,245,74,0.18), transparent 28%),
-            linear-gradient(135deg, #0b0f19, #141826 55%, #0a0d13);
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        justify-content: center;
-        color: white;
-        font-weight: 900;
-    ">
-        <div class="loading-card-pro">
-            <div class="loader-pro"></div>
-            <div style="margin-top:22px; font-size:28px; line-height:1;">{texto}</div>
-            <div style="margin-top:10px; font-size:14px; opacity:0.68;">{subtexto}</div>
-            <div class="loading-bar-pro"><span></span></div>
-        </div>
-    </div>
-
-    <style>
-    /* Durante loading, ocultamos la barra lateral anterior para que no se vea mezclada */
-    [data-testid="stSidebar"] {{
-        display: none !important;
-        visibility: hidden !important;
-        width: 0 !important;
-    }}
-    [data-testid="stSidebarNav"], section[data-testid="stSidebar"] {{
-        display: none !important;
-        visibility: hidden !important;
-    }}
-    .block-container {{
-        padding-left: 2rem !important;
-        padding-right: 2rem !important;
-    }}
-
-    .loading-card-pro {{
-        min-width: 310px;
-        padding: 36px 42px;
-        border-radius: 26px;
-        background: linear-gradient(135deg, rgba(255,255,255,.09), rgba(255,255,255,.035));
-        border: 1px solid rgba(215,245,74,.24);
-        box-shadow: 0 0 32px rgba(215,245,74,.10), 0 28px 70px rgba(0,0,0,.42);
-        backdrop-filter: blur(16px);
-        -webkit-backdrop-filter: blur(16px);
-        text-align: center;
-    }}
-    .loader-pro {{
-        margin: 0 auto;
-        width: 78px;
-        height: 78px;
-        border-radius: 50%;
-        border: 7px solid rgba(255,255,255,0.10);
-        border-top-color: #d7f54a;
-        border-right-color: rgba(215,245,74,.55);
-        animation: spinPro 0.9s linear infinite;
-        box-shadow: 0 0 30px rgba(215,245,74,0.45);
-    }}
-    .loading-bar-pro {{
-        margin-top: 24px;
-        width: 100%;
-        height: 6px;
-        border-radius: 99px;
-        overflow: hidden;
-        background: rgba(255,255,255,.10);
-    }}
-    .loading-bar-pro span {{
-        display:block;
-        width:45%;
-        height:100%;
-        border-radius:99px;
-        background: linear-gradient(90deg, transparent, #d7f54a, transparent);
-        animation: slidePro 1.15s ease-in-out infinite;
-    }}
-    @keyframes spinPro {{
-        0% {{ transform: rotate(0deg); }}
-        100% {{ transform: rotate(360deg); }}
-    }}
-    @keyframes slidePro {{
-        0% {{ transform: translateX(-120%); }}
-        100% {{ transform: translateX(260%); }}
-    }}
-    </style>
-    """, unsafe_allow_html=True)
-
 # =========================
 # LOGIN
 # =========================
@@ -206,17 +116,6 @@ def login():
 
     st.markdown(f"""
     <style>
-    /* En login no debe verse el menú anterior */
-    [data-testid="stSidebar"] {{
-        display: none !important;
-        visibility: hidden !important;
-        width: 0 !important;
-    }}
-    section[data-testid="stSidebar"] {{
-        display: none !important;
-        visibility: hidden !important;
-    }}
-
     .stApp {{
         background:
             radial-gradient(circle at 78% 18%, rgba(205, 230, 80, .20), transparent 18%),
@@ -493,7 +392,6 @@ def login():
                         )
                         
                         st.query_params["session"] = token
-                        st.session_state["iniciando_sesion"] = True
                         
                         st.rerun()
                     else:
@@ -534,37 +432,7 @@ def login():
         </div>
         """, unsafe_allow_html=True)
 
-# =========================
-# TRANSICIONES DE SESIÓN LIMPIAS
-# IMPORTANTE: va ANTES del login y ANTES del menú/sidebar.
-# Así no queda visible el menú anterior por detrás.
-# =========================
-if st.session_state.get("cerrando_sesion", False):
-    pantalla_loading("Cerrando sesión...", "Volviendo al acceso seguro")
-    time.sleep(1.1)
-    st.session_state.clear()
-    st.query_params.clear()
-    st.session_state["login_ok"] = False
-    st.rerun()
-
-if st.session_state.get("iniciando_sesion", False):
-    pantalla_loading("Iniciando sesión...", "Cargando tu panel")
-    time.sleep(1.1)
-    st.session_state["iniciando_sesion"] = False
-    st.rerun()
-
 if not st.session_state.get("login_ok", False):
-
-    # Refuerzo visual: si no hay sesión, nunca mostramos sidebar de la sesión anterior.
-    st.markdown("""
-    <style>
-    [data-testid="stSidebar"], section[data-testid="stSidebar"] {
-        display: none !important;
-        visibility: hidden !important;
-        width: 0 !important;
-    }
-    </style>
-    """, unsafe_allow_html=True)
 
     token_url = st.query_params.get("session", None)
 
@@ -1319,7 +1187,11 @@ if st.session_state.get("login_ok", False):
     else:
         st.sidebar.success(f"👤 {vendedor_txt} · VENDEDOR")
     if st.sidebar.button("Cerrar sesión"):
-        st.session_state["cerrando_sesion"] = True
+        # Logout instantáneo: reduce al máximo el congelamiento/flicker de Streamlit.
+        # No usamos overlay ni time.sleep, porque eso mantiene visible el menú anterior más tiempo.
+        st.query_params.clear()
+        st.session_state.clear()
+        st.session_state["login_ok"] = False
         st.rerun()
 
 if st.sidebar.button("🔄 Actualizar datos", use_container_width=True):
