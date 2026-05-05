@@ -1219,13 +1219,16 @@ if "stock_guardado_ok" not in st.session_state:
 stock_actual_df = calcular_stock(productos, movimientos_stock, ventas)
 
 # =========================
-# MENÚ SUPERIOR FUNCIONAL AGRUPADO
+# MENÚ SUPERIOR FUNCIONAL EN 2 FILAS + SUBMENÚ PRO
 # =========================
-# Navbar final: 2 filas, fijo, funcional con st.button/st.popover.
-# No usa HTML para navegar, por eso NO muestra código crudo y sí funciona.
+# Menú 100% con botones nativos de Streamlit: funciona, no muestra HTML crudo,
+# y evita los popovers negros/descuadrados.
 
 if "menu_actual" not in st.session_state:
     st.session_state["menu_actual"] = "📊 Dashboard"
+
+if "nav_grupo_abierto" not in st.session_state:
+    st.session_state["nav_grupo_abierto"] = "✨ Principal"
 
 rol_txt = str(st.session_state.get("rol", "")).upper()
 vendedor_txt = str(st.session_state.get("vendedor", "")).upper()
@@ -1260,6 +1263,11 @@ def ir_a(menu_destino):
     st.rerun()
 
 
+def abrir_grupo(nombre):
+    st.session_state["nav_grupo_abierto"] = nombre
+    st.rerun()
+
+
 st.markdown("""
 <style>
 [data-testid="stSidebar"] { display: none !important; }
@@ -1285,9 +1293,9 @@ header[data-testid="stHeader"] { background: transparent !important; }
     animation: cvBgFloat 10s ease-in-out infinite alternate;
 }
 @keyframes cvBgFloat { from { transform:translateY(0); opacity:.32; } to { transform:translateY(-7px); opacity:.58; } }
-.block-container { max-width:1520px !important; padding-top:162px !important; position:relative; z-index:2; }
+.block-container { max-width:1520px !important; padding-top:178px !important; position:relative; z-index:2; }
 
-/* ===== NAVBAR FINAL 2 FILAS FUNCIONAL ===== */
+/* ===== NAVBAR 2 FILAS, FIJO Y FUNCIONAL ===== */
 .st-key-cv_navbar_grouped {
     position: fixed !important;
     top: 0 !important;
@@ -1295,13 +1303,13 @@ header[data-testid="stHeader"] { background: transparent !important; }
     right: 0 !important;
     width: 100vw !important;
     z-index: 999999 !important;
-    padding: 12px 22px 11px 22px !important;
+    padding: 11px 22px 10px 22px !important;
     background:
         radial-gradient(circle at 12% 0%, rgba(76,201,240,.26), transparent 35%),
         radial-gradient(circle at 86% 0%, rgba(157,78,221,.26), transparent 42%),
-        linear-gradient(90deg, rgba(10,31,61,.99), rgba(17,54,106,.99) 52%, rgba(43,34,100,.99)) !important;
-    border-bottom: 1px solid rgba(76,201,240,.32) !important;
-    box-shadow: 0 14px 34px rgba(0,0,0,.34), 0 0 28px rgba(45,123,255,.16) !important;
+        linear-gradient(90deg, rgba(10,31,61,.98), rgba(17,54,106,.98) 52%, rgba(43,34,100,.98)) !important;
+    border-bottom: 1px solid rgba(76,201,240,.36) !important;
+    box-shadow: 0 14px 34px rgba(0,0,0,.34), 0 0 28px rgba(45,123,255,.18) !important;
     backdrop-filter: blur(22px) !important;
     -webkit-backdrop-filter: blur(22px) !important;
 }
@@ -1312,96 +1320,53 @@ header[data-testid="stHeader"] { background: transparent !important; }
 }
 .st-key-cv_navbar_grouped [data-testid="stHorizontalBlock"] {
     align-items: center !important;
-    gap: 10px !important;
+    gap: 9px !important;
 }
 .cv-brand-wrap {
-    display:flex;
-    align-items:center;
-    gap:12px;
-    min-height:48px;
+    display:flex; align-items:center; gap:12px; min-height:48px;
 }
 .cv-brand-mark {
-    width:48px;
-    height:48px;
-    border-radius:17px;
-    display:flex;
-    align-items:center;
-    justify-content:center;
-    font-size:23px;
-    background:linear-gradient(135deg, rgba(45,123,255,.50), rgba(157,78,221,.40));
-    border:1px solid rgba(76,201,240,.52);
-    box-shadow:0 0 24px rgba(45,123,255,.34), inset 0 1px 0 rgba(255,255,255,.16);
+    width:48px; height:48px; border-radius:17px;
+    display:flex; align-items:center; justify-content:center; font-size:24px;
+    background:linear-gradient(135deg, rgba(45,123,255,.56), rgba(157,78,221,.42));
+    border:1px solid rgba(76,201,240,.55);
+    box-shadow:0 0 24px rgba(45,123,255,.36), inset 0 1px 0 rgba(255,255,255,.18);
 }
 .cv-brand-title {
-    color:#F7FAFF;
-    font-size:29px;
-    line-height:1;
-    font-weight:1000;
-    letter-spacing:-.9px;
-    text-shadow:0 0 18px rgba(76,201,240,.22);
-    white-space:nowrap;
+    color:#F7FAFF; font-size:30px; line-height:1; font-weight:1000;
+    letter-spacing:-.9px; text-shadow:0 0 18px rgba(76,201,240,.24); white-space:nowrap;
 }
 .cv-brand-sub {
-    color:#A9B8D4;
-    font-size:10px;
-    font-weight:850;
-    letter-spacing:.65px;
-    margin-top:5px;
-    text-transform:uppercase;
+    color:#A9B8D4; font-size:10px; font-weight:850; letter-spacing:.65px;
+    margin-top:5px; text-transform:uppercase;
 }
 .cv-user-box {
-    display:flex;
-    align-items:center;
-    justify-content:flex-end;
-    gap:10px;
-    min-height:48px;
+    display:flex; align-items:center; justify-content:flex-end; gap:10px; min-height:48px;
 }
 .cv-avatar {
-    width:42px;
-    height:42px;
-    border-radius:999px;
-    display:flex;
-    align-items:center;
-    justify-content:center;
-    color:#FFFFFF;
-    font-weight:1000;
-    font-size:16px;
+    width:42px; height:42px; border-radius:999px;
+    display:flex; align-items:center; justify-content:center;
+    color:#FFFFFF; font-weight:1000; font-size:16px;
     background:linear-gradient(135deg, rgba(76,201,240,.62), rgba(157,78,221,.54));
     border:1px solid rgba(255,255,255,.24);
     box-shadow:0 0 20px rgba(76,201,240,.28);
 }
-.cv-user-name {
-    color:#F7FAFF;
-    font-weight:1000;
-    font-size:14px;
-    line-height:1.05;
-    text-align:right;
-    white-space:nowrap;
-}
-.cv-user-role {
-    color:#A9B8D4;
-    font-size:10px;
-    font-weight:900;
-    letter-spacing:.35px;
-    margin-top:4px;
-    text-align:right;
-}
-.cv-nav-spacer { height: 6px; }
+.cv-user-name { color:#F7FAFF; font-weight:1000; font-size:14px; line-height:1.05; text-align:right; white-space:nowrap; }
+.cv-user-role { color:#A9B8D4; font-size:10px; font-weight:900; letter-spacing:.35px; margin-top:4px; text-align:right; }
+.cv-nav-spacer { height: 5px; }
 
-/* BOTONES NAVBAR: mismo color, no negro, con glow neon */
+/* Botones de navbar: todos del mismo color, nada negro */
 .st-key-cv_navbar_grouped div[data-testid="stButton"] > button,
-.st-key-cv_navbar_grouped .stButton > button,
-.st-key-cv_navbar_grouped div[data-testid="stPopover"] > button,
-.st-key-cv_navbar_grouped [data-testid="stPopover"] > button {
-    height: 40px !important;
-    min-height: 40px !important;
+.st-key-cv_navbar_grouped .stButton > button {
+    height: 39px !important;
+    min-height: 39px !important;
     width: 100% !important;
-    padding: 0 14px !important;
+    padding: 0 12px !important;
     border-radius: 14px !important;
-    background: linear-gradient(135deg, rgba(45,123,255,.38), rgba(157,78,221,.30)) !important;
+    background: linear-gradient(135deg, rgba(45,123,255,.40), rgba(157,78,221,.34)) !important;
     color: #F3F7FF !important;
-    border: 1px solid rgba(76,201,240,.42) !important;
-    box-shadow: inset 0 1px 0 rgba(255,255,255,.12), 0 6px 18px rgba(0,0,0,.16) !important;
+    border: 1px solid rgba(76,201,240,.44) !important;
+    box-shadow: inset 0 1px 0 rgba(255,255,255,.13), 0 7px 18px rgba(0,0,0,.16) !important;
     font-size: 14px !important;
     font-weight: 900 !important;
     line-height: 1 !important;
@@ -1414,53 +1379,40 @@ header[data-testid="stHeader"] { background: transparent !important; }
     transition: all .18s ease !important;
 }
 .st-key-cv_navbar_grouped div[data-testid="stButton"] > button:hover,
-.st-key-cv_navbar_grouped .stButton > button:hover,
-.st-key-cv_navbar_grouped div[data-testid="stPopover"] > button:hover,
-.st-key-cv_navbar_grouped [data-testid="stPopover"] > button:hover {
-    background: linear-gradient(135deg, rgba(45,123,255,.62), rgba(157,78,221,.52)) !important;
+.st-key-cv_navbar_grouped .stButton > button:hover {
+    background: linear-gradient(135deg, rgba(45,123,255,.68), rgba(157,78,221,.56)) !important;
     border-color: rgba(76,201,240,1) !important;
-    box-shadow: inset 0 -2px 0 rgba(76,201,240,.95), 0 0 24px rgba(45,123,255,.40), 0 0 14px rgba(76,201,240,.24) !important;
+    box-shadow: inset 0 -2px 0 rgba(76,201,240,.95), 0 0 25px rgba(45,123,255,.42), 0 0 15px rgba(76,201,240,.26) !important;
     transform: translateY(-1px) !important;
 }
 .st-key-cv_navbar_grouped div[data-testid="stButton"] > button:focus,
-.st-key-cv_navbar_grouped .stButton > button:focus,
-.st-key-cv_navbar_grouped div[data-testid="stPopover"] > button:focus,
-.st-key-cv_navbar_grouped [data-testid="stPopover"] > button:focus {
-    background: linear-gradient(135deg, rgba(45,123,255,.65), rgba(157,78,221,.54)) !important;
+.st-key-cv_navbar_grouped .stButton > button:focus {
+    background: linear-gradient(135deg, rgba(45,123,255,.72), rgba(157,78,221,.60)) !important;
     border-color: rgba(76,201,240,1) !important;
-    box-shadow: inset 0 -2px 0 rgba(76,201,240,.95), 0 0 24px rgba(76,201,240,.30) !important;
+    box-shadow: inset 0 -2px 0 rgba(76,201,240,.95), 0 0 24px rgba(76,201,240,.32) !important;
 }
 
-/* Submenús popover: mismo tema, no negro plano */
-div[data-testid="stPopoverBody"] {
-    background: linear-gradient(135deg, rgba(11,31,62,.98), rgba(32,28,76,.98)) !important;
-    border: 1px solid rgba(76,201,240,.30) !important;
-    border-radius: 18px !important;
-    box-shadow: 0 18px 40px rgba(0,0,0,.35), 0 0 24px rgba(45,123,255,.20) !important;
+.cv-open-submenu {
+    margin-top: 6px;
+    padding: 8px 10px;
+    border-radius: 18px;
+    border: 1px solid rgba(76,201,240,.30);
+    background: linear-gradient(135deg, rgba(45,123,255,.16), rgba(157,78,221,.13));
+    box-shadow: inset 0 1px 0 rgba(255,255,255,.06), 0 10px 24px rgba(0,0,0,.14);
 }
-div[data-testid="stPopoverBody"] div[data-testid="stButton"] > button,
-div[data-testid="stPopoverBody"] .stButton > button {
-    justify-content:flex-start !important;
-    text-align:left !important;
-    height: 38px !important;
-    min-height: 38px !important;
-    border-radius: 12px !important;
-    background: linear-gradient(135deg, rgba(45,123,255,.30), rgba(157,78,221,.24)) !important;
-    color:#F6FAFF !important;
-    border:1px solid rgba(76,201,240,.28) !important;
-    font-weight:850 !important;
-    box-shadow: none !important;
-}
-div[data-testid="stPopoverBody"] div[data-testid="stButton"] > button:hover,
-div[data-testid="stPopoverBody"] .stButton > button:hover {
-    background: linear-gradient(135deg, rgba(45,123,255,.54), rgba(157,78,221,.44)) !important;
-    border-color:rgba(76,201,240,.85) !important;
-    box-shadow: 0 0 18px rgba(45,123,255,.28) !important;
+.cv-open-title {
+    color:#DCEBFF;
+    font-size:11px;
+    font-weight:950;
+    letter-spacing:.65px;
+    text-transform:uppercase;
+    margin-bottom:4px;
+    opacity:.82;
 }
 @media(max-width:1100px) {
     .st-key-cv_navbar_grouped { overflow-x:auto !important; padding-left:10px !important; padding-right:10px !important; }
     .st-key-cv_navbar_grouped [data-testid="stHorizontalBlock"] { min-width:1100px !important; }
-    .block-container { padding-top:176px !important; }
+    .block-container { padding-top:190px !important; }
 }
 </style>
 """, unsafe_allow_html=True)
@@ -1473,11 +1425,22 @@ def nav_button(label, destino, key, disabled=False):
         ir_a(destino)
 
 
+def group_button(label, grupo, key):
+    activo = st.session_state.get("nav_grupo_abierto") == grupo
+    texto = f"{label} {'⌃' if activo else '⌄'}"
+    if st.button(texto, key=key, use_container_width=True):
+        if activo:
+            st.session_state["nav_grupo_abierto"] = ""
+        else:
+            st.session_state["nav_grupo_abierto"] = grupo
+        st.rerun()
+
+
 with st.container(key="cv_navbar_grouped"):
     top_left, top_right = st.columns([0.66, 0.34], gap="small")
 
     with top_left:
-        brand_col, refresh_col = st.columns([0.74, 0.26], gap="small")
+        brand_col, refresh_col = st.columns([0.76, 0.24], gap="small")
         with brand_col:
             st.markdown(
                 '<div class="cv-brand-wrap">'
@@ -1513,41 +1476,69 @@ with st.container(key="cv_navbar_grouped"):
 
     st.markdown('<div class="cv-nav-spacer"></div>', unsafe_allow_html=True)
 
-    nav_cols = st.columns([1.15, 1.40, 1.05, 1.22, 1.05], gap="small")
-
+    nav_cols = st.columns([1.08, 1.42, 1.08, 1.20, 1.02], gap="small")
     with nav_cols[0]:
-        with st.popover("✨ Principal ▾", use_container_width=True):
-            nav_button("📊 Dashboard", "📊 Dashboard", "nav_principal_dashboard")
-            if not es_jefe():
-                nav_button("🧾 Registrar Orden", "🧾 Registrar Orden", "nav_principal_registrar")
-            nav_button("📌 Instrucciones", "📌 Instrucciones", "nav_principal_instrucciones")
-
+        group_button("✨ Principal", "✨ Principal", "grp_principal")
     with nav_cols[1]:
-        with st.popover("🛒 Gestión de ventas ▾", use_container_width=True):
-            nav_button("🔍 Buscar", "🔍 Buscar", "nav_ventas_buscar")
-            if not es_jefe():
-                nav_button("✏️ Editar Venta", "✏️ Editar Venta", "nav_ventas_editar")
-            nav_button("📋 Ventas Registradas", "📋 Ventas Registradas", "nav_ventas_registradas")
-            nav_button("📱 Buscar IMEI", "📱 Buscar IMEI", "nav_ventas_imei")
-
+        group_button("🛒 Gestión de ventas", "🛒 Gestión de ventas", "grp_ventas")
     with nav_cols[2]:
-        with st.popover("📦 Inventario ▾", use_container_width=True):
-            nav_button("📦 Inventario / Stock", "📦 Inventario", "nav_inventario_stock")
-
+        group_button("📦 Inventario", "📦 Inventario", "grp_inventario")
     with nav_cols[3]:
-        with st.popover("🧩 Productos ▾", use_container_width=True):
-            nav_button("📱 Catálogo Equipos", "📱 Catálogo Equipos", "nav_prod_equipos")
-            nav_button("🎧 Catálogo Accesorios", "🎧 Catálogo Accesorios", "nav_prod_accesorios")
-            if not es_jefe():
-                nav_button("➕ Nuevo Equipo", "➕ Nuevo Equipo", "nav_prod_nuevo_equipo")
-                nav_button("➕ Nuevo Accesorio", "➕ Nuevo Accesorio", "nav_prod_nuevo_accesorio")
-
+        group_button("🧩 Productos", "🧩 Productos", "grp_productos")
     with nav_cols[4]:
         if not es_jefe():
-            with st.popover("👥 Equipo ▾", use_container_width=True):
-                nav_button("🧑‍💼 Vendedores", "🧑‍💼 Vendedores", "nav_equipo_vendedores")
+            group_button("👥 Equipo", "👥 Equipo", "grp_equipo")
         else:
             st.markdown("<div></div>", unsafe_allow_html=True)
+
+    grupo_abierto = st.session_state.get("nav_grupo_abierto", "")
+    if grupo_abierto:
+        st.markdown(f'<div class="cv-open-submenu"><div class="cv-open-title">{grupo_abierto}</div>', unsafe_allow_html=True)
+        if grupo_abierto == "✨ Principal":
+            c1, c2, c3 = st.columns(3, gap="small")
+            with c1:
+                nav_button("📊 Dashboard", "📊 Dashboard", "nav_principal_dashboard")
+            with c2:
+                if not es_jefe():
+                    nav_button("🧾 Registrar Orden", "🧾 Registrar Orden", "nav_principal_registrar")
+            with c3:
+                nav_button("📌 Instrucciones", "📌 Instrucciones", "nav_principal_instrucciones")
+
+        elif grupo_abierto == "🛒 Gestión de ventas":
+            c1, c2, c3, c4 = st.columns(4, gap="small")
+            with c1:
+                nav_button("🔍 Buscar", "🔍 Buscar", "nav_ventas_buscar")
+            with c2:
+                if not es_jefe():
+                    nav_button("✏️ Editar Venta", "✏️ Editar Venta", "nav_ventas_editar")
+            with c3:
+                nav_button("📋 Ventas Registradas", "📋 Ventas Registradas", "nav_ventas_registradas")
+            with c4:
+                nav_button("📱 Buscar IMEI", "📱 Buscar IMEI", "nav_ventas_imei")
+
+        elif grupo_abierto == "📦 Inventario":
+            c1, c2, c3 = st.columns([1,1,1], gap="small")
+            with c1:
+                nav_button("📦 Inventario / Stock", "📦 Inventario", "nav_inventario_stock")
+
+        elif grupo_abierto == "🧩 Productos":
+            c1, c2, c3, c4 = st.columns(4, gap="small")
+            with c1:
+                nav_button("📱 Catálogo Equipos", "📱 Catálogo Equipos", "nav_prod_equipos")
+            with c2:
+                nav_button("🎧 Catálogo Accesorios", "🎧 Catálogo Accesorios", "nav_prod_accesorios")
+            with c3:
+                if not es_jefe():
+                    nav_button("➕ Nuevo Equipo", "➕ Nuevo Equipo", "nav_prod_nuevo_equipo")
+            with c4:
+                if not es_jefe():
+                    nav_button("➕ Nuevo Accesorio", "➕ Nuevo Accesorio", "nav_prod_nuevo_accesorio")
+
+        elif grupo_abierto == "👥 Equipo" and not es_jefe():
+            c1, c2, c3 = st.columns([1,1,1], gap="small")
+            with c1:
+                nav_button("🧑‍💼 Vendedores", "🧑‍💼 Vendedores", "nav_equipo_vendedores")
+        st.markdown('</div>', unsafe_allow_html=True)
 
 menu = st.session_state["menu_actual"]
 
