@@ -292,24 +292,24 @@ def login():
         margin-top:24px;padding-top:18px;border-top:1px solid rgba(150,170,210,.18);text-align:center;color:rgba(238,245,255,.62);font-size:14px;
     }}
 
-    .login-compact-head {
+    .login-compact-head {{
         text-align:center;
         padding: 10px 0 18px;
-    }
-    .login-compact-head .login-icon-small {
+    }}
+    .login-compact-head .login-icon-small {{
         width:76px;height:76px;border-radius:50%;margin:0 auto 14px;display:flex;align-items:center;justify-content:center;font-size:38px;color:white;
         background:linear-gradient(135deg,rgba(31,143,255,.20),rgba(139,61,255,.26));
         border:1px solid rgba(139,61,255,.55);box-shadow:0 0 30px rgba(139,61,255,.28);
-    }
-    .login-compact-title {text-align:center;color:white;font-size:38px;font-weight:1000;margin:8px 0 6px;}
-    .login-compact-desc {text-align:center;color:rgba(238,245,255,.65);font-size:17px;margin-bottom:10px;}
-    [data-testid="stForm"] {
+    }}
+    .login-compact-title {{text-align:center;color:white;font-size:38px;font-weight:1000;margin:8px 0 6px;}}
+    .login-compact-desc {{text-align:center;color:rgba(238,245,255,.65);font-size:17px;margin-bottom:10px;}}
+    [data-testid="stForm"] {{
         border:1px solid rgba(100,130,255,.25) !important;
         background:linear-gradient(135deg,rgba(8,18,34,.66),rgba(6,12,24,.72)) !important;
         border-radius:20px !important;
         padding:22px 26px 24px !important;
         box-shadow: inset 0 1px 0 rgba(255,255,255,.04),0 18px 44px rgba(0,0,0,.28) !important;
-    }
+    }}
     @media(max-width:900px) {{
         .login-shell {{grid-template-columns:1fr;}}
         .login-left {{padding:28px 24px;}}
