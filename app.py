@@ -48,7 +48,7 @@ footer {visibility: hidden;}
 .login-wrapper {
     transform: scale(0.85);
     transform-origin: top center;
-    margin-top: -12px;
+    margin-top: -10px;
 }
 
 </style>
