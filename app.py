@@ -1527,7 +1527,7 @@ header[data-testid="stHeader"] {
     border-radius: 14px !important;
     background: linear-gradient(135deg, rgba(45,123,255,.46), rgba(157,78,221,.36)) !important;
     border: 1px solid rgba(76,201,240,.50) !important;
-    color: #F3F7FF !important;
+    color: #FFFFFF !important;
     box-shadow: inset 0 1px 0 rgba(255,255,255,.13), 0 7px 18px rgba(0,0,0,.16) !important;
     transition: all .18s ease !important;
 }
