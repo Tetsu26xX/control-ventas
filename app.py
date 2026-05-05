@@ -1571,17 +1571,19 @@ header[data-testid="stHeader"] {
 def nav_selectbox(grupo, opciones, key_base):
     version = st.session_state.get("nav_reset_version", 0)
     key = f"{key_base}_{version}"
+
     seleccion = st.selectbox(
         grupo,
-        [grupo] + opciones,
-        index=0,
+        opciones,
+        index=None,
+        placeholder=grupo,
         key=key,
         label_visibility="collapsed"
     )
-    if seleccion != grupo:
+
+    if seleccion:
         st.session_state["nav_reset_version"] = version + 1
         ir_a(seleccion)
-
 
 def accion_actualizar_nav():
     # Botón nativo funcional: limpia cache y fuerza recarga inmediata.
