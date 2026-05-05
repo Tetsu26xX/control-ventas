@@ -3389,4 +3389,3 @@ elif menu == "🔍 Buscar":
                         file_name=nombre_archivo,
                         mime="text/csv"
                     )
-                
