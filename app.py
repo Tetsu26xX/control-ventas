@@ -173,7 +173,7 @@ def login():
         transform: scale(.92);
         transform-origin: top center;
         width: 108%;
-        margin-left: -14%;
+        margin-left: -4%;
     }
     html, body, [data-testid="stAppViewContainer"] {
         overflow-y: hidden !important;
