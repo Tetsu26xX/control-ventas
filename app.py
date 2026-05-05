@@ -131,6 +131,21 @@ def pantalla_loading(texto="Cargando...", subtexto="Preparando sistema"):
     </div>
 
     <style>
+    /* Durante loading, ocultamos la barra lateral anterior para que no se vea mezclada */
+    [data-testid="stSidebar"] {{
+        display: none !important;
+        visibility: hidden !important;
+        width: 0 !important;
+    }}
+    [data-testid="stSidebarNav"], section[data-testid="stSidebar"] {{
+        display: none !important;
+        visibility: hidden !important;
+    }}
+    .block-container {{
+        padding-left: 2rem !important;
+        padding-right: 2rem !important;
+    }}
+
     .loading-card-pro {{
         min-width: 310px;
         padding: 36px 42px;
@@ -191,6 +206,17 @@ def login():
 
     st.markdown(f"""
     <style>
+    /* En login no debe verse el menú anterior */
+    [data-testid="stSidebar"] {{
+        display: none !important;
+        visibility: hidden !important;
+        width: 0 !important;
+    }}
+    section[data-testid="stSidebar"] {{
+        display: none !important;
+        visibility: hidden !important;
+    }}
+
     .stApp {{
         background:
             radial-gradient(circle at 78% 18%, rgba(205, 230, 80, .20), transparent 18%),
@@ -508,18 +534,10 @@ def login():
         </div>
         """, unsafe_allow_html=True)
 
-if not st.session_state.get("login_ok", False):
-
-    token_url = st.query_params.get("session", None)
-
-    if token_url and validar_token_sesion(token_url):
-        st.rerun()
-
-    login()
-    st.stop()
-
 # =========================
 # TRANSICIONES DE SESIÓN LIMPIAS
+# IMPORTANTE: va ANTES del login y ANTES del menú/sidebar.
+# Así no queda visible el menú anterior por detrás.
 # =========================
 if st.session_state.get("cerrando_sesion", False):
     pantalla_loading("Cerrando sesión...", "Volviendo al acceso seguro")
@@ -534,6 +552,27 @@ if st.session_state.get("iniciando_sesion", False):
     time.sleep(1.1)
     st.session_state["iniciando_sesion"] = False
     st.rerun()
+
+if not st.session_state.get("login_ok", False):
+
+    # Refuerzo visual: si no hay sesión, nunca mostramos sidebar de la sesión anterior.
+    st.markdown("""
+    <style>
+    [data-testid="stSidebar"], section[data-testid="stSidebar"] {
+        display: none !important;
+        visibility: hidden !important;
+        width: 0 !important;
+    }
+    </style>
+    """, unsafe_allow_html=True)
+
+    token_url = st.query_params.get("session", None)
+
+    if token_url and validar_token_sesion(token_url):
+        st.rerun()
+
+    login()
+    st.stop()
 
 # =========================
 # ENTRAR DIRECTO A INSTRUCCIONES AL INICIAR
