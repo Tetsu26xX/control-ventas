@@ -1221,10 +1221,8 @@ stock_actual_df = calcular_stock(productos, movimientos_stock, ventas)
 # =========================
 # MENÚ SUPERIOR FUNCIONAL AGRUPADO
 # =========================
-# Menú arriba en 2 filas:
-# Fila 1: marca + usuario.
-# Fila 2: grupos con flecha desplegable usando st.popover.
-# Todo es nativo de Streamlit, por eso SÍ navega y no muestra HTML crudo.
+# Navbar final: 2 filas, fijo, funcional con st.button/st.popover.
+# No usa HTML para navegar, por eso NO muestra código crudo y sí funciona.
 
 if "menu_actual" not in st.session_state:
     st.session_state["menu_actual"] = "📊 Dashboard"
@@ -1233,11 +1231,14 @@ rol_txt = str(st.session_state.get("rol", "")).upper()
 vendedor_txt = str(st.session_state.get("vendedor", "")).upper()
 
 if rol_txt == "ADMIN":
-    badge_usuario = f"👑 {vendedor_txt} · ADMIN"
+    badge_usuario = f"{vendedor_txt}"
+    badge_rol = "ADMIN"
 elif rol_txt == "JEFE":
-    badge_usuario = f"👑 {vendedor_txt} · JEFE"
+    badge_usuario = f"{vendedor_txt}"
+    badge_rol = "JEFE"
 else:
-    badge_usuario = f"👤 {vendedor_txt} · VENDEDOR"
+    badge_usuario = f"{vendedor_txt}"
+    badge_rol = "VENDEDOR"
 
 # Limpieza segura si alguna versión anterior dejó ?menu= en la URL.
 menu_url = st.query_params.get("menu", None)
@@ -1266,16 +1267,16 @@ header[data-testid="stHeader"] { background: transparent !important; }
 #MainMenu, footer, [data-testid="stToolbar"] { visibility: hidden !important; }
 .stApp {
     background:
-        radial-gradient(circle at 14% 10%, rgba(45,123,255,.24), transparent 28%),
-        radial-gradient(circle at 86% 12%, rgba(157,78,221,.18), transparent 32%),
-        radial-gradient(circle at 55% 90%, rgba(76,201,240,.12), transparent 34%),
+        radial-gradient(circle at 13% 10%, rgba(45,123,255,.24), transparent 28%),
+        radial-gradient(circle at 88% 15%, rgba(157,78,221,.22), transparent 32%),
+        radial-gradient(circle at 55% 88%, rgba(76,201,240,.13), transparent 35%),
         linear-gradient(135deg, #0B1D35 0%, #10284E 48%, #121735 100%) !important;
     background-attachment: fixed !important;
 }
 .stApp::before {
     content:""; position:fixed; inset:0; pointer-events:none; z-index:0;
     background:
-        radial-gradient(circle at 8% 18%, rgba(76,201,240,.45) 0 1px, transparent 2px),
+        radial-gradient(circle at 8% 18%, rgba(76,201,240,.42) 0 1px, transparent 2px),
         radial-gradient(circle at 22% 72%, rgba(45,123,255,.30) 0 1px, transparent 2px),
         radial-gradient(circle at 64% 24%, rgba(157,78,221,.34) 0 1px, transparent 2px),
         radial-gradient(circle at 86% 68%, rgba(76,201,240,.30) 0 1px, transparent 2px),
@@ -1284,9 +1285,9 @@ header[data-testid="stHeader"] { background: transparent !important; }
     animation: cvBgFloat 10s ease-in-out infinite alternate;
 }
 @keyframes cvBgFloat { from { transform:translateY(0); opacity:.32; } to { transform:translateY(-7px); opacity:.58; } }
-.block-container { max-width:1520px !important; padding-top:178px !important; position:relative; z-index:2; }
+.block-container { max-width:1520px !important; padding-top:162px !important; position:relative; z-index:2; }
 
-/* ===== NAVBAR FINAL 2 FILAS + DROPDOWN FUNCIONAL ===== */
+/* ===== NAVBAR FINAL 2 FILAS FUNCIONAL ===== */
 .st-key-cv_navbar_grouped {
     position: fixed !important;
     top: 0 !important;
@@ -1294,12 +1295,12 @@ header[data-testid="stHeader"] { background: transparent !important; }
     right: 0 !important;
     width: 100vw !important;
     z-index: 999999 !important;
-    padding: 14px 24px 12px 24px !important;
+    padding: 12px 22px 11px 22px !important;
     background:
-        radial-gradient(circle at 14% 0%, rgba(76,201,240,.26), transparent 35%),
-        radial-gradient(circle at 88% 0%, rgba(157,78,221,.24), transparent 42%),
-        linear-gradient(90deg, rgba(10,31,61,.98), rgba(17,54,106,.98) 53%, rgba(43,34,100,.98)) !important;
-    border-bottom: 1px solid rgba(76,201,240,.30) !important;
+        radial-gradient(circle at 12% 0%, rgba(76,201,240,.26), transparent 35%),
+        radial-gradient(circle at 86% 0%, rgba(157,78,221,.26), transparent 42%),
+        linear-gradient(90deg, rgba(10,31,61,.99), rgba(17,54,106,.99) 52%, rgba(43,34,100,.99)) !important;
+    border-bottom: 1px solid rgba(76,201,240,.32) !important;
     box-shadow: 0 14px 34px rgba(0,0,0,.34), 0 0 28px rgba(45,123,255,.16) !important;
     backdrop-filter: blur(22px) !important;
     -webkit-backdrop-filter: blur(22px) !important;
@@ -1320,31 +1321,31 @@ header[data-testid="stHeader"] { background: transparent !important; }
     min-height:48px;
 }
 .cv-brand-mark {
-    width:46px;
-    height:46px;
-    border-radius:16px;
+    width:48px;
+    height:48px;
+    border-radius:17px;
     display:flex;
     align-items:center;
     justify-content:center;
-    font-size:22px;
-    background:linear-gradient(135deg, rgba(45,123,255,.45), rgba(157,78,221,.34));
-    border:1px solid rgba(76,201,240,.45);
-    box-shadow:0 0 22px rgba(45,123,255,.30), inset 0 1px 0 rgba(255,255,255,.14);
+    font-size:23px;
+    background:linear-gradient(135deg, rgba(45,123,255,.50), rgba(157,78,221,.40));
+    border:1px solid rgba(76,201,240,.52);
+    box-shadow:0 0 24px rgba(45,123,255,.34), inset 0 1px 0 rgba(255,255,255,.16);
 }
 .cv-brand-title {
     color:#F7FAFF;
-    font-size:27px;
+    font-size:29px;
     line-height:1;
     font-weight:1000;
-    letter-spacing:-.8px;
-    text-shadow:0 0 18px rgba(76,201,240,.20);
+    letter-spacing:-.9px;
+    text-shadow:0 0 18px rgba(76,201,240,.22);
     white-space:nowrap;
 }
 .cv-brand-sub {
-    color:#9FB2CE;
+    color:#A9B8D4;
     font-size:10px;
     font-weight:850;
-    letter-spacing:.55px;
+    letter-spacing:.65px;
     margin-top:5px;
     text-transform:uppercase;
 }
@@ -1365,9 +1366,9 @@ header[data-testid="stHeader"] { background: transparent !important; }
     color:#FFFFFF;
     font-weight:1000;
     font-size:16px;
-    background:linear-gradient(135deg, rgba(76,201,240,.60), rgba(157,78,221,.52));
+    background:linear-gradient(135deg, rgba(76,201,240,.62), rgba(157,78,221,.54));
     border:1px solid rgba(255,255,255,.24);
-    box-shadow:0 0 20px rgba(76,201,240,.26);
+    box-shadow:0 0 20px rgba(76,201,240,.28);
 }
 .cv-user-name {
     color:#F7FAFF;
@@ -1378,32 +1379,29 @@ header[data-testid="stHeader"] { background: transparent !important; }
     white-space:nowrap;
 }
 .cv-user-role {
-    color:#9FB2CE;
+    color:#A9B8D4;
     font-size:10px;
     font-weight:900;
     letter-spacing:.35px;
     margin-top:4px;
     text-align:right;
 }
-.cv-nav-spacer { height: 8px; }
+.cv-nav-spacer { height: 6px; }
 
-/* Botones superiores compactos */
-.st-key-cv_navbar_grouped .stButton,
-.st-key-cv_navbar_grouped [data-testid="stPopover"] {
-    margin:0 !important;
-    width:100% !important;
-}
+/* BOTONES NAVBAR: mismo color, no negro, con glow neon */
+.st-key-cv_navbar_grouped div[data-testid="stButton"] > button,
 .st-key-cv_navbar_grouped .stButton > button,
+.st-key-cv_navbar_grouped div[data-testid="stPopover"] > button,
 .st-key-cv_navbar_grouped [data-testid="stPopover"] > button {
     height: 40px !important;
     min-height: 40px !important;
     width: 100% !important;
     padding: 0 14px !important;
     border-radius: 14px !important;
-    background: linear-gradient(135deg, rgba(45,123,255,.34), rgba(157,78,221,.28)) !important;
+    background: linear-gradient(135deg, rgba(45,123,255,.38), rgba(157,78,221,.30)) !important;
     color: #F3F7FF !important;
-    border: 1px solid rgba(76,201,240,.36) !important;
-    box-shadow: inset 0 1px 0 rgba(255,255,255,.11), 0 6px 18px rgba(0,0,0,.16) !important;
+    border: 1px solid rgba(76,201,240,.42) !important;
+    box-shadow: inset 0 1px 0 rgba(255,255,255,.12), 0 6px 18px rgba(0,0,0,.16) !important;
     font-size: 14px !important;
     font-weight: 900 !important;
     line-height: 1 !important;
@@ -1415,45 +1413,54 @@ header[data-testid="stHeader"] { background: transparent !important; }
     align-items: center !important;
     transition: all .18s ease !important;
 }
+.st-key-cv_navbar_grouped div[data-testid="stButton"] > button:hover,
 .st-key-cv_navbar_grouped .stButton > button:hover,
+.st-key-cv_navbar_grouped div[data-testid="stPopover"] > button:hover,
 .st-key-cv_navbar_grouped [data-testid="stPopover"] > button:hover {
-    background: linear-gradient(135deg, rgba(45,123,255,.58), rgba(157,78,221,.48)) !important;
-    border-color: rgba(76,201,240,.92) !important;
-    box-shadow: inset 0 -2px 0 rgba(76,201,240,.95), 0 0 22px rgba(45,123,255,.36) !important;
+    background: linear-gradient(135deg, rgba(45,123,255,.62), rgba(157,78,221,.52)) !important;
+    border-color: rgba(76,201,240,1) !important;
+    box-shadow: inset 0 -2px 0 rgba(76,201,240,.95), 0 0 24px rgba(45,123,255,.40), 0 0 14px rgba(76,201,240,.24) !important;
     transform: translateY(-1px) !important;
 }
+.st-key-cv_navbar_grouped div[data-testid="stButton"] > button:focus,
 .st-key-cv_navbar_grouped .stButton > button:focus,
+.st-key-cv_navbar_grouped div[data-testid="stPopover"] > button:focus,
 .st-key-cv_navbar_grouped [data-testid="stPopover"] > button:focus {
-    background: linear-gradient(135deg, rgba(45,123,255,.62), rgba(157,78,221,.50)) !important;
-    border-color: rgba(76,201,240,.92) !important;
-    box-shadow: inset 0 -2px 0 rgba(76,201,240,.95), 0 0 22px rgba(76,201,240,.27) !important;
+    background: linear-gradient(135deg, rgba(45,123,255,.65), rgba(157,78,221,.54)) !important;
+    border-color: rgba(76,201,240,1) !important;
+    box-shadow: inset 0 -2px 0 rgba(76,201,240,.95), 0 0 24px rgba(76,201,240,.30) !important;
 }
-/* Botones dentro de los desplegables */
+
+/* Submenús popover: mismo tema, no negro plano */
 div[data-testid="stPopoverBody"] {
     background: linear-gradient(135deg, rgba(11,31,62,.98), rgba(32,28,76,.98)) !important;
-    border: 1px solid rgba(76,201,240,.25) !important;
+    border: 1px solid rgba(76,201,240,.30) !important;
     border-radius: 18px !important;
-    box-shadow: 0 18px 40px rgba(0,0,0,.35), 0 0 22px rgba(45,123,255,.18) !important;
+    box-shadow: 0 18px 40px rgba(0,0,0,.35), 0 0 24px rgba(45,123,255,.20) !important;
 }
+div[data-testid="stPopoverBody"] div[data-testid="stButton"] > button,
 div[data-testid="stPopoverBody"] .stButton > button {
     justify-content:flex-start !important;
     text-align:left !important;
     height: 38px !important;
     min-height: 38px !important;
     border-radius: 12px !important;
-    background: linear-gradient(135deg, rgba(45,123,255,.28), rgba(157,78,221,.22)) !important;
+    background: linear-gradient(135deg, rgba(45,123,255,.30), rgba(157,78,221,.24)) !important;
     color:#F6FAFF !important;
-    border:1px solid rgba(76,201,240,.25) !important;
+    border:1px solid rgba(76,201,240,.28) !important;
     font-weight:850 !important;
+    box-shadow: none !important;
 }
+div[data-testid="stPopoverBody"] div[data-testid="stButton"] > button:hover,
 div[data-testid="stPopoverBody"] .stButton > button:hover {
-    background: linear-gradient(135deg, rgba(45,123,255,.48), rgba(157,78,221,.40)) !important;
-    border-color:rgba(76,201,240,.75) !important;
+    background: linear-gradient(135deg, rgba(45,123,255,.54), rgba(157,78,221,.44)) !important;
+    border-color:rgba(76,201,240,.85) !important;
+    box-shadow: 0 0 18px rgba(45,123,255,.28) !important;
 }
 @media(max-width:1100px) {
     .st-key-cv_navbar_grouped { overflow-x:auto !important; padding-left:10px !important; padding-right:10px !important; }
     .st-key-cv_navbar_grouped [data-testid="stHorizontalBlock"] { min-width:1100px !important; }
-    .block-container { padding-top:190px !important; }
+    .block-container { padding-top:176px !important; }
 }
 </style>
 """, unsafe_allow_html=True)
@@ -1467,10 +1474,10 @@ def nav_button(label, destino, key, disabled=False):
 
 
 with st.container(key="cv_navbar_grouped"):
-    top_left, top_right = st.columns([0.64, 0.36], gap="small")
+    top_left, top_right = st.columns([0.66, 0.34], gap="small")
 
     with top_left:
-        brand_col, refresh_col = st.columns([0.72, 0.28], gap="small")
+        brand_col, refresh_col = st.columns([0.74, 0.26], gap="small")
         with brand_col:
             st.markdown(
                 '<div class="cv-brand-wrap">'
@@ -1487,13 +1494,12 @@ with st.container(key="cv_navbar_grouped"):
                 st.rerun()
 
     with top_right:
-        user_col, logout_col = st.columns([0.68, 0.32], gap="small")
+        user_col, logout_col = st.columns([0.66, 0.34], gap="small")
         inicial_usuario = (vendedor_txt[:1] or "U").upper()
-        rol_limpio = rol_txt if rol_txt else "USUARIO"
         with user_col:
             st.markdown(
                 f'<div class="cv-user-box">'
-                f'<div><div class="cv-user-name">{vendedor_txt}</div><div class="cv-user-role">{rol_limpio}</div></div>'
+                f'<div><div class="cv-user-name">{badge_usuario}</div><div class="cv-user-role">{badge_rol}</div></div>'
                 f'<div class="cv-avatar">{inicial_usuario}</div>'
                 f'</div>',
                 unsafe_allow_html=True
