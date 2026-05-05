@@ -361,7 +361,7 @@ def login():
             <div class="quote-card">
                 <div class="quote-big">“</div>
                 <div class="quote-text">Los audaces no esperan oportunidades, las crean.</div>
-                <div class="quote-author">— OPPO NO ME PAGA</div>
+                <div class="quote-author">— NO NOS DEMOS POR VENCIDO </div>
             </div>
             <div class="dev-card">
                 <div class="dev-icon">&lt;/&gt;</div>
