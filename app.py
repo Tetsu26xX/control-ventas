@@ -1538,7 +1538,7 @@ header[data-testid="stHeader"] {
     box-shadow: inset 0 -2px 0 rgba(76,201,240,.95), 0 0 25px rgba(45,123,255,.42), 0 0 15px rgba(76,201,240,.26) !important;
 }
 .st-key-cv_navbar_clean div[data-baseweb="select"] span,
-.st-key-cv_navbar_clean div[data-baseweb="select"] svg { color:#F3F7FF !important; fill:#F3F7FF !important; }
+.st-key-cv_navbar_clean div[data-baseweb="select"] svg { color:#FFFFFF !important; fill:#F3F7FF !important; }
 .st-key-cv_navbar_clean label { display:none !important; }
 .st-key-cv_navbar_clean [data-testid="stSelectbox"] { margin-bottom:0 !important; }
 
