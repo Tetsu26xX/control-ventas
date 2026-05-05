@@ -655,7 +655,7 @@ div[data-testid="stForm"]:hover {{
     border-color: #4CC9F0 !important;
     box-shadow:
         0 0 0 1px rgba(76,201,240,.70),
-        0 0 24px rgba(76,201,240,.45),
+        0 0 18px rgba(76,201,240,.45),
         0 0 42px rgba(45,123,255,.35),
         0 18px 38px rgba(0,0,0,.32) !important;
     transform: translateY(-2px) !important;
@@ -695,7 +695,7 @@ section.main > div > div > div > div:hover {{
     border-radius: 16px !important;
     box-shadow:
         0 0 0 1px rgba(76,201,240,.40),
-        0 0 20px rgba(76,201,240,.25),
+        0 0 18px rgba(76,201,240,.25),
         0 0 35px rgba(45,123,255,.20) !important;
 }}
 
