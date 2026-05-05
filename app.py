@@ -736,6 +736,13 @@ div[data-testid="stAlert"],
 .cv-card.warning:hover {{
     border-color: #FFD166 !important;
 }}
+
+/* TEXTO BLANCO EN NAVBAR */
+div[data-baseweb="select"] span {{
+    color: rgba(255,255,255,.94) !important;
+    font-weight: 600 !important;
+    opacity: 1 !important;
+}}
 .cv-page-title {{
     display:flex;align-items:center;gap:14px;margin:8px 0 18px 0;
 }}
