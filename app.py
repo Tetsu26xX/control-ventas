@@ -1187,33 +1187,80 @@ if st.session_state.get("login_ok", False):
     else:
         st.sidebar.success(f"👤 {vendedor_txt} · VENDEDOR")
     if st.sidebar.button("Cerrar sesión"):
-        
         st.query_params.clear()
 
+        # Pantalla de carga elegante para evitar que se mezcle el menú con el login
         st.markdown("""
-        <div style="
+        <div class="logout-overlay">
+            <div class="logout-card">
+                <div class="logout-spinner"></div>
+                <div class="logout-title">Cerrando sesión...</div>
+                <div class="logout-subtitle">Volviendo al acceso seguro</div>
+            </div>
+        </div>
+
+        <style>
+        .logout-overlay {
             position: fixed;
             inset: 0;
-            z-index: 999999;
-            background: rgba(5, 8, 18, 0.92);
-            backdrop-filter: blur(10px);
+            z-index: 9999999;
+            background:
+                radial-gradient(circle at 50% 30%, rgba(215,245,74,.16), transparent 28%),
+                linear-gradient(135deg, rgba(10,12,18,.97), rgba(23,25,31,.98));
+            backdrop-filter: blur(14px);
+            -webkit-backdrop-filter: blur(14px);
             display: flex;
             align-items: center;
             justify-content: center;
             color: white;
-            font-size: 28px;
-            font-weight: 900;
-            text-shadow: 0 0 18px #7CFF6B;
-        ">
-            🔒 Cerrando sesión...
-        </div>
+        }
+        .logout-card {
+            min-width: 290px;
+            padding: 34px 38px;
+            border-radius: 24px;
+            background: linear-gradient(135deg, rgba(255,255,255,.10), rgba(255,255,255,.035));
+            border: 1px solid rgba(215,245,74,.25);
+            box-shadow: 0 0 35px rgba(215,245,74,.16), 0 24px 65px rgba(0,0,0,.55);
+            text-align: center;
+            animation: logoutPop .28s ease-out both;
+        }
+        .logout-spinner {
+            width: 72px;
+            height: 72px;
+            margin: 0 auto 18px auto;
+            border-radius: 50%;
+            border: 7px solid rgba(255,255,255,.10);
+            border-top-color: #d7f54a;
+            border-right-color: rgba(215,245,74,.55);
+            animation: logoutSpin .85s linear infinite;
+            box-shadow: 0 0 24px rgba(215,245,74,.40);
+        }
+        .logout-title {
+            font-size: 24px;
+            font-weight: 1000;
+            letter-spacing: -.3px;
+            text-shadow: 0 0 18px rgba(215,245,74,.28);
+        }
+        .logout-subtitle {
+            margin-top: 7px;
+            font-size: 13px;
+            font-weight: 800;
+            color: rgba(255,255,255,.66);
+        }
+        @keyframes logoutSpin {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+        @keyframes logoutPop {
+            from { opacity: 0; transform: translateY(10px) scale(.98); }
+            to { opacity: 1; transform: translateY(0) scale(1); }
+        }
+        </style>
         """, unsafe_allow_html=True)
-    
-        for key in list(st.session_state.keys()):
-            del st.session_state[key]
-    
+
+        time.sleep(0.9)
+        st.session_state.clear()
         st.session_state["login_ok"] = False
-    
         st.rerun()
 
 if st.sidebar.button("🔄 Actualizar datos", use_container_width=True):
