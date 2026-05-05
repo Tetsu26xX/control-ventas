@@ -22,6 +22,9 @@ def fecha_hoy_local():
 def timestamp_hoy_local():
     return pd.Timestamp(ahora_local())
 
+def es_jefe():
+    return str(st.session_state.get("rol", "")).strip().lower() == "jefe"
+
 st.set_page_config(page_title="Sistema Ventas", layout="wide")
 st.markdown("""
 <style>
@@ -1178,7 +1181,9 @@ if st.session_state.get("login_ok", False):
     rol_txt = str(st.session_state.get("rol", "")).upper()
     vendedor_txt = str(st.session_state.get("vendedor", "")).upper()
     if rol_txt == "ADMIN":
-        st.sidebar.success(f"👑 {vendedor_txt} · VENDEDOR ADMIN")
+        st.sidebar.success(f"👑 {vendedor_txt} · ADMIN")
+    elif rol_txt == "JEFE":
+        st.sidebar.success(f"👑 {vendedor_txt} · JEFE")
     else:
         st.sidebar.success(f"👤 {vendedor_txt} · VENDEDOR")
     if st.sidebar.button("Cerrar sesión"):
@@ -1229,12 +1234,14 @@ def boton_menu(texto):
 
 with st.sidebar.expander("✨ Principal", expanded=True):
     boton_menu("📊 Dashboard")
-    boton_menu("🧾 Registrar Orden")
+    if not es_jefe():
+        boton_menu("🧾 Registrar Orden")
     boton_menu("📌 Instrucciones")
 
 with st.sidebar.expander("🛒 Gestión de Venta", expanded=False):
     boton_menu("🔍 Buscar")
-    boton_menu("✏️ Editar Venta")
+    if not es_jefe():
+        boton_menu("✏️ Editar Venta")
     boton_menu("📋 Ventas Registradas")
     boton_menu("📱 Buscar IMEI")
 
@@ -1244,13 +1251,19 @@ with st.sidebar.expander("📦 Inventario", expanded=False):
 with st.sidebar.expander("🧩 Productos", expanded=False):
     boton_menu("📱 Catálogo Equipos")
     boton_menu("🎧 Catálogo Accesorios")
-    boton_menu("➕ Nuevo Equipo")
-    boton_menu("➕ Nuevo Accesorio")
+    if not es_jefe():
+        boton_menu("➕ Nuevo Equipo")
+        boton_menu("➕ Nuevo Accesorio")
 
-with st.sidebar.expander("👥 Equipo", expanded=False):
-    boton_menu("🧑‍💼 Vendedores")
+if not es_jefe():
+    with st.sidebar.expander("👥 Equipo", expanded=False):
+        boton_menu("🧑‍💼 Vendedores")
 
 menu = st.session_state["menu_actual"]
+
+if es_jefe() and menu in ["🧾 Registrar Orden", "✏️ Editar Venta", "➕ Nuevo Equipo", "➕ Nuevo Accesorio", "🧑‍💼 Vendedores"]:
+    st.session_state["menu_actual"] = "📊 Dashboard"
+    st.rerun()
 
 if "notificacion_flotante" in st.session_state:
     notificacion_flotante(st.session_state["notificacion_flotante"])
@@ -2016,12 +2029,14 @@ elif menu == "📦 Inventario":
 
     if st.session_state.get("rol") == "admin":
         opciones_inv.append("➕ Ingresar Stock")
-    
-    opciones_inv.extend([
-        "📥 Ingreso Mercadería",
-        "📤 Salida Traslado",
-        "📋 Historial Movimientos"
-    ])
+
+    if not es_jefe():
+        opciones_inv.extend([
+            "📥 Ingreso Mercadería",
+            "📤 Salida Traslado"
+        ])
+
+    opciones_inv.append("📋 Historial Movimientos")
     
     opcion_inv = st.radio(
         "Elige una opción",
@@ -2173,6 +2188,11 @@ elif menu == "🎧 Catálogo Accesorios":
 
 
 elif menu == "➕ Nuevo Equipo":
+
+    if es_jefe():
+        st.warning("👀 Modo jefe: solo visualización. No puedes crear equipos.")
+        st.stop()
+
     st.title("➕ Nuevo Equipo")
     st.markdown("""
     <div class="glass-primary">
@@ -2211,6 +2231,11 @@ elif menu == "➕ Nuevo Equipo":
             st.rerun()
 
 elif menu == "➕ Nuevo Accesorio":
+
+    if es_jefe():
+        st.warning("👀 Modo jefe: solo visualización. No puedes crear accesorios.")
+        st.stop()
+
     st.title("➕ Nuevo Accesorio")
     st.markdown("""
     <div class="glass-primary">
@@ -2242,6 +2267,11 @@ elif menu == "➕ Nuevo Accesorio":
             st.session_state["notificacion_flotante"] = "🎧 Nuevo accesorio agregado correctamente ✅"
 
 elif menu == "🧑‍💼 Vendedores":
+
+    if es_jefe():
+        st.warning("👀 Modo jefe: solo visualización. No puedes modificar vendedores.")
+        st.stop()
+
     st.title("🧑‍💼 Vendedores")
 
     if st.session_state.get("rol") == "admin":
@@ -2294,6 +2324,11 @@ elif menu == "🧑‍💼 Vendedores":
 # REGISTRAR ORDEN
 # =========================
 elif menu == "🧾 Registrar Orden":
+
+    if es_jefe():
+        st.warning("👀 Modo jefe: solo visualización. No puedes registrar ventas.")
+        st.stop()
+
     st.title("🧾 Registrar Orden")
     st.markdown("""
     <div class="glass-primary">
@@ -2479,6 +2514,10 @@ elif menu == "📋 Ventas Registradas":
         )
         st.dataframe(ventas_limpias.astype(str), use_container_width=True)
 
+        if es_jefe():
+            st.info("👀 Modo jefe: solo visualización de ventas. No puedes eliminar registros.")
+            st.stop()
+
         st.subheader("🗑 Eliminar venta")
 
         ventas_para_borrar = ventas.copy()
@@ -2610,6 +2649,11 @@ elif menu == "📱 Buscar IMEI":
 # EDITAR VENTA
 # =========================
 elif menu == "✏️ Editar Venta":
+
+    if es_jefe():
+        st.warning("👀 Modo jefe: solo visualización. No puedes editar ventas.")
+        st.stop()
+
     st.title("✏️ Editar Venta")
 
     if ventas.empty or ventas["orden"].fillna("").eq("").all():
