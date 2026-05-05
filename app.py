@@ -29,8 +29,14 @@ st.set_page_config(page_title="Sistema Ventas", layout="wide")
 st.markdown("""
 <style>
 
-/* Ocultar barra superior de Streamlit */
-header {background: transparent;}
+/* Ocultar barra superior de Streamlit sin bloquear clicks del navbar */
+header {
+    background: transparent !important;
+    height: 0 !important;
+    min-height: 0 !important;
+    visibility: hidden !important;
+    pointer-events: none !important;
+}
 
 /* Ocultar menú */
 #MainMenu {visibility: hidden;}
@@ -1265,8 +1271,18 @@ def ir_a(menu_destino):
 st.markdown("""
 <style>
 [data-testid="stSidebar"] { display: none !important; }
-header[data-testid="stHeader"] { background: transparent !important; }
-#MainMenu, footer, [data-testid="stToolbar"] { visibility: hidden !important; }
+header[data-testid="stHeader"] {
+    background: transparent !important;
+    height: 0 !important;
+    min-height: 0 !important;
+    visibility: hidden !important;
+    pointer-events: none !important;
+}
+#MainMenu, footer, [data-testid="stToolbar"] {
+    visibility: hidden !important;
+    height: 0 !important;
+    pointer-events: none !important;
+}
 .stApp {
     background:
         radial-gradient(circle at 13% 10%, rgba(45,123,255,.24), transparent 28%),
@@ -1313,6 +1329,21 @@ header[data-testid="stHeader"] { background: transparent !important; }
     pointer-events:none;
 }
 .st-key-cv_navbar_clean [data-testid="stHorizontalBlock"] { align-items:center !important; gap:10px !important; }
+
+/* Asegura que los botones superiores reciban el click y no queden tapados por capas visuales */
+.st-key-cv_navbar_clean .stButton,
+.st-key-cv_navbar_clean [data-testid="stButton"],
+.st-key-cv_navbar_clean button {
+    position: relative !important;
+    z-index: 1000002 !important;
+    pointer-events: auto !important;
+}
+.st-key-cv_navbar_clean .cv-brand-wrap,
+.st-key-cv_navbar_clean .cv-user-box {
+    position: relative !important;
+    z-index: 1000001 !important;
+    pointer-events: none !important;
+}
 .cv-brand-wrap { display:flex; align-items:center; gap:12px; min-height:48px; }
 .cv-brand-mark {
     width:48px; height:48px; border-radius:17px;
