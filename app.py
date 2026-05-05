@@ -154,7 +154,7 @@ def login():
         z-index: 0;
     }}
     header[data-testid="stHeader"] {{ background: transparent !important; }}
-    #MainMenu, footer {{ visibility: transparent !important; }}
+    #MainMenu, footer {{ visibility: hidden !important; }}
     .block-container {{
         max-width: 1280px !important;
         padding-top: 3.2rem !important;
