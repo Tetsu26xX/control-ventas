@@ -361,7 +361,7 @@ def login():
             <div class="quote-card">
                 <div class="quote-big">“</div>
                 <div class="quote-text">Los audaces no esperan oportunidades, las crean.</div>
-                <div class="quote-author">— LA LEY DE LOS AUDACES</div>
+                <div class="quote-author">— OPPO NO ME PAGA</div>
             </div>
             <div class="dev-card">
                 <div class="dev-icon">&lt;/&gt;</div>
@@ -1648,7 +1648,7 @@ with st.container(key="cv_navbar_clean"):
         opciones = ["📊 Dashboard", "📌 Instrucciones"]
         if not es_jefe():
             opciones.insert(1, "🧾 Registrar Orden")
-        nav_selectbox("✨ Menú", opciones, "nav_principal_select")        
+        nav_selectbox("✨ Principal ▾", opciones, "nav_principal_select")      
     with nav_cols[1]:
         opciones = ["🔍 Buscar", "📋 Ventas Registradas", "📱 Buscar IMEI"]
         if not es_jefe():
