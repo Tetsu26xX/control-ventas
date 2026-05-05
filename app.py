@@ -409,27 +409,31 @@ def login():
             submitted = st.form_submit_button("↪ Iniciar Sesión")
 
 
-                if data:
-                    user = data[0]
-                    if str(user.get("password", "")) == password and str(user.get("estado", "")).upper() == "ACTIVO":
-                        st.session_state["login_ok"] = True
-                        st.session_state["usuario"] = user.get("usuario", "")
-                        st.session_state["rol"] = user.get("rol", "")
-                        st.session_state["vendedor"] = user.get("vendedor", "")
-                        token = crear_token_sesion(
-                            st.session_state["usuario"],
-                            st.session_state["rol"],
-                            st.session_state["vendedor"]
-                        )
-                        st.query_params["session"] = token
-                        st.rerun()
-                    else:
-                        st.error("Contraseña incorrecta o usuario inactivo.")
-                else:
-                    st.error("Usuario no existe.")
-                    
-    st.markdown('</div>', unsafe_allow_html=True)                    
+            if data:
+                user = data[0]
 
+                if str(user.get("password", "")) == password and str(user.get("estado", "")).upper() == "ACTIVO":
+                    st.session_state["login_ok"] = True
+                    st.session_state["usuario"] = user.get("usuario", "")
+                    st.session_state["rol"] = user.get("rol", "")
+                    st.session_state["vendedor"] = user.get("vendedor", "")
+
+                    token = crear_token_sesion(
+                        st.session_state["usuario"],
+                        st.session_state["rol"],
+                        st.session_state["vendedor"]
+                    )
+
+                    st.query_params["session"] = token
+                    st.rerun()
+
+                else:
+                    st.error("Contraseña incorrecta o usuario inactivo.")
+
+            else:
+                st.error("Usuario no existe.")
+
+    st.markdown('</div>', unsafe_allow_html=True)
 
 if not st.session_state.get("login_ok", False):
 
