@@ -1266,10 +1266,10 @@ header[data-testid="stHeader"] { background: transparent !important; }
 #MainMenu, footer, [data-testid="stToolbar"] { visibility: hidden !important; }
 .stApp {
     background:
-        radial-gradient(circle at 13% 10%, rgba(45,123,255,.22), transparent 28%),
-        radial-gradient(circle at 88% 15%, rgba(157,78,221,.20), transparent 32%),
-        radial-gradient(circle at 55% 88%, rgba(76,201,240,.12), transparent 35%),
-        linear-gradient(135deg, #0B1B31 0%, #10264A 48%, #11152C 100%) !important;
+        radial-gradient(circle at 14% 10%, rgba(45,123,255,.24), transparent 28%),
+        radial-gradient(circle at 86% 12%, rgba(157,78,221,.18), transparent 32%),
+        radial-gradient(circle at 55% 90%, rgba(76,201,240,.12), transparent 34%),
+        linear-gradient(135deg, #0B1D35 0%, #10284E 48%, #121735 100%) !important;
     background-attachment: fixed !important;
 }
 .stApp::before {
@@ -1280,13 +1280,13 @@ header[data-testid="stHeader"] { background: transparent !important; }
         radial-gradient(circle at 64% 24%, rgba(157,78,221,.34) 0 1px, transparent 2px),
         radial-gradient(circle at 86% 68%, rgba(76,201,240,.30) 0 1px, transparent 2px),
         radial-gradient(circle at 46% 50%, rgba(45,123,255,.22) 0 1px, transparent 2px);
-    opacity:.42;
+    opacity:.46;
     animation: cvBgFloat 10s ease-in-out infinite alternate;
 }
-@keyframes cvBgFloat { from { transform:translateY(0); opacity:.30; } to { transform:translateY(-7px); opacity:.56; } }
-.block-container { max-width:1520px !important; padding-top:136px !important; position:relative; z-index:2; }
+@keyframes cvBgFloat { from { transform:translateY(0); opacity:.32; } to { transform:translateY(-7px); opacity:.58; } }
+.block-container { max-width:1520px !important; padding-top:178px !important; position:relative; z-index:2; }
 
-/* ===== NAVBAR AGRUPADO FINAL ===== */
+/* ===== NAVBAR FINAL 2 FILAS + DROPDOWN FUNCIONAL ===== */
 .st-key-cv_navbar_grouped {
     position: fixed !important;
     top: 0 !important;
@@ -1294,49 +1294,100 @@ header[data-testid="stHeader"] { background: transparent !important; }
     right: 0 !important;
     width: 100vw !important;
     z-index: 999999 !important;
-    padding: 12px 22px 10px 22px !important;
+    padding: 14px 24px 12px 24px !important;
     background:
-        radial-gradient(circle at 18% 0%, rgba(45,123,255,.34), transparent 36%),
-        radial-gradient(circle at 88% 0%, rgba(157,78,221,.26), transparent 42%),
-        linear-gradient(90deg, rgba(11,31,62,.98), rgba(17,49,100,.98) 52%, rgba(45,34,96,.98)) !important;
-    border-bottom: 1px solid rgba(76,201,240,.28) !important;
-    box-shadow: 0 14px 34px rgba(0,0,0,.36), 0 0 28px rgba(45,123,255,.15) !important;
+        radial-gradient(circle at 14% 0%, rgba(76,201,240,.26), transparent 35%),
+        radial-gradient(circle at 88% 0%, rgba(157,78,221,.24), transparent 42%),
+        linear-gradient(90deg, rgba(10,31,61,.98), rgba(17,54,106,.98) 53%, rgba(43,34,100,.98)) !important;
+    border-bottom: 1px solid rgba(76,201,240,.30) !important;
+    box-shadow: 0 14px 34px rgba(0,0,0,.34), 0 0 28px rgba(45,123,255,.16) !important;
     backdrop-filter: blur(22px) !important;
     -webkit-backdrop-filter: blur(22px) !important;
 }
 .st-key-cv_navbar_grouped::after {
     content:""; position:absolute; left:0; right:0; bottom:0; height:1px;
-    background:linear-gradient(90deg, transparent, rgba(45,123,255,.95), rgba(157,78,221,.75), transparent);
+    background:linear-gradient(90deg, transparent, rgba(76,201,240,.95), rgba(157,78,221,.72), transparent);
     pointer-events:none;
 }
 .st-key-cv_navbar_grouped [data-testid="stHorizontalBlock"] {
     align-items: center !important;
     gap: 10px !important;
 }
-.cv-brand-line {
-    display:flex; align-items:center; gap:10px; color:#F7FAFF;
-    font-size:19px; font-weight:1000; letter-spacing:-.3px; white-space:nowrap;
+.cv-brand-wrap {
+    display:flex;
+    align-items:center;
+    gap:12px;
+    min-height:48px;
 }
-.cv-brand-line .mark {
-    width:34px; height:34px; border-radius:12px; display:flex; align-items:center; justify-content:center;
-    background:linear-gradient(135deg,rgba(45,123,255,.38),rgba(157,78,221,.32));
-    border:1px solid rgba(76,201,240,.36); box-shadow:0 0 18px rgba(45,123,255,.25);
+.cv-brand-mark {
+    width:46px;
+    height:46px;
+    border-radius:16px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-size:22px;
+    background:linear-gradient(135deg, rgba(45,123,255,.45), rgba(157,78,221,.34));
+    border:1px solid rgba(76,201,240,.45);
+    box-shadow:0 0 22px rgba(45,123,255,.30), inset 0 1px 0 rgba(255,255,255,.14);
 }
-.cv-brand-line small { color:#A8B4C7; display:block; font-size:9px; font-weight:850; letter-spacing:.45px; margin-top:-3px; }
-.cv-user-line {
-    display:flex; align-items:center; justify-content:flex-end; height:40px; width:100%;
-    color:#EAF2FF; font-size:12px; font-weight:950;
-}
-.cv-user-pill-final {
-    padding: 10px 18px; border-radius:999px;
-    background:linear-gradient(135deg, rgba(45,123,255,.35), rgba(157,78,221,.28));
-    border:1px solid rgba(76,201,240,.38);
-    box-shadow:0 0 18px rgba(45,123,255,.18);
+.cv-brand-title {
+    color:#F7FAFF;
+    font-size:27px;
+    line-height:1;
+    font-weight:1000;
+    letter-spacing:-.8px;
+    text-shadow:0 0 18px rgba(76,201,240,.20);
     white-space:nowrap;
 }
-.cv-nav-spacer { height: 4px; }
+.cv-brand-sub {
+    color:#9FB2CE;
+    font-size:10px;
+    font-weight:850;
+    letter-spacing:.55px;
+    margin-top:5px;
+    text-transform:uppercase;
+}
+.cv-user-box {
+    display:flex;
+    align-items:center;
+    justify-content:flex-end;
+    gap:10px;
+    min-height:48px;
+}
+.cv-avatar {
+    width:42px;
+    height:42px;
+    border-radius:999px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    color:#FFFFFF;
+    font-weight:1000;
+    font-size:16px;
+    background:linear-gradient(135deg, rgba(76,201,240,.60), rgba(157,78,221,.52));
+    border:1px solid rgba(255,255,255,.24);
+    box-shadow:0 0 20px rgba(76,201,240,.26);
+}
+.cv-user-name {
+    color:#F7FAFF;
+    font-weight:1000;
+    font-size:14px;
+    line-height:1.05;
+    text-align:right;
+    white-space:nowrap;
+}
+.cv-user-role {
+    color:#9FB2CE;
+    font-size:10px;
+    font-weight:900;
+    letter-spacing:.35px;
+    margin-top:4px;
+    text-align:right;
+}
+.cv-nav-spacer { height: 8px; }
 
-/* botones y popovers del menú */
+/* Botones superiores compactos */
 .st-key-cv_navbar_grouped .stButton,
 .st-key-cv_navbar_grouped [data-testid="stPopover"] {
     margin:0 !important;
@@ -1349,7 +1400,7 @@ header[data-testid="stHeader"] { background: transparent !important; }
     width: 100% !important;
     padding: 0 14px !important;
     border-radius: 14px !important;
-    background: linear-gradient(135deg, rgba(45,123,255,.34), rgba(157,78,221,.27)) !important;
+    background: linear-gradient(135deg, rgba(45,123,255,.34), rgba(157,78,221,.28)) !important;
     color: #F3F7FF !important;
     border: 1px solid rgba(76,201,240,.36) !important;
     box-shadow: inset 0 1px 0 rgba(255,255,255,.11), 0 6px 18px rgba(0,0,0,.16) !important;
@@ -1366,37 +1417,43 @@ header[data-testid="stHeader"] { background: transparent !important; }
 }
 .st-key-cv_navbar_grouped .stButton > button:hover,
 .st-key-cv_navbar_grouped [data-testid="stPopover"] > button:hover {
-    background: linear-gradient(135deg, rgba(45,123,255,.56), rgba(157,78,221,.46)) !important;
+    background: linear-gradient(135deg, rgba(45,123,255,.58), rgba(157,78,221,.48)) !important;
     border-color: rgba(76,201,240,.92) !important;
-    box-shadow: inset 0 -2px 0 rgba(76,201,240,.95), 0 0 22px rgba(45,123,255,.34) !important;
+    box-shadow: inset 0 -2px 0 rgba(76,201,240,.95), 0 0 22px rgba(45,123,255,.36) !important;
     transform: translateY(-1px) !important;
 }
 .st-key-cv_navbar_grouped .stButton > button:focus,
 .st-key-cv_navbar_grouped [data-testid="stPopover"] > button:focus {
-    background: linear-gradient(135deg, rgba(45,123,255,.60), rgba(157,78,221,.48)) !important;
+    background: linear-gradient(135deg, rgba(45,123,255,.62), rgba(157,78,221,.50)) !important;
     border-color: rgba(76,201,240,.92) !important;
     box-shadow: inset 0 -2px 0 rgba(76,201,240,.95), 0 0 22px rgba(76,201,240,.27) !important;
 }
 /* Botones dentro de los desplegables */
+div[data-testid="stPopoverBody"] {
+    background: linear-gradient(135deg, rgba(11,31,62,.98), rgba(32,28,76,.98)) !important;
+    border: 1px solid rgba(76,201,240,.25) !important;
+    border-radius: 18px !important;
+    box-shadow: 0 18px 40px rgba(0,0,0,.35), 0 0 22px rgba(45,123,255,.18) !important;
+}
 div[data-testid="stPopoverBody"] .stButton > button {
     justify-content:flex-start !important;
     text-align:left !important;
     height: 38px !important;
     min-height: 38px !important;
     border-radius: 12px !important;
-    background: linear-gradient(135deg, rgba(20,38,76,.95), rgba(32,28,70,.92)) !important;
+    background: linear-gradient(135deg, rgba(45,123,255,.28), rgba(157,78,221,.22)) !important;
     color:#F6FAFF !important;
     border:1px solid rgba(76,201,240,.25) !important;
     font-weight:850 !important;
 }
 div[data-testid="stPopoverBody"] .stButton > button:hover {
-    background: linear-gradient(135deg, rgba(45,123,255,.42), rgba(157,78,221,.36)) !important;
+    background: linear-gradient(135deg, rgba(45,123,255,.48), rgba(157,78,221,.40)) !important;
     border-color:rgba(76,201,240,.75) !important;
 }
 @media(max-width:1100px) {
     .st-key-cv_navbar_grouped { overflow-x:auto !important; padding-left:10px !important; padding-right:10px !important; }
     .st-key-cv_navbar_grouped [data-testid="stHorizontalBlock"] { min-width:1100px !important; }
-    .block-container { padding-top:146px !important; }
+    .block-container { padding-top:190px !important; }
 }
 </style>
 """, unsafe_allow_html=True)
@@ -1410,15 +1467,47 @@ def nav_button(label, destino, key, disabled=False):
 
 
 with st.container(key="cv_navbar_grouped"):
-    top_left, top_right = st.columns([0.62, 0.38], gap="small")
+    top_left, top_right = st.columns([0.64, 0.36], gap="small")
+
     with top_left:
-        st.markdown('<div class="cv-brand-line"><div class="mark">⚡</div><div>Control Ventas<small>v2.0 · Sistema de ventas</small></div></div>', unsafe_allow_html=True)
+        brand_col, refresh_col = st.columns([0.72, 0.28], gap="small")
+        with brand_col:
+            st.markdown(
+                '<div class="cv-brand-wrap">'
+                '<div class="cv-brand-mark">⚡</div>'
+                '<div><div class="cv-brand-title">Control Ventas</div>'
+                '<div class="cv-brand-sub">v2.0 · Sistema de ventas</div></div>'
+                '</div>',
+                unsafe_allow_html=True
+            )
+        with refresh_col:
+            if st.button("🔄 Actualizar", key="nav_actualizar_grouped", help="Actualizar datos", use_container_width=True):
+                limpiar_cache_datos()
+                st.toast("Datos actualizados correctamente", icon="🔄")
+                st.rerun()
+
     with top_right:
-        st.markdown(f'<div class="cv-user-line"><div class="cv-user-pill-final">{badge_usuario}</div></div>', unsafe_allow_html=True)
+        user_col, logout_col = st.columns([0.68, 0.32], gap="small")
+        inicial_usuario = (vendedor_txt[:1] or "U").upper()
+        rol_limpio = rol_txt if rol_txt else "USUARIO"
+        with user_col:
+            st.markdown(
+                f'<div class="cv-user-box">'
+                f'<div><div class="cv-user-name">{vendedor_txt}</div><div class="cv-user-role">{rol_limpio}</div></div>'
+                f'<div class="cv-avatar">{inicial_usuario}</div>'
+                f'</div>',
+                unsafe_allow_html=True
+            )
+        with logout_col:
+            if st.button("🚪 Salir", key="nav_salir_grouped", help="Cerrar sesión", use_container_width=True):
+                st.query_params.clear()
+                st.session_state.clear()
+                st.session_state["login_ok"] = False
+                st.rerun()
 
     st.markdown('<div class="cv-nav-spacer"></div>', unsafe_allow_html=True)
 
-    nav_cols = st.columns([1.12, 1.35, 1.04, 1.22, 1.08, .70, .70], gap="small")
+    nav_cols = st.columns([1.15, 1.40, 1.05, 1.22, 1.05], gap="small")
 
     with nav_cols[0]:
         with st.popover("✨ Principal ▾", use_container_width=True):
@@ -1453,19 +1542,6 @@ with st.container(key="cv_navbar_grouped"):
                 nav_button("🧑‍💼 Vendedores", "🧑‍💼 Vendedores", "nav_equipo_vendedores")
         else:
             st.markdown("<div></div>", unsafe_allow_html=True)
-
-    with nav_cols[5]:
-        if st.button("🔄", key="nav_actualizar_grouped", help="Actualizar datos", use_container_width=True):
-            limpiar_cache_datos()
-            st.toast("Datos actualizados correctamente", icon="🔄")
-            st.rerun()
-
-    with nav_cols[6]:
-        if st.button("🚪", key="nav_salir_grouped", help="Cerrar sesión", use_container_width=True):
-            st.query_params.clear()
-            st.session_state.clear()
-            st.session_state["login_ok"] = False
-            st.rerun()
 
 menu = st.session_state["menu_actual"]
 
