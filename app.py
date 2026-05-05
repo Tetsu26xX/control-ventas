@@ -427,7 +427,8 @@ def login():
                         st.error("Contraseña incorrecta o usuario inactivo.")
                 else:
                     st.error("Usuario no existe.")
-        st.markdown('</div>', unsafe_allow_html=True)                    
+                    
+       st.markdown('</div>', unsafe_allow_html=True)                    
 
 
 if not st.session_state.get("login_ok", False):
