@@ -46,7 +46,7 @@ footer {visibility: hidden;}
 
 /* AJUSTE LOGIN - suave: un poquito más grande y más arriba */
 .login-wrapper {
-    transform: scale(0.98);
+    transform: scale(0.95);
     transform-origin: top center;
     margin-top: -14px;
 }
@@ -395,7 +395,7 @@ def login():
         with st.form("login_form", clear_on_submit=False):
             usuario = st.text_input("Usuario", placeholder="Usuario").strip().upper()
             password = st.text_input("Contraseña", type="password", placeholder="Contraseña").strip()
-            st.markdown('<div class="login-links"><span>☐ Recordarme</span><span>¿Olvidaste tu contraseña?</span></div>', unsafe_allow_html=True)
+            st.markdown('<div class="login-links"><span> Olvidarme :)</span><span>¿Olvidaste tu contraseña? que hacemos?</span></div>', unsafe_allow_html=True)
             submitted = st.form_submit_button("↪ Iniciar Sesión")
 
         st.markdown("""
