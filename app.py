@@ -46,7 +46,7 @@ footer {visibility: hidden;}
 
 /* AJUSTE LOGIN - suave: un poquito más grande y más arriba */
 .login-wrapper {
-    transform: scale(0.90);
+    transform: scale(0.85);
     transform-origin: top center;
     margin-top: -12px;
 }
