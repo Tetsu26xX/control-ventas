@@ -1177,68 +1177,235 @@ if "stock_guardado_ok" not in st.session_state:
 stock_actual_df = calcular_stock(productos, movimientos_stock, ventas)
 
 # =========================
-# MENÚ
+# MENÚ SUPERIOR TIPO NAVEGADOR
 # =========================
-st.sidebar.title("⚡ Control Ventas")
-if st.session_state.get("login_ok", False):
-    rol_txt = str(st.session_state.get("rol", "")).upper()
-    vendedor_txt = str(st.session_state.get("vendedor", "")).upper()
-    if rol_txt == "ADMIN":
-        st.sidebar.success(f"👑 {vendedor_txt} · ADMIN")
-    elif rol_txt == "JEFE":
-        st.sidebar.success(f"👑 {vendedor_txt} · JEFE")
-    else:
-        st.sidebar.success(f"👤 {vendedor_txt} · VENDEDOR")
-    if st.sidebar.button("Cerrar sesión"):
-        # Logout instantáneo: reduce al máximo el congelamiento/flicker de Streamlit.
-        # No usamos overlay ni time.sleep, porque eso mantiene visible el menú anterior más tiempo.
-        st.query_params.clear()
-        st.session_state.clear()
-        st.session_state["login_ok"] = False
-        st.rerun()
-
-if st.sidebar.button("🔄 Actualizar datos", use_container_width=True):
-    limpiar_cache_datos()
-    st.toast("Datos actualizados correctamente", icon="🔄")
-    st.rerun()
-st.sidebar.markdown("### 📲 Menú")
+# Navegación horizontal con menús desplegables.
+# Mantiene las mismas secciones, roles, permisos y lógica de st.session_state["menu_actual"].
 
 if "menu_actual" not in st.session_state:
     st.session_state["menu_actual"] = "📊 Dashboard"
 
-def boton_menu(texto):
-    activo = st.session_state["menu_actual"] == texto
-    etiqueta = f"✅ {texto}" if activo else f"　{texto}"
-    if st.button(etiqueta, use_container_width=True, key=f"btn_{texto}"):
-        st.session_state["menu_actual"] = texto
+rol_txt = str(st.session_state.get("rol", "")).upper()
+vendedor_txt = str(st.session_state.get("vendedor", "")).upper()
+
+if rol_txt == "ADMIN":
+    badge_usuario = f"👑 {vendedor_txt} · ADMIN"
+elif rol_txt == "JEFE":
+    badge_usuario = f"👑 {vendedor_txt} · JEFE"
+else:
+    badge_usuario = f"👤 {vendedor_txt} · VENDEDOR"
+
+st.markdown("""
+<style>
+/* ===== NAVBAR SUPERIOR ESTILO SAAS ===== */
+[data-testid="stSidebar"] {
+    display: none !important;
+}
+
+.block-container {
+    max-width: 1500px !important;
+    padding-top: 1.05rem !important;
+}
+
+.cv-topbar {
+    position: sticky;
+    top: 0;
+    z-index: 99999;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 18px;
+    padding: 15px 18px;
+    margin: -6px 0 12px 0;
+    border-radius: 22px;
+    background:
+        radial-gradient(circle at 12% 0%, rgba(45,123,255,.20), transparent 35%),
+        radial-gradient(circle at 88% 0%, rgba(157,78,221,.18), transparent 35%),
+        linear-gradient(135deg, rgba(9,16,31,.94), rgba(12,20,38,.88));
+    border: 1px solid rgba(255,255,255,.13);
+    box-shadow: 0 18px 48px rgba(0,0,0,.34), 0 0 22px rgba(45,123,255,.08);
+    backdrop-filter: blur(18px);
+    -webkit-backdrop-filter: blur(18px);
+}
+
+.cv-brand {
+    display: flex;
+    align-items: center;
+    gap: 11px;
+    color: #F7FAFF;
+    font-size: 23px;
+    font-weight: 1000;
+    letter-spacing: -.4px;
+    white-space: nowrap;
+}
+
+.cv-brand .mark {
+    width: 40px;
+    height: 40px;
+    border-radius: 14px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(135deg, rgba(45,123,255,.25), rgba(157,78,221,.26));
+    border: 1px solid rgba(76,201,240,.25);
+    box-shadow: 0 0 22px rgba(45,123,255,.22);
+}
+
+.cv-brand small {
+    color: #9AA4B2;
+    display: block;
+    font-size: 11px;
+    font-weight: 850;
+    letter-spacing: .5px;
+    margin-top: -2px;
+}
+
+.cv-user {
+    color: #E6EAF2;
+    font-size: 13px;
+    font-weight: 950;
+    padding: 10px 14px;
+    border-radius: 999px;
+    background: linear-gradient(135deg, rgba(255,255,255,.11), rgba(255,255,255,.04));
+    border: 1px solid rgba(255,255,255,.14);
+    box-shadow: inset 0 1px 0 rgba(255,255,255,.14), 0 0 18px rgba(157,78,221,.12);
+    white-space: nowrap;
+}
+
+.cv-nav-note {
+    color: rgba(230,234,242,.62);
+    font-size: 11px;
+    font-weight: 900;
+    letter-spacing: .9px;
+    text-transform: uppercase;
+    margin: 2px 0 9px 2px;
+}
+
+/* Botones de navegación */
+div[data-testid="stHorizontalBlock"] .stButton > button,
+div[data-testid="stPopover"] button {
+    min-height: 2.55rem !important;
+    border-radius: 14px !important;
+    background: linear-gradient(135deg, rgba(255,255,255,.085), rgba(255,255,255,.03)) !important;
+    color: #E6EAF2 !important;
+    border: 1px solid rgba(255,255,255,.13) !important;
+    box-shadow: inset 0 1px 0 rgba(255,255,255,.12), 0 10px 22px rgba(0,0,0,.14) !important;
+    font-size: 13px !important;
+    font-weight: 950 !important;
+    white-space: nowrap !important;
+    transition: all .20s ease !important;
+}
+
+div[data-testid="stHorizontalBlock"] .stButton > button:hover,
+div[data-testid="stPopover"] button:hover {
+    transform: translateY(-2px) !important;
+    border-color: rgba(76,201,240,.65) !important;
+    background: linear-gradient(135deg, rgba(45,123,255,.20), rgba(157,78,221,.14)) !important;
+    box-shadow: 0 0 0 1px rgba(76,201,240,.12), 0 0 22px rgba(76,201,240,.28), 0 14px 28px rgba(0,0,0,.24) !important;
+}
+
+/* Botones desplegables */
+[data-testid="stPopover"] > button {
+    width: 100% !important;
+}
+
+@media (max-width: 900px) {
+    .cv-topbar { position: relative; flex-direction: column; align-items: flex-start; border-radius: 18px; }
+    .cv-brand { font-size: 20px; }
+    .cv-user { font-size: 12px; }
+}
+</style>
+""", unsafe_allow_html=True)
+
+st.markdown(f"""
+<div class="cv-topbar">
+    <div class="cv-brand">
+        <div class="mark">⚡</div>
+        <div>Control Ventas<small>Sistema de ventas e inventario</small></div>
+    </div>
+    <div class="cv-user">{badge_usuario}</div>
+</div>
+<div class="cv-nav-note">Navegación principal</div>
+""", unsafe_allow_html=True)
+
+
+def cambiar_menu(texto):
+    st.session_state["menu_actual"] = texto
+    st.rerun()
+
+
+def nav_btn(label, menu_text, key):
+    activo = st.session_state.get("menu_actual") == menu_text
+    texto = f"● {label}" if activo else label
+    if st.button(texto, use_container_width=True, key=key):
+        cambiar_menu(menu_text)
+
+
+def pop_btn(label, menu_text, key):
+    activo = st.session_state.get("menu_actual") == menu_text
+    texto = f"✅ {label}" if activo else label
+    if st.button(texto, use_container_width=True, key=key):
+        cambiar_menu(menu_text)
+
+# Barra horizontal real con desplegables.
+cols_nav = st.columns([1.0, 1.05, 1.05, 1.05, 1.00, 1.00, .82, .82, .82], gap="small")
+
+with cols_nav[0]:
+    nav_btn("📊 Dashboard", "📊 Dashboard", "nav_dashboard")
+
+with cols_nav[1]:
+    if not es_jefe():
+        nav_btn("🧾 Registrar", "🧾 Registrar Orden", "nav_registrar")
+    else:
+        nav_btn("📌 Instrucciones", "📌 Instrucciones", "nav_instr_jefe")
+
+with cols_nav[2]:
+    with st.popover("🛒 Ventas ▾", use_container_width=True):
+        pop_btn("🔍 Buscar", "🔍 Buscar", "pop_buscar")
+        if not es_jefe():
+            pop_btn("✏️ Editar Venta", "✏️ Editar Venta", "pop_editar")
+        pop_btn("📋 Ventas Registradas", "📋 Ventas Registradas", "pop_ventas_reg")
+        pop_btn("📱 Buscar IMEI", "📱 Buscar IMEI", "pop_imei")
+
+with cols_nav[3]:
+    with st.popover("📦 Inventario ▾", use_container_width=True):
+        pop_btn("📦 Inventario / Stock", "📦 Inventario", "pop_inventario")
+        # Las opciones internas como Ingresar Stock, Ingreso Mercadería,
+        # Salida Traslado e Historial se mantienen dentro del módulo Inventario.
+
+with cols_nav[4]:
+    with st.popover("🧩 Catálogo ▾", use_container_width=True):
+        pop_btn("📱 Catálogo Equipos", "📱 Catálogo Equipos", "pop_cat_equipos")
+        pop_btn("🎧 Catálogo Accesorios", "🎧 Catálogo Accesorios", "pop_cat_acc")
+        if not es_jefe():
+            pop_btn("➕ Nuevo Equipo", "➕ Nuevo Equipo", "pop_nuevo_equipo")
+            pop_btn("➕ Nuevo Accesorio", "➕ Nuevo Accesorio", "pop_nuevo_acc")
+
+with cols_nav[5]:
+    with st.popover("📑 Reportes ▾", use_container_width=True):
+        pop_btn("📌 Instrucciones", "📌 Instrucciones", "pop_instrucciones")
+        pop_btn("📱 Buscar IMEI", "📱 Buscar IMEI", "pop_imei_reportes")
+        pop_btn("🔍 Buscar / Reporte vendedor", "🔍 Buscar", "pop_reporte_vendedor")
+
+with cols_nav[6]:
+    if not es_jefe():
+        with st.popover("👥 Equipo ▾", use_container_width=True):
+            pop_btn("🧑‍💼 Vendedores", "🧑‍💼 Vendedores", "pop_vendedores")
+    else:
+        st.markdown("")
+
+with cols_nav[7]:
+    if st.button("🔄 Actualizar", use_container_width=True, key="nav_actualizar"):
+        limpiar_cache_datos()
+        st.toast("Datos actualizados correctamente", icon="🔄")
         st.rerun()
 
-with st.sidebar.expander("✨ Principal", expanded=True):
-    boton_menu("📊 Dashboard")
-    if not es_jefe():
-        boton_menu("🧾 Registrar Orden")
-    boton_menu("📌 Instrucciones")
-
-with st.sidebar.expander("🛒 Gestión de Venta", expanded=False):
-    boton_menu("🔍 Buscar")
-    if not es_jefe():
-        boton_menu("✏️ Editar Venta")
-    boton_menu("📋 Ventas Registradas")
-    boton_menu("📱 Buscar IMEI")
-
-with st.sidebar.expander("📦 Inventario", expanded=False):
-    boton_menu("📦 Inventario")
-
-with st.sidebar.expander("🧩 Productos", expanded=False):
-    boton_menu("📱 Catálogo Equipos")
-    boton_menu("🎧 Catálogo Accesorios")
-    if not es_jefe():
-        boton_menu("➕ Nuevo Equipo")
-        boton_menu("➕ Nuevo Accesorio")
-
-if not es_jefe():
-    with st.sidebar.expander("👥 Equipo", expanded=False):
-        boton_menu("🧑‍💼 Vendedores")
+with cols_nav[8]:
+    if st.button("🚪 Salir", use_container_width=True, key="nav_salir"):
+        st.query_params.clear()
+        st.session_state.clear()
+        st.session_state["login_ok"] = False
+        st.rerun()
 
 menu = st.session_state["menu_actual"]
 
