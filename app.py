@@ -683,15 +683,15 @@ textarea:hover {{
 
 
 /* =========================
-   CONTENEDORES STREAMLIT (FIX CLAVE)
+   CONTENEDORES CORRECTOS (SIN AFECTAR TEXTO)
 ========================= */
 
-/* TARJETAS GENERALES STREAMLIT */
-div[data-testid="stVerticalBlock"] > div {{
+/* TARJETAS / BLOQUES GRANDES */
+section.main > div > div > div > div {{
     transition: all .20s ease !important;
 }}
 
-div[data-testid="stVerticalBlock"] > div:hover {{
+section.main > div > div > div > div:hover {{
     border-radius: 16px !important;
     box-shadow:
         0 0 0 1px rgba(76,201,240,.40),
@@ -700,8 +700,7 @@ div[data-testid="stVerticalBlock"] > div:hover {{
 }}
 
 /* GRÁFICOS */
-div[data-testid="stPlotlyChart"]:hover,
-div[data-testid="stChart"]:hover {{
+div[data-testid="stPlotlyChart"]:hover {{
     border-radius: 16px !important;
     box-shadow:
         0 0 0 1px rgba(76,201,240,.50),
@@ -709,7 +708,7 @@ div[data-testid="stChart"]:hover {{
         0 0 40px rgba(45,123,255,.25) !important;
 }}
 
-/* ALERTAS (la franja roja que dijiste) */
+/* ALERTAS (barra roja) */
 div[data-testid="stAlert"]:hover {{
     box-shadow:
         0 0 0 1px rgba(255,77,109,.70),
@@ -717,7 +716,6 @@ div[data-testid="stAlert"]:hover {{
         0 0 40px rgba(255,77,109,.30) !important;
     border-radius: 12px !important;
 }}
-
 
 /* =========================
    NEÓN POR COLOR (MEJORADO)
