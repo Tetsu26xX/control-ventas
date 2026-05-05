@@ -1380,6 +1380,19 @@ header[data-testid="stHeader"] { background: transparent !important; }
 .st-key-cv_navbar_clean label { display:none !important; }
 .st-key-cv_navbar_clean [data-testid="stSelectbox"] { margin-bottom:0 !important; }
 
+
+/* Refuerzo global: botones y selects del navbar siempre visibles y con hover neon */
+.st-key-cv_navbar_clean button {
+    background: linear-gradient(135deg, rgba(45,123,255,.58), rgba(157,78,221,.44)) !important;
+    color:#F8FBFF !important;
+    border:1px solid rgba(76,201,240,.65) !important;
+}
+.st-key-cv_navbar_clean button:hover {
+    border-color:#4CC9F0 !important;
+    box-shadow:0 0 0 1px rgba(76,201,240,.65), 0 0 22px rgba(76,201,240,.38), 0 0 28px rgba(45,123,255,.28) !important;
+    filter:brightness(1.08) !important;
+}
+
 @media(max-width:1100px) {
     .st-key-cv_navbar_clean { overflow-x:auto !important; padding-left:10px !important; padding-right:10px !important; }
     .st-key-cv_navbar_clean [data-testid="stHorizontalBlock"] { min-width:1120px !important; }
@@ -1404,6 +1417,15 @@ def nav_selectbox(grupo, opciones, key_base):
         ir_a(seleccion)
 
 
+def accion_actualizar_nav():
+    limpiar_cache_datos()
+    st.session_state["mensaje_toast"] = "Datos actualizados correctamente 🔄"
+
+def accion_salir_nav():
+    st.query_params.clear()
+    st.session_state.clear()
+    st.session_state["login_ok"] = False
+
 with st.container(key="cv_navbar_clean"):
     top_left, top_right = st.columns([0.66, 0.34], gap="small")
 
@@ -1419,10 +1441,7 @@ with st.container(key="cv_navbar_clean"):
                 unsafe_allow_html=True
             )
         with refresh_col:
-            if st.button("🔄 Actualizar", key="nav_actualizar_clean", help="Actualizar datos", use_container_width=True):
-                limpiar_cache_datos()
-                st.toast("Datos actualizados correctamente", icon="🔄")
-                st.rerun()
+            st.button("🔄 Actualizar", key="nav_actualizar_clean", help="Actualizar datos", use_container_width=True, on_click=accion_actualizar_nav)
 
     with top_right:
         user_col, logout_col = st.columns([0.66, 0.34], gap="small")
@@ -1436,11 +1455,7 @@ with st.container(key="cv_navbar_clean"):
                 unsafe_allow_html=True
             )
         with logout_col:
-            if st.button("🚪 Salir", key="nav_salir_clean", help="Cerrar sesión", use_container_width=True):
-                st.query_params.clear()
-                st.session_state.clear()
-                st.session_state["login_ok"] = False
-                st.rerun()
+            st.button("🚪 Salir", key="nav_salir_clean", help="Cerrar sesión", use_container_width=True, on_click=accion_salir_nav)
 
     st.markdown('<div class="cv-nav-spacer"></div>', unsafe_allow_html=True)
 
@@ -1469,6 +1484,10 @@ with st.container(key="cv_navbar_clean"):
             st.markdown("<div></div>", unsafe_allow_html=True)
 
 menu = st.session_state["menu_actual"]
+
+if "mensaje_toast" in st.session_state:
+    st.toast(st.session_state["mensaje_toast"], icon="✅")
+    del st.session_state["mensaje_toast"]
 
 if es_jefe() and menu in ["🧾 Registrar Orden", "✏️ Editar Venta", "➕ Nuevo Equipo", "➕ Nuevo Accesorio", "🧑‍💼 Vendedores"]:
     st.session_state["menu_actual"] = "📊 Dashboard"
