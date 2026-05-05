@@ -30,7 +30,7 @@ st.markdown("""
 <style>
 
 /* Ocultar barra superior de Streamlit */
-header {visibility: hidden;}
+header {background: transparent;}
 
 /* Ocultar menú */
 #MainMenu {visibility: hidden;}
