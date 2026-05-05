@@ -1237,32 +1237,60 @@ elif rol_txt == "JEFE":
 else:
     badge_usuario = f"👤 {vendedor_txt} · VENDEDOR"
 
-# Lee el menú desde la URL si viene de un enlace del navbar.
+# Lee el menú desde la URL si viene del navbar funcional.
 menu_url = st.query_params.get("menu", None)
 if menu_url:
     st.session_state["menu_actual"] = str(menu_url)
 
-# ===== NAVBAR SUPERIOR REAL / STICKY =====
-from urllib.parse import quote
+# ===== NAVBAR SUPERIOR FIJO Y FUNCIONAL =====
+# Importante: este navbar usa formularios GET, no enlaces decorativos.
+# Así cada botón realmente cambia st.query_params["menu"] y Streamlit recarga la vista.
+from html import escape
 
 session_q = st.query_params.get("session", "")
-base_q = f"session={quote(str(session_q))}&" if session_q else ""
+session_q = str(session_q or "")
 
-def nav_href(menu_text):
-    return f"?{base_q}menu={quote(menu_text)}"
 
-def active_cls(menu_text):
-    return "active" if st.session_state.get("menu_actual") == menu_text else ""
+def hidden_session_input():
+    if session_q:
+        return f'<input type="hidden" name="session" value="{escape(session_q, quote=True)}">'
+    return ""
 
-registrar_item = "" if es_jefe() else f'<a class="cv-nav-link {active_cls("🧾 Registrar Orden")}" href="{nav_href("🧾 Registrar Orden")}">🧾 Registrar</a>'
-editar_item = "" if es_jefe() else f'<a href="{nav_href("✏️ Editar Venta")}">✏️ Editar venta</a>'
-nuevo_equipo_item = "" if es_jefe() else f'<a href="{nav_href("➕ Nuevo Equipo")}">➕ Nuevo equipo</a>'
-nuevo_accesorio_item = "" if es_jefe() else f'<a href="{nav_href("➕ Nuevo Accesorio")}">➕ Nuevo accesorio</a>'
+
+def nav_button(menu_text, label, extra_class=""):
+    activo = "active" if st.session_state.get("menu_actual") == menu_text else ""
+    return f"""
+    <form class="cv-nav-form" method="get" target="_self">
+        {hidden_session_input()}
+        <button class="cv-nav-link {activo} {extra_class}" type="submit" name="menu" value="{escape(menu_text, quote=True)}">{label}</button>
+    </form>
+    """
+
+
+def dropdown_item(menu_text, label):
+    return f"""
+    <form class="cv-dd-form" method="get" target="_self">
+        {hidden_session_input()}
+        <button type="submit" name="menu" value="{escape(menu_text, quote=True)}">{label}</button>
+    </form>
+    """
+
+registrar_item = "" if es_jefe() else nav_button("🧾 Registrar Orden", "🧾 Registrar")
+editar_item = "" if es_jefe() else dropdown_item("✏️ Editar Venta", "✏️ Editar venta")
+nuevo_equipo_item = "" if es_jefe() else dropdown_item("➕ Nuevo Equipo", "➕ Nuevo equipo")
+nuevo_accesorio_item = "" if es_jefe() else dropdown_item("➕ Nuevo Accesorio", "➕ Nuevo accesorio")
 equipo_menu = ""
 if not es_jefe():
-    equipo_menu = f'<div class="cv-nav-dropdown"><button class="cv-nav-link">👥 Equipo ▾</button><div class="cv-nav-dropdown-content"><a href="{nav_href("🧑‍💼 Vendedores")}">🧑‍💼 Vendedores</a></div></div>'
+    equipo_menu = f"""
+    <div class="cv-nav-dropdown">
+        <button class="cv-nav-link" type="button">👥 Equipo ▾</button>
+        <div class="cv-nav-dropdown-content">
+            {dropdown_item("🧑‍💼 Vendedores", "🧑‍💼 Vendedores")}
+        </div>
+    </div>
+    """
 
-st.markdown(f'''
+st.markdown(f"""
 <style>
 [data-testid="stSidebar"] {{ display: none !important; }}
 header[data-testid="stHeader"] {{ background: transparent !important; }}
@@ -1286,44 +1314,78 @@ header[data-testid="stHeader"] {{ background: transparent !important; }}
     opacity:.46; animation: cvBgFloat 10s ease-in-out infinite alternate;
 }}
 @keyframes cvBgFloat {{ from {{ transform:translateY(0); opacity:.32; }} to {{ transform:translateY(-8px); opacity:.55; }} }}
-.block-container {{ max-width:1520px !important; padding-top:.25rem !important; position:relative; z-index:2; }}
+.block-container {{ max-width:1520px !important; padding-top:82px !important; position:relative; z-index:2; }}
 .cv-navbar {{
-    position:sticky; top:0; z-index:99999; width:100%; margin:0 0 14px 0; padding:8px 12px;
+    position:fixed !important;
+    top:0 !important;
+    left:0 !important;
+    right:0 !important;
+    z-index:999999 !important;
+    width:100vw !important;
+    margin:0 !important;
+    padding:8px 22px !important;
     display:flex; align-items:center; justify-content:space-between; gap:16px;
-    border-radius:0 0 18px 18px; background:linear-gradient(135deg, rgba(5,13,27,.96), rgba(9,17,33,.92));
-    border:1px solid rgba(100,130,255,.18); border-top:0;
-    box-shadow:0 12px 34px rgba(0,0,0,.34), 0 0 18px rgba(45,123,255,.10);
-    backdrop-filter:blur(18px); -webkit-backdrop-filter:blur(18px);
+    border-radius:0 !important;
+    background:linear-gradient(135deg, rgba(5,13,27,.985), rgba(9,17,33,.96));
+    border-bottom:1px solid rgba(100,130,255,.22);
+    box-shadow:0 12px 34px rgba(0,0,0,.42), 0 0 22px rgba(45,123,255,.16);
+    backdrop-filter:blur(20px); -webkit-backdrop-filter:blur(20px);
 }}
 .cv-nav-left, .cv-nav-right {{ display:flex; align-items:center; gap:8px; }}
+.cv-nav-left {{ flex-wrap:nowrap; min-width:0; }}
 .cv-brand {{ display:flex; align-items:center; gap:8px; color:#F7FAFF; font-size:18px; font-weight:1000; letter-spacing:-.3px; white-space:nowrap; margin-right:12px; }}
 .cv-brand .mark {{ width:30px;height:30px;border-radius:10px;display:flex;align-items:center;justify-content:center;background:linear-gradient(135deg,rgba(45,123,255,.22),rgba(157,78,221,.22));border:1px solid rgba(76,201,240,.22);box-shadow:0 0 16px rgba(45,123,255,.18); }}
 .cv-brand small {{ color:#9AA4B2;display:block;font-size:9px;font-weight:850;letter-spacing:.45px;margin-top:-3px; }}
-.cv-nav-link, .cv-nav-dropdown > button {{ display:inline-flex; align-items:center; justify-content:center; gap:6px; min-height:34px; padding:0 12px; border-radius:10px; color:#E6EAF2 !important; text-decoration:none !important; background:transparent; border:1px solid transparent; font-size:13px; font-weight:900; white-space:nowrap; cursor:pointer; transition:all .18s ease; font-family:inherit; }}
-.cv-nav-link:hover, .cv-nav-link.active, .cv-nav-dropdown:hover > button {{ color:#fff !important; border-color:rgba(45,123,255,.48); background:linear-gradient(135deg, rgba(45,123,255,.18), rgba(157,78,221,.10)); box-shadow:inset 0 -2px 0 rgba(45,123,255,.80), 0 0 18px rgba(45,123,255,.18); }}
+.cv-nav-form, .cv-dd-form {{ margin:0 !important; padding:0 !important; display:inline-flex; }}
+.cv-nav-link, .cv-nav-dropdown > button {{
+    display:inline-flex; align-items:center; justify-content:center; gap:6px;
+    min-height:34px; padding:0 12px; border-radius:10px;
+    color:#E6EAF2 !important; text-decoration:none !important;
+    background:transparent; border:1px solid transparent;
+    font-size:13px; font-weight:900; white-space:nowrap;
+    cursor:pointer; transition:all .18s ease; font-family:inherit;
+}}
+.cv-nav-link:hover, .cv-nav-link.active, .cv-nav-dropdown:hover > button {{
+    color:#fff !important;
+    border-color:rgba(45,123,255,.48);
+    background:linear-gradient(135deg, rgba(45,123,255,.18), rgba(157,78,221,.10));
+    box-shadow:inset 0 -2px 0 rgba(45,123,255,.80), 0 0 18px rgba(45,123,255,.18);
+}}
 .cv-nav-dropdown {{ position:relative; display:inline-flex; }}
-.cv-nav-dropdown-content {{ display:none; position:absolute; top:39px; left:0; min-width:210px; padding:8px; border-radius:14px; background:linear-gradient(135deg, rgba(5,13,27,.98), rgba(13,23,44,.96)); border:1px solid rgba(100,130,255,.22); box-shadow:0 18px 40px rgba(0,0,0,.42),0 0 18px rgba(45,123,255,.12); backdrop-filter:blur(18px); -webkit-backdrop-filter:blur(18px); }}
+.cv-nav-dropdown-content {{
+    display:none; position:absolute; top:42px; left:0; min-width:220px;
+    padding:8px; border-radius:14px;
+    background:linear-gradient(135deg, rgba(5,13,27,.98), rgba(13,23,44,.96));
+    border:1px solid rgba(100,130,255,.22);
+    box-shadow:0 18px 40px rgba(0,0,0,.42),0 0 18px rgba(45,123,255,.12);
+    backdrop-filter:blur(18px); -webkit-backdrop-filter:blur(18px);
+}}
 .cv-nav-dropdown:hover .cv-nav-dropdown-content {{ display:block; }}
-.cv-nav-dropdown-content a {{ display:block; padding:10px 11px; border-radius:10px; color:#E6EAF2 !important; text-decoration:none !important; font-size:13px; font-weight:850; }}
-.cv-nav-dropdown-content a:hover {{ background:linear-gradient(135deg, rgba(45,123,255,.18), rgba(157,78,221,.12)); color:#fff !important; }}
+.cv-dd-form button {{
+    width:100%; text-align:left; display:block; padding:10px 11px;
+    border-radius:10px; color:#E6EAF2 !important;
+    background:transparent; border:0; cursor:pointer;
+    font-size:13px; font-weight:850; font-family:inherit;
+}}
+.cv-dd-form button:hover {{ background:linear-gradient(135deg, rgba(45,123,255,.18), rgba(157,78,221,.12)); color:#fff !important; }}
 .cv-user-pill {{ color:#E6EAF2; font-size:12px; font-weight:950; padding:7px 11px; border-radius:999px; background:linear-gradient(135deg,rgba(255,255,255,.10),rgba(255,255,255,.035)); border:1px solid rgba(255,255,255,.13); white-space:nowrap; }}
-.cv-action-row {{ margin-top:-6px; margin-bottom:12px; }}
-@media(max-width:900px) {{ .cv-navbar {{ overflow-x:auto; align-items:flex-start; }} .cv-nav-left {{ min-width:max-content; }} .cv-nav-right {{ min-width:max-content; }} }}
+.cv-action-row {{ margin-top:0; margin-bottom:12px; }}
+@media(max-width:900px) {{ .cv-navbar {{ overflow-x:auto; align-items:center; padding:8px 10px !important; }} .cv-nav-left {{ min-width:max-content; }} .cv-nav-right {{ min-width:max-content; }} }}
 </style>
 <div class="cv-navbar">
   <div class="cv-nav-left">
     <div class="cv-brand"><div class="mark">⚡</div><div>Control Ventas<small>v2.0 · Sistema de ventas</small></div></div>
-    <a class="cv-nav-link {active_cls("📊 Dashboard")}" href="{nav_href("📊 Dashboard")}">📊 Dashboard</a>
+    {nav_button("📊 Dashboard", "📊 Dashboard")}
     {registrar_item}
-    <div class="cv-nav-dropdown"><button class="cv-nav-link">🛒 Ventas ▾</button><div class="cv-nav-dropdown-content"><a href="{nav_href("🔍 Buscar")}">🔍 Buscar</a>{editar_item}<a href="{nav_href("📋 Ventas Registradas")}">📋 Ventas registradas</a><a href="{nav_href("📱 Buscar IMEI")}">📱 Buscar IMEI</a></div></div>
-    <div class="cv-nav-dropdown"><button class="cv-nav-link">📦 Inventario ▾</button><div class="cv-nav-dropdown-content"><a href="{nav_href("📦 Inventario")}">📦 Inventario / Stock</a></div></div>
-    <div class="cv-nav-dropdown"><button class="cv-nav-link">🧩 Catálogo ▾</button><div class="cv-nav-dropdown-content"><a href="{nav_href("📱 Catálogo Equipos")}">📱 Catálogo equipos</a><a href="{nav_href("🎧 Catálogo Accesorios")}">🎧 Catálogo accesorios</a>{nuevo_equipo_item}{nuevo_accesorio_item}</div></div>
-    <div class="cv-nav-dropdown"><button class="cv-nav-link">📄 Reportes ▾</button><div class="cv-nav-dropdown-content"><a href="{nav_href("📌 Instrucciones")}">📌 Instrucciones</a><a href="{nav_href("📱 Buscar IMEI")}">📱 Reporte IMEI</a><a href="{nav_href("🔍 Buscar")}">🔍 Reporte vendedor</a></div></div>
+    <div class="cv-nav-dropdown"><button class="cv-nav-link" type="button">🛒 Ventas ▾</button><div class="cv-nav-dropdown-content">{dropdown_item("🔍 Buscar", "🔍 Buscar")}{editar_item}{dropdown_item("📋 Ventas Registradas", "📋 Ventas registradas")}{dropdown_item("📱 Buscar IMEI", "📱 Buscar IMEI")}</div></div>
+    <div class="cv-nav-dropdown"><button class="cv-nav-link" type="button">📦 Inventario ▾</button><div class="cv-nav-dropdown-content">{dropdown_item("📦 Inventario", "📦 Inventario / Stock")}</div></div>
+    <div class="cv-nav-dropdown"><button class="cv-nav-link" type="button">🧩 Catálogo ▾</button><div class="cv-nav-dropdown-content">{dropdown_item("📱 Catálogo Equipos", "📱 Catálogo equipos")}{dropdown_item("🎧 Catálogo Accesorios", "🎧 Catálogo accesorios")}{nuevo_equipo_item}{nuevo_accesorio_item}</div></div>
+    <div class="cv-nav-dropdown"><button class="cv-nav-link" type="button">📄 Reportes ▾</button><div class="cv-nav-dropdown-content">{dropdown_item("📌 Instrucciones", "📌 Instrucciones")}{dropdown_item("📱 Buscar IMEI", "📱 Reporte IMEI")}{dropdown_item("🔍 Buscar", "🔍 Reporte vendedor")}</div></div>
     {equipo_menu}
   </div>
   <div class="cv-nav-right"><div class="cv-user-pill">{badge_usuario}</div></div>
 </div>
-''', unsafe_allow_html=True)
+""", unsafe_allow_html=True)
 
 st.markdown('<div class="cv-action-row">', unsafe_allow_html=True)
 a1, a2, _ = st.columns([0.12, 0.12, 0.76])
