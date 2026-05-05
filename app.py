@@ -619,6 +619,45 @@ p, li, label, span, div {{ font-family: Inter, system-ui, -apple-system, Segoe U
 .glass-card {{ padding:18px 22px !important; margin:14px 0 !important; }}
 .glass-primary h3,.glass-primary p,.glass-card h4,.glass-card li {{ color:#eef5ff !important; }}
 .glass-primary p,.cv-muted {{ color:rgba(238,245,255,.70) !important; }}
+/* EFECTO HOVER AZUL NEÓN GLOBAL */
+.glass-primary,
+.glass-card,
+.dash-card,
+.kpi-card,
+.cv-card,
+.cv-panel,
+.cv-panel-accent,
+.cv-table-panel,
+.feature-card,
+.login-card,
+div[data-testid="stMetric"],
+div[data-testid="stDataFrame"],
+div[data-testid="stForm"] {
+    transition: all .20s ease !important;
+}
+
+.glass-primary:hover,
+.glass-card:hover,
+.dash-card:hover,
+.kpi-card:hover,
+.cv-card:hover,
+.cv-panel:hover,
+.cv-panel-accent:hover,
+.cv-table-panel:hover,
+.feature-card:hover,
+.login-card:hover,
+div[data-testid="stMetric"]:hover,
+div[data-testid="stDataFrame"]:hover,
+div[data-testid="stForm"]:hover {
+    border-color: #4CC9F0 !important;
+    box-shadow:
+        0 0 0 1px rgba(76,201,240,.70),
+        0 0 24px rgba(76,201,240,.45),
+        0 0 42px rgba(45,123,255,.35),
+        0 18px 38px rgba(0,0,0,.32) !important;
+    transform: translateY(-2px) !important;
+    filter: brightness(1.06) !important;
+}
 
 .cv-page-title {{
     display:flex;align-items:center;gap:14px;margin:8px 0 18px 0;
