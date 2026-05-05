@@ -130,11 +130,30 @@ def login():
     }}
     .stApp {{
         background:
-            radial-gradient(circle at 18% 12%, rgba(31,143,255,.22), transparent 24%),
+            radial-gradient(circle at 18% 12%, rgba(31,143,255,.24), transparent 24%),
             radial-gradient(circle at 88% 18%, rgba(139,61,255,.20), transparent 28%),
-            radial-gradient(circle at 56% 92%, rgba(37,213,255,.10), transparent 34%),
-            linear-gradient(135deg, #040914 0%, #071426 48%, #040812 100%) !important;
+            radial-gradient(circle at 52% 88%, rgba(37,213,255,.11), transparent 34%),
+            linear-gradient(135deg, #07111f 0%, #0b1830 48%, #070b18 100%) !important;
         background-attachment: fixed !important;
+    }}
+    .stApp::before {{
+        content:"";
+        position:fixed;
+        inset:0;
+        pointer-events:none;
+        z-index:0;
+        background:
+            radial-gradient(circle at 8% 18%, rgba(76,201,240,.65) 0 1.5px, transparent 2.5px),
+            radial-gradient(circle at 23% 72%, rgba(45,123,255,.45) 0 1.3px, transparent 2.4px),
+            radial-gradient(circle at 72% 16%, rgba(157,78,221,.55) 0 1.5px, transparent 2.5px),
+            radial-gradient(circle at 84% 64%, rgba(76,201,240,.40) 0 1.2px, transparent 2.4px),
+            radial-gradient(circle at 56% 38%, rgba(45,123,255,.30) 0 1.1px, transparent 2.2px);
+        opacity:.38;
+        animation: cvParticles 9s ease-in-out infinite alternate;
+    }}
+    @keyframes cvParticles {{
+        from {{ transform: translateY(0px); opacity:.30; }}
+        to {{ transform: translateY(-10px); opacity:.52; }}
     }}
     header[data-testid="stHeader"] {{ background: transparent !important; }}
     #MainMenu, footer {{ visibility: hidden !important; }}
@@ -146,9 +165,9 @@ def login():
         z-index: 2;
     }}
     .login-shell {{
-        min-height: calc(100vh - 42px);
+        min-height: auto;
         border: 1px solid rgba(100,130,255,.24);
-        border-radius: 24px;
+        border-radius: 20px;
         overflow: hidden;
         display: grid;
         grid-template-columns: 0.36fr 0.64fr;
@@ -157,25 +176,25 @@ def login():
         backdrop-filter: blur(18px);
     }}
     .login-left {{
-        padding: 46px 42px;
+        padding: 28px 34px;
         border-right: 1px solid rgba(100,130,255,.22);
         display: flex;
         flex-direction: column;
         justify-content: center;
-        gap: 20px;
+        gap: 13px;
         background:
             radial-gradient(circle at 45% 18%, rgba(139,61,255,.16), transparent 28%),
             linear-gradient(180deg, rgba(7,18,34,.82), rgba(4,8,17,.90));
     }}
     .brand-mark {{
-        width: 108px;height:108px;border-radius:30px;margin:0 auto 12px;
-        display:flex;align-items:center;justify-content:center;font-size:58px;
+        width: 68px;height:68px;border-radius:22px;margin:0 auto 6px;
+        display:flex;align-items:center;justify-content:center;font-size:34px;
         background: linear-gradient(135deg, rgba(31,143,255,.18), rgba(139,61,255,.18));
         border: 1px solid rgba(139,61,255,.46);
         box-shadow: 0 0 36px rgba(31,143,255,.22), 0 0 46px rgba(139,61,255,.18);
     }}
     .brand-title {{
-        text-align:center;font-weight:1000;font-size:48px;line-height:.95;letter-spacing:1px;color:white;
+        text-align:center;font-weight:1000;font-size:38px;line-height:.95;letter-spacing:1px;color:white;
         text-transform:uppercase;text-shadow:0 14px 38px rgba(0,0,0,.50);
     }}
     .brand-title span {{
@@ -183,14 +202,14 @@ def login():
         background: linear-gradient(90deg, var(--cv-blue), var(--cv-purple));
         -webkit-background-clip:text;background-clip:text;color:transparent;
     }}
-    .brand-sub {{text-align:center;color:rgba(238,245,255,.76);font-size:20px;font-weight:650;margin-top:18px;}}
+    .brand-sub {{text-align:center;color:rgba(238,245,255,.76);font-size:15px;font-weight:650;margin-top:10px;}}
     .brand-sub b {{background:linear-gradient(90deg,var(--cv-blue),var(--cv-purple));-webkit-background-clip:text;background-clip:text;color:transparent;}}
     .login-hero-devices {{
-        width: min(330px, 94%);
-        margin: 10px auto 4px;
+        width: min(280px, 88%);
+        margin: 4px auto 2px;
         position: relative;
-        border-radius: 28px;
-        padding: 8px;
+        border-radius: 22px;
+        padding: 5px;
         background:
             radial-gradient(circle at 50% 86%, rgba(139,61,255,.20), transparent 42%),
             radial-gradient(circle at 44% 52%, rgba(31,143,255,.16), transparent 44%);
@@ -213,7 +232,7 @@ def login():
         z-index:1;
         width:100%;
         display:block;
-        border-radius: 24px;
+        border-radius: 20px;
         user-select:none;
     }}
     .login-hero-devices:hover {{
@@ -227,19 +246,19 @@ def login():
     .quote-card,.dev-card {{
         border-radius:18px;border:1px solid rgba(139,61,255,.38);
         background:linear-gradient(135deg,rgba(139,61,255,.13),rgba(31,143,255,.05));
-        padding:22px 24px;box-shadow:0 14px 36px rgba(0,0,0,.24);
+        padding:16px 18px;box-shadow:0 14px 36px rgba(0,0,0,.24);
     }}
-    .quote-card {{margin-top:20px;}}
-    .quote-big {{font-size:38px;line-height:0;color:#955cff;margin-bottom:10px;font-weight:1000;}}
-    .quote-text {{font-size:20px;line-height:1.45;color:white;font-weight:650;}}
-    .quote-author {{margin-top:16px;color:#a95cff;font-weight:900;font-size:14px;letter-spacing:.5px;}}
-    .dev-card {{display:flex;gap:16px;align-items:center;border-color:rgba(31,143,255,.30);}}
-    .dev-icon {{width:52px;height:52px;border-radius:17px;display:flex;align-items:center;justify-content:center;font-size:25px;background:rgba(139,61,255,.14);border:1px solid rgba(139,61,255,.42);}}
-    .dev-muted {{color:var(--cv-muted);font-size:14px;}}
-    .dev-name {{font-size:21px;color:#2d8cff;font-weight:1000;}}
-    .tiny-joke {{color:rgba(238,245,255,.72);font-size:15px;margin-top:4px;padding-left:10px;}}
+    .quote-card {margin-top:10px;}
+    .quote-big {{font-size:28px;line-height:0;color:#955cff;margin-bottom:10px;font-weight:1000;}}
+    .quote-text {{font-size:16px;line-height:1.38;color:white;font-weight:650;}}
+    .quote-author {{margin-top:10px;color:#a95cff;font-weight:900;font-size:12px;letter-spacing:.5px;}}
+    .dev-card {display:flex;gap:10px;align-items:center;border-color:rgba(31,143,255,.26);padding:12px 16px;}
+    .dev-icon {display:none;}
+    .dev-muted {color:var(--cv-muted);font-size:12px;}
+    .dev-name {font-size:17px;color:#2d8cff;font-weight:1000;}
+    .tiny-joke {color:rgba(238,245,255,.62);font-size:12px;margin-top:0;padding-left:2px;}
     .login-right {{
-        padding: 44px 58px; display:flex;align-items:center;justify-content:center;
+        padding: 24px 42px; display:flex;align-items:center;justify-content:center;
     }}
     .login-card {{
         width:min(760px,100%);border-radius:24px;border:1px solid rgba(100,130,255,.22);
@@ -248,7 +267,7 @@ def login():
         padding:34px 50px 32px;
     }}
     .login-icon {{
-        width:76px;height:76px;border-radius:50%;margin:0 auto 14px;display:flex;align-items:center;justify-content:center;font-size:38px;color:white;
+        width:58px;height:58px;border-radius:50%;margin:0 auto 8px;display:flex;align-items:center;justify-content:center;font-size:28px;color:white;
         background:linear-gradient(135deg,rgba(31,143,255,.20),rgba(139,61,255,.26));
         border:1px solid rgba(139,61,255,.55);box-shadow:0 0 30px rgba(139,61,255,.28);
     }}
@@ -259,7 +278,7 @@ def login():
     }}
     div[data-testid="stTextInput"] input {{
         background:rgba(4,12,24,.72) !important;border:1px solid rgba(100,130,255,.33) !important;color:white !important;
-        border-radius:12px !important;min-height:2.7rem !important;font-weight:750 !important;padding-left:14px !important;
+        border-radius:12px !important;min-height:2.35rem !important;font-weight:750 !important;padding-left:14px !important;
         box-shadow: inset 0 1px 0 rgba(255,255,255,.03) !important;
     }}
     div[data-testid="stTextInput"] input:focus {{
@@ -267,9 +286,9 @@ def login():
         box-shadow:0 0 0 1px rgba(139,61,255,.35),0 0 26px rgba(31,143,255,.18) !important;
     }}
     [data-testid="stFormSubmitButton"] button {{
-        width:100% !important;min-height:3.05rem !important;border-radius:12px !important;border:none !important;
+        width:100% !important;min-height:2.65rem !important;border-radius:12px !important;border:none !important;
         background:linear-gradient(90deg,#116bff 0%,#8a2dff 100%) !important;color:white !important;
-        font-weight:1000 !important;font-size:18px !important;box-shadow:0 0 28px rgba(31,143,255,.26) !important;
+        font-weight:1000 !important;font-size:15px !important;box-shadow:0 0 28px rgba(31,143,255,.26) !important;
         transition:all .22s ease !important;margin-top:8px !important;
     }}
     [data-testid="stFormSubmitButton"] button:hover {{
@@ -277,37 +296,37 @@ def login():
     }}
     .login-links {{display:flex;justify-content:space-between;color:rgba(238,245,255,.72);font-size:14px;margin:2px 0 18px;}}
     .login-links span:last-child {{color:#26a7ff;font-weight:800;}}
-    .modules-title {{display:flex;align-items:center;gap:14px;color:rgba(238,245,255,.58);font-size:13px;font-weight:1000;letter-spacing:.7px;justify-content:center;margin:28px 0 18px;text-transform:uppercase;}}
+    .modules-title {{display:flex;align-items:center;gap:14px;color:rgba(238,245,255,.58);font-size:13px;font-weight:1000;letter-spacing:.7px;justify-content:center;margin:20px 0 14px;text-transform:uppercase;}}
     .modules-title:before,.modules-title:after {{content:"";height:1px;background:rgba(150,170,210,.22);flex:1;}}
     .feature-row {{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;}}
     .feature-card {{
-        min-height:126px;padding:18px;border-radius:16px;background:linear-gradient(135deg,rgba(31,143,255,.08),rgba(139,61,255,.05));
+        min-height:104px;padding:15px;border-radius:16px;background:linear-gradient(135deg,rgba(31,143,255,.08),rgba(139,61,255,.05));
         border:1px solid rgba(100,130,255,.25);color:white;transition:all .24s ease;
     }}
     .feature-card:hover {{transform:translateY(-5px);border-color:rgba(139,61,255,.65);box-shadow:0 0 24px rgba(31,143,255,.18),0 16px 34px rgba(0,0,0,.32);}}
-    .feature-icon {{font-size:30px;margin-bottom:10px;}}
-    .feature-title {{font-size:20px;font-weight:1000;}}
-    .feature-text {{font-size:14px;color:rgba(238,245,255,.72);line-height:1.45;margin-top:8px;}}
+    .feature-icon {{font-size:24px;margin-bottom:8px;}}
+    .feature-title {{font-size:17px;font-weight:1000;}}
+    .feature-text {{font-size:12px;color:rgba(238,245,255,.72);line-height:1.35;margin-top:6px;}}
     .login-footer {{
-        margin-top:24px;padding-top:18px;border-top:1px solid rgba(150,170,210,.18);text-align:center;color:rgba(238,245,255,.62);font-size:14px;
+        margin-top:16px;padding-top:12px;border-top:1px solid rgba(150,170,210,.18);text-align:center;color:rgba(238,245,255,.62);font-size:14px;
     }}
 
     .login-compact-head {{
         text-align:center;
-        padding: 10px 0 18px;
+        padding: 0 0 12px;
     }}
     .login-compact-head .login-icon-small {{
-        width:76px;height:76px;border-radius:50%;margin:0 auto 14px;display:flex;align-items:center;justify-content:center;font-size:38px;color:white;
+        width:58px;height:58px;border-radius:50%;margin:0 auto 8px;display:flex;align-items:center;justify-content:center;font-size:28px;color:white;
         background:linear-gradient(135deg,rgba(31,143,255,.20),rgba(139,61,255,.26));
         border:1px solid rgba(139,61,255,.55);box-shadow:0 0 30px rgba(139,61,255,.28);
     }}
-    .login-compact-title {{text-align:center;color:white;font-size:38px;font-weight:1000;margin:8px 0 6px;}}
-    .login-compact-desc {{text-align:center;color:rgba(238,245,255,.65);font-size:17px;margin-bottom:10px;}}
+    .login-compact-title {text-align:center;color:white;font-size:30px;font-weight:1000;margin:6px 0 4px;}
+    .login-compact-desc {text-align:center;color:rgba(238,245,255,.65);font-size:14px;margin-bottom:8px;}
     [data-testid="stForm"] {{
         border:1px solid rgba(100,130,255,.25) !important;
         background:linear-gradient(135deg,rgba(8,18,34,.66),rgba(6,12,24,.72)) !important;
-        border-radius:20px !important;
-        padding:22px 26px 24px !important;
+        border-radius:18px !important;
+        padding:18px 22px 18px !important;
         box-shadow: inset 0 1px 0 rgba(255,255,255,.04),0 18px 44px rgba(0,0,0,.28) !important;
     }}
     @media(max-width:900px) {{
@@ -327,7 +346,6 @@ def login():
         st.markdown(f"""
         <div class="login-left">
             <div>
-                <div class="brand-mark">🦁</div>
                 <div class="brand-title">Control<span>Ventas</span></div>
                 <div class="brand-sub">Sistema de control de ventas<br><b>Entel Perú</b></div>
             </div>
@@ -618,7 +636,7 @@ p, li, label, span, div {{ font-family: Inter, system-ui, -apple-system, Segoe U
     margin-bottom:18px;
 }}
 .cv-panel-accent {{ border-color:rgba(139,61,255,.45); box-shadow:0 0 26px rgba(139,61,255,.10),0 18px 42px rgba(0,0,0,.30); }}
-.cv-panel-title {{ color:#f6f9ff;font-size:20px;font-weight:1000;margin-bottom:14px;display:flex;align-items:center;gap:10px; }}
+.cv-panel-title {{ color:#f6f9ff;font-size:17px;font-weight:1000;margin-bottom:14px;display:flex;align-items:center;gap:10px; }}
 .cv-small-note {{ color:rgba(238,245,255,.62);font-size:13px;font-weight:700;margin-top:8px; }}
 .cv-sep {{ height:1px;background:rgba(150,170,210,.16);margin:16px 0; }}
 .cv-chip {{
@@ -1221,14 +1239,37 @@ else:
 
 st.markdown("""
 <style>
-/* ===== NAVBAR SUPERIOR ESTILO SAAS ===== */
-[data-testid="stSidebar"] {
-    display: none !important;
+/* ===== NAVBAR SUPERIOR COMPACTO TIPO SAAS ===== */
+[data-testid="stSidebar"] { display: none !important; }
+
+.stApp {
+    background:
+        radial-gradient(circle at 14% 14%, rgba(45,123,255,.16), transparent 26%),
+        radial-gradient(circle at 88% 20%, rgba(157,78,221,.16), transparent 28%),
+        radial-gradient(circle at 52% 92%, rgba(76,201,240,.10), transparent 34%),
+        linear-gradient(135deg, #07111f 0%, #0b1830 48%, #070b18 100%) !important;
+    background-attachment: fixed !important;
 }
+.stApp::before {
+    content:"";
+    position: fixed;
+    inset:0;
+    pointer-events:none;
+    z-index:0;
+    background:
+        radial-gradient(circle at 9% 18%, rgba(76,201,240,.42) 0 1px, transparent 2px),
+        radial-gradient(circle at 18% 78%, rgba(45,123,255,.34) 0 1px, transparent 2px),
+        radial-gradient(circle at 62% 22%, rgba(157,78,221,.38) 0 1px, transparent 2px),
+        radial-gradient(circle at 84% 66%, rgba(76,201,240,.35) 0 1px, transparent 2px),
+        radial-gradient(circle at 42% 46%, rgba(45,123,255,.25) 0 1px, transparent 2px);
+    opacity:.42;
+    animation: cvBgFloat 10s ease-in-out infinite alternate;
+}
+@keyframes cvBgFloat { from { transform:translateY(0); opacity:.30; } to { transform:translateY(-8px); opacity:.52; } }
 
 .block-container {
-    max-width: 1500px !important;
-    padding-top: 1.05rem !important;
+    max-width: 1520px !important;
+    padding-top: .35rem !important;
 }
 
 .cv-topbar {
@@ -1238,105 +1279,55 @@ st.markdown("""
     display: flex;
     align-items: center;
     justify-content: space-between;
-    gap: 18px;
-    padding: 15px 18px;
-    margin: -6px 0 12px 0;
-    border-radius: 22px;
-    background:
-        radial-gradient(circle at 12% 0%, rgba(45,123,255,.20), transparent 35%),
-        radial-gradient(circle at 88% 0%, rgba(157,78,221,.18), transparent 35%),
-        linear-gradient(135deg, rgba(9,16,31,.94), rgba(12,20,38,.88));
-    border: 1px solid rgba(255,255,255,.13);
-    box-shadow: 0 18px 48px rgba(0,0,0,.34), 0 0 22px rgba(45,123,255,.08);
+    gap: 12px;
+    padding: 8px 12px;
+    margin: 0 0 6px 0;
+    border-radius: 0 0 18px 18px;
+    background: linear-gradient(135deg, rgba(6,13,26,.96), rgba(10,18,35,.92));
+    border: 1px solid rgba(100,130,255,.18);
+    border-top: 0;
+    box-shadow: 0 12px 34px rgba(0,0,0,.34), 0 0 18px rgba(45,123,255,.08);
     backdrop-filter: blur(18px);
     -webkit-backdrop-filter: blur(18px);
 }
-
 .cv-brand {
-    display: flex;
-    align-items: center;
-    gap: 11px;
-    color: #F7FAFF;
-    font-size: 23px;
-    font-weight: 1000;
-    letter-spacing: -.4px;
-    white-space: nowrap;
+    display:flex;align-items:center;gap:8px;color:#F7FAFF;font-size:18px;font-weight:1000;letter-spacing:-.3px;white-space:nowrap;
 }
+.cv-brand .mark { width:30px;height:30px;border-radius:10px;display:flex;align-items:center;justify-content:center;background:linear-gradient(135deg,rgba(45,123,255,.22),rgba(157,78,221,.22));border:1px solid rgba(76,201,240,.22);box-shadow:0 0 16px rgba(45,123,255,.18); }
+.cv-brand small { color:#9AA4B2;display:block;font-size:9px;font-weight:850;letter-spacing:.45px;margin-top:-3px; }
+.cv-user { color:#E6EAF2;font-size:12px;font-weight:950;padding:7px 11px;border-radius:999px;background:linear-gradient(135deg,rgba(255,255,255,.10),rgba(255,255,255,.035));border:1px solid rgba(255,255,255,.13);white-space:nowrap; }
+.cv-nav-note { display:none; }
+.cv-nav-start { height:0; margin:0; padding:0; }
 
-.cv-brand .mark {
-    width: 40px;
-    height: 40px;
-    border-radius: 14px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    background: linear-gradient(135deg, rgba(45,123,255,.25), rgba(157,78,221,.26));
-    border: 1px solid rgba(76,201,240,.25);
-    box-shadow: 0 0 22px rgba(45,123,255,.22);
-}
-
-.cv-brand small {
-    color: #9AA4B2;
-    display: block;
-    font-size: 11px;
-    font-weight: 850;
-    letter-spacing: .5px;
-    margin-top: -2px;
-}
-
-.cv-user {
-    color: #E6EAF2;
-    font-size: 13px;
-    font-weight: 950;
-    padding: 10px 14px;
-    border-radius: 999px;
-    background: linear-gradient(135deg, rgba(255,255,255,.11), rgba(255,255,255,.04));
-    border: 1px solid rgba(255,255,255,.14);
-    box-shadow: inset 0 1px 0 rgba(255,255,255,.14), 0 0 18px rgba(157,78,221,.12);
-    white-space: nowrap;
-}
-
-.cv-nav-note {
-    color: rgba(230,234,242,.62);
-    font-size: 11px;
-    font-weight: 900;
-    letter-spacing: .9px;
-    text-transform: uppercase;
-    margin: 2px 0 9px 2px;
-}
-
-/* Botones de navegación */
+/* Menú horizontal compacto */
 div[data-testid="stHorizontalBlock"] .stButton > button,
-div[data-testid="stPopover"] button {
-    min-height: 2.55rem !important;
-    border-radius: 14px !important;
-    background: linear-gradient(135deg, rgba(255,255,255,.085), rgba(255,255,255,.03)) !important;
+div[data-testid="stPopover"] > button {
+    min-height: 2.25rem !important;
+    border-radius: 10px !important;
+    background: transparent !important;
     color: #E6EAF2 !important;
-    border: 1px solid rgba(255,255,255,.13) !important;
-    box-shadow: inset 0 1px 0 rgba(255,255,255,.12), 0 10px 22px rgba(0,0,0,.14) !important;
-    font-size: 13px !important;
-    font-weight: 950 !important;
+    border: 1px solid transparent !important;
+    box-shadow: none !important;
+    font-size: 12px !important;
+    font-weight: 900 !important;
     white-space: nowrap !important;
-    transition: all .20s ease !important;
+    transition: all .18s ease !important;
 }
-
 div[data-testid="stHorizontalBlock"] .stButton > button:hover,
-div[data-testid="stPopover"] button:hover {
-    transform: translateY(-2px) !important;
-    border-color: rgba(76,201,240,.65) !important;
-    background: linear-gradient(135deg, rgba(45,123,255,.20), rgba(157,78,221,.14)) !important;
-    box-shadow: 0 0 0 1px rgba(76,201,240,.12), 0 0 22px rgba(76,201,240,.28), 0 14px 28px rgba(0,0,0,.24) !important;
+div[data-testid="stPopover"] > button:hover {
+    transform: translateY(-1px) !important;
+    color:#ffffff !important;
+    border-color: rgba(45,123,255,.45) !important;
+    background: linear-gradient(135deg, rgba(45,123,255,.18), rgba(157,78,221,.10)) !important;
+    box-shadow: inset 0 -2px 0 rgba(45,123,255,.80), 0 0 18px rgba(45,123,255,.18) !important;
 }
-
-/* Botones desplegables */
-[data-testid="stPopover"] > button {
-    width: 100% !important;
-}
+div[data-testid="stPopover"] button { font-size:12px !important; }
+[data-testid="stPopover"] > button { width:100% !important; }
 
 @media (max-width: 900px) {
-    .cv-topbar { position: relative; flex-direction: column; align-items: flex-start; border-radius: 18px; }
-    .cv-brand { font-size: 20px; }
-    .cv-user { font-size: 12px; }
+    .cv-topbar { position: sticky; top:0; flex-direction:column; align-items:flex-start; border-radius:0 0 16px 16px; }
+    .cv-brand { font-size:17px; }
+    .cv-user { font-size:11px; }
 }
 </style>
 """, unsafe_allow_html=True)
@@ -1345,11 +1336,11 @@ st.markdown(f"""
 <div class="cv-topbar">
     <div class="cv-brand">
         <div class="mark">⚡</div>
-        <div>Control Ventas<small>Sistema de ventas e inventario</small></div>
+        <div>Control Ventas<small>v2.0 · Sistema de ventas</small></div>
     </div>
     <div class="cv-user">{badge_usuario}</div>
 </div>
-<div class="cv-nav-note">Navegación principal</div>
+<div class="cv-nav-start"></div>
 """, unsafe_allow_html=True)
 
 
@@ -1375,16 +1366,16 @@ def pop_btn(label, menu_text, key):
 cols_nav = st.columns([1.0, 1.05, 1.05, 1.05, 1.00, 1.00, .82, .82, .82], gap="small")
 
 with cols_nav[0]:
-    nav_btn("📊 Dashboard", "📊 Dashboard", "nav_dashboard")
+    nav_btn("Dashboard", "📊 Dashboard", "nav_dashboard")
 
 with cols_nav[1]:
     if not es_jefe():
-        nav_btn("🧾 Registrar", "🧾 Registrar Orden", "nav_registrar")
+        nav_btn("Registrar Orden", "🧾 Registrar Orden", "nav_registrar")
     else:
         nav_btn("📌 Instrucciones", "📌 Instrucciones", "nav_instr_jefe")
 
 with cols_nav[2]:
-    with st.popover("🛒 Ventas ▾", use_container_width=True):
+    with st.popover("Ventas ▾", use_container_width=True):
         pop_btn("🔍 Buscar", "🔍 Buscar", "pop_buscar")
         if not es_jefe():
             pop_btn("✏️ Editar Venta", "✏️ Editar Venta", "pop_editar")
@@ -1392,13 +1383,13 @@ with cols_nav[2]:
         pop_btn("📱 Buscar IMEI", "📱 Buscar IMEI", "pop_imei")
 
 with cols_nav[3]:
-    with st.popover("📦 Inventario ▾", use_container_width=True):
+    with st.popover("Inventario ▾", use_container_width=True):
         pop_btn("📦 Inventario / Stock", "📦 Inventario", "pop_inventario")
         # Las opciones internas como Ingresar Stock, Ingreso Mercadería,
         # Salida Traslado e Historial se mantienen dentro del módulo Inventario.
 
 with cols_nav[4]:
-    with st.popover("🧩 Catálogo ▾", use_container_width=True):
+    with st.popover("Catálogo ▾", use_container_width=True):
         pop_btn("📱 Catálogo Equipos", "📱 Catálogo Equipos", "pop_cat_equipos")
         pop_btn("🎧 Catálogo Accesorios", "🎧 Catálogo Accesorios", "pop_cat_acc")
         if not es_jefe():
@@ -1406,26 +1397,26 @@ with cols_nav[4]:
             pop_btn("➕ Nuevo Accesorio", "➕ Nuevo Accesorio", "pop_nuevo_acc")
 
 with cols_nav[5]:
-    with st.popover("📑 Reportes ▾", use_container_width=True):
+    with st.popover("Reportes ▾", use_container_width=True):
         pop_btn("📌 Instrucciones", "📌 Instrucciones", "pop_instrucciones")
         pop_btn("📱 Buscar IMEI", "📱 Buscar IMEI", "pop_imei_reportes")
         pop_btn("🔍 Buscar / Reporte vendedor", "🔍 Buscar", "pop_reporte_vendedor")
 
 with cols_nav[6]:
     if not es_jefe():
-        with st.popover("👥 Equipo ▾", use_container_width=True):
+        with st.popover("Equipo ▾", use_container_width=True):
             pop_btn("🧑‍💼 Vendedores", "🧑‍💼 Vendedores", "pop_vendedores")
     else:
         st.markdown("")
 
 with cols_nav[7]:
-    if st.button("🔄 Actualizar", use_container_width=True, key="nav_actualizar"):
+    if st.button("Actualizar", use_container_width=True, key="nav_actualizar"):
         limpiar_cache_datos()
         st.toast("Datos actualizados correctamente", icon="🔄")
         st.rerun()
 
 with cols_nav[8]:
-    if st.button("🚪 Salir", use_container_width=True, key="nav_salir"):
+    if st.button("Salir", use_container_width=True, key="nav_salir"):
         st.query_params.clear()
         st.session_state.clear()
         st.session_state["login_ok"] = False
@@ -1588,7 +1579,7 @@ elif menu == "📊 Dashboard":
         .dash-card {
             background: linear-gradient(135deg, rgba(255,255,255,0.095), rgba(255,255,255,0.035));
             border: 1px solid rgba(210,245,62,0.15);
-            border-radius: 24px;
+            border-radius: 20px;
             padding: 20px;
             margin-bottom: 18px;
             box-shadow: 0 14px 30px rgba(0,0,0,.28);
@@ -1611,7 +1602,7 @@ elif menu == "📊 Dashboard":
         .kpi-card {
             background: linear-gradient(135deg, rgba(255,255,255,0.11), rgba(255,255,255,0.035));
             border: 1px solid rgba(210,245,62,0.18);
-            border-radius: 24px;
+            border-radius: 20px;
             padding: 19px 18px;
             box-shadow: 0 16px 34px rgba(0,0,0,.30), 0 0 20px rgba(210,245,62,.06);
             transition: all .25s ease;
@@ -3398,3 +3389,4 @@ elif menu == "🔍 Buscar":
                         file_name=nombre_archivo,
                         mime="text/csv"
                     )
+                
