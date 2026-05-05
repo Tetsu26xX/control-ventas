@@ -620,7 +620,9 @@ p, li, label, span, div {{ font-family: Inter, system-ui, -apple-system, Segoe U
 .glass-primary h3,.glass-primary p,.glass-card h4,.glass-card li {{ color:#eef5ff !important; }}
 .glass-primary p,.cv-muted {{ color:rgba(238,245,255,.70) !important; }}
 
-/* EFECTO HOVER AZUL NEÓN GLOBAL */
+/* =========================
+   EFECTO HOVER AZUL NEÓN GLOBAL
+========================= */
 .glass-primary,
 .glass-card,
 .dash-card,
@@ -658,6 +660,65 @@ div[data-testid="stForm"]:hover {{
         0 18px 38px rgba(0,0,0,.32) !important;
     transform: translateY(-2px) !important;
     filter: brightness(1.06) !important;
+}}
+
+/* =========================
+   EFECTO MÁS GLOBAL (inputs, botones, etc)
+========================= */
+button:hover,
+div[data-baseweb="select"]:hover,
+input:hover,
+textarea:hover,
+label:hover {{
+    box-shadow:
+        0 0 0 1px rgba(76,201,240,.60),
+        0 0 18px rgba(76,201,240,.35),
+        0 0 30px rgba(45,123,255,.25) !important;
+    border-color: #4CC9F0 !important;
+    transition: all .18s ease !important;
+}}
+
+/* =========================
+   NEÓN SEGÚN COLOR DEL CUADRO
+========================= */
+
+/* 🔴 ROJO (stock bajo / alerta) */
+.cv-card.stock-bajo:hover,
+.cv-card.alerta:hover,
+.dash-card.stock-bajo:hover,
+.dash-card.alerta:hover {{
+    border-color: #FF4D6D !important;
+    box-shadow:
+        0 0 0 1px rgba(255,77,109,.75),
+        0 0 24px rgba(255,77,109,.48),
+        0 0 42px rgba(255,77,109,.35),
+        0 18px 38px rgba(0,0,0,.32) !important;
+}}
+
+/* 🟢 VERDE (ok / éxito) */
+.cv-card.ok:hover,
+.cv-card.exito:hover,
+.dash-card.ok:hover,
+.dash-card.exito:hover {{
+    border-color: #2EE59D !important;
+    box-shadow:
+        0 0 0 1px rgba(46,229,157,.75),
+        0 0 24px rgba(46,229,157,.48),
+        0 0 42px rgba(46,229,157,.35),
+        0 18px 38px rgba(0,0,0,.32) !important;
+}}
+
+/* 🟡 AMARILLO (warning / aviso) */
+.cv-card.warning:hover,
+.cv-card.aviso:hover,
+.dash-card.warning:hover,
+.dash-card.aviso:hover {{
+    border-color: #FFD166 !important;
+    box-shadow:
+        0 0 0 1px rgba(255,209,102,.75),
+        0 0 24px rgba(255,209,102,.48),
+        0 0 42px rgba(255,209,102,.35),
+        0 18px 38px rgba(0,0,0,.32) !important;
 }}
 .cv-page-title {{
     display:flex;align-items:center;gap:14px;margin:8px 0 18px 0;
