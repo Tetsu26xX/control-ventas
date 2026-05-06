@@ -361,15 +361,15 @@ def login():
         <div class="login-left">
             <div>
                 <div class="brand-title">Control<span>Ventas</span></div>
-                <div class="brand-sub">Sistema de control de ventas<br><b>Entel Perú</b></div>
+                <div class="brand-sub">Sistema de control de ventas<br><b>Entel Plaza Vea Hyo</b></div>
             </div>
             <div class="login-hero-devices">
                 <img src="data:image/png;base64,{login_hero_b64}" alt="Equipo, chip y accesorio">
             </div>
             <div class="quote-card">
                 <div class="quote-big">“</div>
-                <div class="quote-text">Los audaces no esperan oportunidades, las crean.</div>
-                <div class="quote-author">— NO NOS DEMOS POR VENCIDO </div>
+                <div class="quote-text">Los audaces no esperan oportunidades,          las crean.</div>
+                <div class="quote-author">— Luchemos Siempre Por La Meta </div>
             </div>
             <div class="dev-card">
                 <div class="dev-icon">&lt;/&gt;</div>
